@@ -1,0 +1,752 @@
+@font-face {
+    font-family: crock;
+    src: url(crock.ttf);
+}
+
+* {
+    font-family: crock;
+    box-sizing: inherit;
+    touch-action: manipulation;
+}
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(73, 73, 73); 
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #b3b3b3; 
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    border-radius: 10px;
+    background: rgb(39, 39, 39); 
+}
+
+.bottom-right {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 11px;
+}
+
+#playerData {
+    display: block; 
+}
+
+#container {
+   -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    display: block;
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 50%;
+    left: 12%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-height: 401px;
+    height: 550px;
+    max-height: 581px;
+    background-image: url('images/background.png');
+    background-size: 100% 100%;
+}
+
+#id01 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 16%;
+    font-size: 17px;
+}
+
+#id02 {
+    padding: 25px;
+    color: rgb(194, 194, 194);
+    position: absolute;
+    bottom: 13%;
+    font-size: 13px;
+}
+#id03 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 17.5%;
+    font-size: 16px;
+}
+#id07 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 21.0%;
+    font-size: 16px;
+}
+#id08 {
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 20.5%;
+    left: 20%;
+    font-size: 16px;
+}
+#id05 {
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 3%;
+    left:5%;
+    font-size: 17px;
+}
+
+#id04 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 18.5%;
+    font-size: 16px;
+}
+.show {
+    display: block;
+}
+
+#btn_1 {
+    position: fixed;
+	bottom: 8%;
+	left: 40px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/hat_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_1:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 40px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/hat_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+
+#btn_2 {
+    position: fixed;
+	bottom: 8%;
+	left: 80px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/glass_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_2:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 80px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/glass_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_3 {
+    position: fixed;
+	bottom: 8%;
+	left: 120px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/mask_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_3:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 120px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/mask_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_4 {
+    position: fixed;
+	bottom: 8%;
+	left: 160px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/bandana_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_4:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 160px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/bandana_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_5 {
+    position: fixed;
+	bottom: 8%;
+	left: 200px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/scarf_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_5:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 200px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/scarf_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_6 {
+    position: fixed;
+	bottom: 8%;
+	left: 240px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/cloak_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_6:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 240px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/cloak_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_7 {position: fixed;
+	bottom: 8%;
+	left: 280px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/shirt_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_7:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 280px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/shirt_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_8 {position: fixed;
+	bottom: 8%;
+	left: 320px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/vest_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_8:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 320px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/vest_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_9 {
+    position: fixed;
+	bottom: 8%;
+	left: 360px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/coat_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_9:hover {
+    position: fixed;
+	bottom: 8%;
+	left: 360px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/coat_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_10 {
+    position: fixed;
+	bottom: 2%;
+	left: 60px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/ammo_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_10:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 60px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/ammo_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_11 {
+    position: fixed;
+	bottom: 2%;
+	left: 100px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/ring_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_11:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 100px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/ring_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_12 {
+    position: fixed;
+	bottom: 2%;
+	left: 140px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/glove_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_12:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 140px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/glove_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_13 {
+    position: fixed;
+	bottom: 2%;
+	left: 180px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/gauntlet_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_13:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 180px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/gauntlet_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_14 {
+    position: fixed;
+	bottom: 2%;
+	left: 220px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/belt_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_14:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 220px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/belt_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_15 {
+    position: fixed;
+	bottom: 2%;
+	left: 260px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/suspender_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_15:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 260px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/suspender_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_16 {
+    position: fixed;
+	bottom: 2%;
+	left: 300px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/pants_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_16:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 300px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/pants_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#btn_17 {
+    position: fixed;
+	bottom: 2%;
+	left: 340px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/boots_in.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+
+#btn_17:hover {
+    position: fixed;
+	bottom: 2%;
+	left: 340px;
+    width: 40px;
+    height: 40px;
+    background-image: url('images/clothe/boots_ac.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+
+.button_items1 {
+    position: fixed;
+	top: 21%;
+	right: 10%;
+    width: 50px;
+    height: 50px;
+    background-image: url('images/items_b.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+
+.button_items1:hover {
+    position: fixed;
+	top: 21%;
+	right: 10%;
+    width: 50px;
+    height: 50px;
+    background-image: url('images/itesms_bs.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+
+.grid0 {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+	max-width: 380px;
+	max-height: 280px;
+	top: 20%;
+	left: 5%;
+} 
+
+.grid1 {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+	max-width: 380px;
+	max-height: 280px;
+	top: 20%;
+	left: 5%;
+} 
+
+.grid_other {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+	max-width: 380px;
+	max-height: 420px;
+	top: 20%;
+	left: 5%;
+} 
+#container_other {
+    -webkit-user-drag: none;
+     user-select: none;
+     -moz-user-select: none;
+     -webkit-user-select: none;
+     -ms-user-select: none;
+     display: block;
+     padding: 25px;
+     color: rgb(255, 255, 255);
+     position: absolute;
+     top: 50%;
+     left: 38%;
+     transform: translate(-50%, -50%);
+     width: 400px;
+     max-height: 401px;
+     height: 550px;
+     max-height: 581px;
+     background-image: url('images/background.png');
+     background-size: 100% 100%;
+ }
+
+.item {
+    display: block;
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    text-align: center;
+}
+
+.grid2 {
+    top: 40%;
+    left: 500px;
+    position: absolute;
+    display: grid;
+    background-image: url('images/background.png');
+    background-size: 100% 100%;
+    width: 225px;
+    border: none;
+    overflow: hidden;
+    outline: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+} 
+
+.item2 {
+    display: block;
+    color: rgb(179, 179, 179);
+    background-image: url('images/button2.png');
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    grid-template-columns:minmax(100px, 1fr);
+    padding: 10px;
+    font-size: 15px;
+    text-align: center;
+    border: none;
+    overflow: hidden;
+    outline: none;
+    width: 200px;
+    height: 15px;
+}
+.item2:hover {
+    color: rgb(255, 255, 255);
+    background-image: url('images/sbutton2.png');
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    grid-template-columns:minmax(100px, 1fr);
+    padding: 10px;
+    font-size: 15px;
+    text-align: center;
+    border: none;
+    overflow: hidden;
+    outline: none;
+    width: 200px;
+    height: 15px;
+}
+
+h2 {
+    color: rgb(233, 233, 233);
+    font-family: crock;
+    text-align: center;
+    position: fixed;
+    font-size: 27px;
+    margin-top: 0.13em;
+    margin-bottom: 0.83em;
+    margin-left: 0.50em;
+    margin-right: 0;
+
+    padding-top: 20px;
+
+    width: 80%;
+    height: 10%;
+    background-image: url('images/title.png');
+    background-size: 100% 100%;
+}
+
+
+.item.muuri-item-dragging {
+    z-index: 3;
+}
+
+.item.muuri-item-releasing {
+    z-index: 2;
+}
+
+.item.muuri-item-hidden {
+    z-index: 0;
+}
+
+.item-content {
+    width: 60px;
+    height: 60px;
+    background-image: url('images/button2.png');
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+.item-content:hover {
+    width: 60px;
+    height: 60px;
+    background-image: url('images/sbutton2.png');
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+#button {
+    color: rgb(172, 172, 172);
+    text-align: right;
+    font-size: 18px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    overflow: hidden;
+    outline: none;
+    background-image: url('images/button2.png');
+    transition-duration: 0.4s;
+}
+
+#input_size1 {
+    color: rgb(223, 221, 221);
+    background: #4d4d4d;
+    width: 50px;
+    overflow: hidden;
+    outline: none;
+}
+#input_size2 {
+    color: rgb(255, 255, 255);
+    background: #4d4d4d;
+    width: 50px;
+    overflow: hidden;
+    outline: none;
+}
+#context-menu {
+    position: fixed;
+    z-index: 10000;
+    width: 155px;
+    background: #1b1a1a;
+    border-radius: 4px;
+    transform: scale(0);
+    transform-origin: top left;
+    border-style: ridge;
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+  
+  #context-menu.visible {
+    transform: scale(1);
+    transition: transform 200ms ease-in-out;
+  }
+  #context-menu .content_button {
+    padding: 8px 10px;
+    font-size: 16px;
+    color: rgb(189, 189, 189);
+    cursor: pointer;
+    border-radius: inherit;
+  }
+  
+  #context-menu .content_button:hover {
+    color: rgb(255, 255, 255);
+    background: #343434;
+  }
+  
+#show_weapons {
+    position: absolute;
+	top: 125px;
+	right: 10%;
+    width: 50px;
+    height: 50px;
+    background-image: url('images/show.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+#show_weapons:hover {
+    position: absolute;
+	top: 125px;
+	right: 10%;
+    width: 50px;
+    height: 50px;
+    background-image: url('images/showa.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
