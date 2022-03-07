@@ -47,7 +47,6 @@ CREATE TABLE `characters` (
   `money` double(11,2) DEFAULT 0.00,
   `gold` double(11,2) DEFAULT 0.00,
   `rol` double(11,2) NOT NULL DEFAULT 0.00,
-  `xp` int(11) DEFAULT 0,
   `inventory` longtext DEFAULT NULL,
   `job` varchar(50) DEFAULT 'unemployed',
   `status` varchar(140) DEFAULT '{}',

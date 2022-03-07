@@ -42,7 +42,6 @@ AddEventHandler('onResourceStart', function(resourceName)
 						money=v.money,
 						gold=v.gold,
 						rol=v.rol,
-						xp=v.xp,
 						job=v.job,
 						jobgrade=v.jobgrade,
 						coords=v.coords
@@ -892,7 +891,6 @@ function gumCore.addCharacter(source, firstname, lastname, skintable, clothetabl
 							meta=v.meta,
 							gold=v.gold,
 							rol=v.rol,
-							xp=v.xp,
 							inventory=v.inventory,
 							job=v.job,
 							jobgrade=v.jobgrade,
