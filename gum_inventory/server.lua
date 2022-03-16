@@ -18,6 +18,8 @@ local inventory_table_sended = {}
 local in_inventory = {}
 local weapon_table = {}
 local in_inventory_count = {}
+local count_calc = {}
+
 RegisterServerEvent('gumCore:registerUsableItem')
 AddEventHandler('gumCore:registerUsableItem', function(name, cb)
 	usableItemsFunctions[name] = cb
@@ -46,7 +48,7 @@ RegisterCommand("giveitem", function(source, args)
 						gumCore.Debug("CharIdentifier : "..charid.." \nGet item "..itemid..", count "..counti..".")
 						Inventory.addItem(tonumber(target), itemid, tonumber(counti))
 					else
-						gumCore.Error("CharIdentifier : "..charid.." \nCant carry becouse have much items")
+						gumCore.Debug("CharIdentifier : "..charid.." \nCant carry becouse have much items")
 					end
 				end)
 			else
@@ -79,7 +81,7 @@ RegisterCommand("giveitem", function(source, args)
 								gumCore.Debug("CharIdentifier : "..charid.." \nGet item "..itemid..", count "..counti..".")
 								Inventory.addItem(tonumber(target), itemid, tonumber(counti))
 							else
-								gumCore.Error("CharIdentifier : "..charid.." \nCant carry becouse have much items")
+								gumCore.Debug("CharIdentifier : "..charid.." \nCant carry becouse have much items")
 							end
 						else
 							gumCore.Error("This user does exist")
@@ -204,8 +206,15 @@ end)
 RegisterServerEvent('gumCore:updatestorage')
 AddEventHandler('gumCore:updatestorage', function(source, id, size)
 	local _source = source
+	local User = gumCore.getUser(tonumber(_source))
+	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
+
 	exports.ghmattimysql:execute("UPDATE inventory_storage SET size = @size WHERE identifier = @identifier", {['identifier'] = id, ['size'] = size},
 		function (result)
+		
+		gumCore.Debug("CharIdentifier : "..charid.." \nUpdated storage to "..size)
+
 	end)
 end)
 
@@ -273,6 +282,9 @@ end)
 RegisterServerEvent('gum_inventory:transfer_item_to_storage')
 AddEventHandler('gum_inventory:transfer_item_to_storage', function(item, count, id)
 	local _source = source
+	local User = gumCore.getUser(tonumber(_source))
+	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
@@ -296,7 +308,7 @@ AddEventHandler('gum_inventory:transfer_item_to_storage', function(item, count, 
 						Inventory.subItem(tonumber(_source), item, count)
 
 						if tostring(id) ~= '0' then
-							gumCore.Debug("Player with ID : ".._source.." \nTrasnfer item to storage :"..id)
+							gumCore.Debug("Player with CharID : "..charid.." \nTransfer item to storage : "..id)
 							exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 							function (result)
 								TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
@@ -307,7 +319,7 @@ AddEventHandler('gum_inventory:transfer_item_to_storage', function(item, count, 
 			end
 		end)
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong :"..id)
+		gumCore.Error("Player with CharID : "..charid.." \nSometing is wrong : "..id.." with transfering item to storage")
 	end
 end)
 
@@ -316,6 +328,7 @@ AddEventHandler('gum_inventory:transfer_money_to_storage', function(item, count,
 	local _source = source
 	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	local user_money = Character.money
 	if tostring(id) ~= '0' then
 		if user_money >= count then
@@ -341,7 +354,7 @@ AddEventHandler('gum_inventory:transfer_money_to_storage', function(item, count,
 							Character.removeCurrency(tonumber(_source), 0, tonumber(count))
 
 							if tostring(id) ~= '0' then
-								gumCore.Debug("Player with ID : ".._source.." \nTrasnfer money to storage : "..id)
+								gumCore.Debug("Player with CharID : "..charid.." \nTransfer money to storage : "..id)
 								exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 								function (result)
 									TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
@@ -356,7 +369,7 @@ AddEventHandler('gum_inventory:transfer_money_to_storage', function(item, count,
 			TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[10].text, Config.Language[40].text, 'bag', 2500)
 		end
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong :"..id)
+		gumCore.Error("Player with CharID : "..charid.." \nSometing is wrong : "..id.." with transfering money to storage")
 	end
 end)
 
@@ -366,6 +379,7 @@ AddEventHandler('gum_inventory:transfer_gold_to_storage', function(item, count, 
 	local _source = source
 	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	local user_money = Character.gold
 	if tostring(id) ~= '0' then
 		if user_money >= count then
@@ -391,7 +405,7 @@ AddEventHandler('gum_inventory:transfer_gold_to_storage', function(item, count, 
 							Character.removeCurrency(tonumber(_source), 1, tonumber(count))
 
 							if tostring(id) ~= '0' then
-								gumCore.Debug("Player with ID : ".._source.." \nTrasnfer gold to storage : "..id)
+								gumCore.Debug("Player with CharID : "..charid.." \nTransfer gold to storage : "..id)
 								exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 								function (result)
 									TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
@@ -406,7 +420,7 @@ AddEventHandler('gum_inventory:transfer_gold_to_storage', function(item, count, 
 			TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[10].text, Config.Language[40].text, 'bag', 2500)
 		end
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong : "..id)
+		gumCore.Error("Player with CharID : "..charid.." \nSometing is wrong : "..id.." with transfering gold to storage")
 	end
 end)
 
@@ -415,6 +429,7 @@ AddEventHandler('gum_inventory:transfer_money_from_storage', function(item, coun
 	local _source = source
 	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
@@ -437,7 +452,7 @@ AddEventHandler('gum_inventory:transfer_money_from_storage', function(item, coun
 						Character.addCurrency(tonumber(_source), 0, tonumber(count))
 
 						if tostring(id) ~= '0' then
-							gumCore.Debug("Player with ID : ".._source.." \nTrasnfer money from storage : "..id)
+							gumCore.Debug("Player with CharID : "..charid.." \nTransfer money from storage : "..id)
 							exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 							function (result)
 								TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
@@ -448,7 +463,7 @@ AddEventHandler('gum_inventory:transfer_money_from_storage', function(item, coun
 			end
 		end)
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong : "..id)
+		gumCore.Error("Player with CharID : "..charid.." \nSometing is wrong : "..id.." with transfering money from storage")
 	end
 end)
 
@@ -458,6 +473,7 @@ AddEventHandler('gum_inventory:transfer_gold_from_storage', function(item, count
 	local _source = source
 	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
@@ -491,7 +507,7 @@ AddEventHandler('gum_inventory:transfer_gold_from_storage', function(item, count
 			end
 		end)
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong : "..id)
+		gumCore.Error("Player with CharID : "..charid.." \nSometing is wrong : "..id.." with transfering gold from storage")
 	end
 end)
 
@@ -499,6 +515,8 @@ end)
 RegisterServerEvent('gum_inventory:transfer_item_from_storage')
 AddEventHandler('gum_inventory:transfer_item_from_storage', function(item, count, id)
 	local _source = source
+	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
@@ -522,7 +540,7 @@ AddEventHandler('gum_inventory:transfer_item_from_storage', function(item, count
 								end
 								Inventory.addItem(tonumber(_source), item, tonumber(count))
 								if tostring(id) ~= '0' then
-									gumCore.Debug("Player with ID : ".._source.." \nTrasnfer item from storage : "..id)
+									gumCore.Debug("Player with CharID : "..charid.." \nTrasnfer item from storage : "..id)
 									exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 									function (result)
 										TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
@@ -538,13 +556,15 @@ AddEventHandler('gum_inventory:transfer_item_from_storage', function(item, count
 			end
 		end)
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong : "..id)
+		gumCore.Error("Player with CharID : "..charid.." \nSometing is wrong with takeing item from storage "..id)
 	end
 end)
 
 RegisterServerEvent('gum_inventory:transfer_weapon_to_storage')
 AddEventHandler('gum_inventory:transfer_weapon_to_storage', function(id_item, item, id)
 	local _source = source
+	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	Inventory.subWeapon(tonumber(_source), id_item)
 	if tostring(id) ~= '0' then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
@@ -555,7 +575,7 @@ AddEventHandler('gum_inventory:transfer_weapon_to_storage', function(id_item, it
 						new_table[tonumber(_source)] = json.decode(v2)
 						table.insert(new_table[tonumber(_source)], {item=id_item, name=item})
 						if tostring(id) ~= '0' then
-							gumCore.Debug("Player with ID : ".._source.." \nTrasnfer weapon to storage : "..id)
+							gumCore.Debug("Player with ID : "..charid.." \nTransfer weapon to storage : "..id)
 							exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 							function (result)
 								TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
@@ -566,12 +586,14 @@ AddEventHandler('gum_inventory:transfer_weapon_to_storage', function(id_item, it
 			end
 		end)
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong : "..id)
+		gumCore.Debug("Player with : "..charid.." \nSomething is wrong with transfering weapon to storage "..id)
 	end
 end)
 RegisterServerEvent('gum_inventory:transfer_weapon_from_storage')
 AddEventHandler('gum_inventory:transfer_weapon_from_storage', function(item, id)
 	local _source = source
+	local Character = User.getUsedCharacter
+	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
 		TriggerEvent("gumCore:canCarryWeapons", tonumber(_source), 1, function(canCarry)
 			if canCarry then
@@ -604,7 +626,7 @@ AddEventHandler('gum_inventory:transfer_weapon_from_storage', function(item, id)
 			end
 		end)
 	else
-		gumCore.Error("Player with ID : ".._source.." \nSometing is wrong : "..id)
+		gumCore.Debug("Player with : "..charid.." \nSomething is wrong with transfering weapon from storage "..id)
 	end
 end)
 Citizen.CreateThread(function()
@@ -658,6 +680,7 @@ AddEventHandler('gum_inventory:get_items', function()
 		end)
 	end
 end)
+
 RegisterServerEvent('gum_inventory:get_money')
 AddEventHandler('gum_inventory:get_money', function()
 	local _source = source
@@ -721,7 +744,6 @@ AddEventHandler('gum_inventory:get_items_sec', function(source)
 	end)
 end)
 
-local count_calc = {}
 RegisterServerEvent('gumCore:addItem')
 AddEventHandler('gumCore:addItem', function(source, name, count, player_backup)
 	local _source = source
@@ -819,16 +841,19 @@ AddEventHandler('gum_inventory:give_money', function(who_get, how_much, who_send
 	local User = gumCore.getUser(tonumber(who_send))
 	local Character = User.getUsedCharacter
 	local user_money = Character.money
+	local charid = Character.charIdentifier
 
 	local User2 = gumCore.getUser(tonumber(who_get))
 	local Character2 = User2.getUsedCharacter
 	local user_money2 = Character2.money
+	local charid2 = Character2.charIdentifier
 	if tonumber(user_money) >= tonumber(how_much) then
 		Character.removeCurrency(tonumber(who_send), 0, tonumber(how_much))
 		Character2.addCurrency(tonumber(who_get), 0, tonumber(how_much))
 		Citizen.Wait(50)
 		TriggerEvent("gum_inventory:get_items_sec", tonumber(who_send))
 		TriggerEvent("gum_inventory:get_items_sec", tonumber(who_get))
+		gumCore.Debug("CharIdentifier : "..charid.." give money to "..charid2.." : "..how_much.."$")
 	else
 		TriggerClientEvent("gum_notify:notify", tonumber(source), Config.Language[10].text, Config.Language[40].text, 'bag', 2500)
 	end
@@ -839,16 +864,19 @@ AddEventHandler('gum_inventory:give_gold', function(who_get, how_much, who_send)
 	local User = gumCore.getUser(tonumber(who_send))
 	local Character = User.getUsedCharacter
 	local user_money = Character.gold
+	local charid = Character.charIdentifier
 
 	local User2 = gumCore.getUser(tonumber(who_get))
 	local Character2 = User2.getUsedCharacter
 	local user_money2 = Character2.gold
+	local charid2 = Character2.charIdentifier
 	if tonumber(user_money) >= tonumber(how_much) then
 		Character.removeCurrency(tonumber(who_send), 1, tonumber(how_much))
 		Character2.addCurrency(tonumber(who_get), 1, tonumber(how_much))
 		Citizen.Wait(50)
 		TriggerEvent("gum_inventory:get_items_sec", tonumber(who_send))
 		TriggerEvent("gum_inventory:get_items_sec", tonumber(who_get))
+		gumCore.Debug("CharIdentifier : "..charid.." give gold to "..charid2.." : "..how_much.."$")
 	else
 		TriggerClientEvent("gum_notify:notify", tonumber(source), Config.Language[10].text, Config.Language[40].text, 'bag', 2500)
 	end
