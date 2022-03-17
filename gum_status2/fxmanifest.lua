@@ -14,6 +14,7 @@ files {
 	"ui/health.png",
 	"ui/stamina.png",
 	"ui/hunger.png",
+	"ui/compas.png",
 	"ui/thirst.png",
 	"ui/horse_health.png",
 	"ui/horse_stamina.png",

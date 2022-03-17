@@ -1,3 +1,17 @@
+
+#compass {
+    display:block;
+    position:absolute;
+    height:220px;
+    width:223px;
+    bottom:140px;
+    left:33px;
+    background-size: 100.0% 100.0%;
+    background-image: url('compas.png');
+    animation: fadeIn;
+    animation-duration: 0.7s;
+}
+
 .progress_perc{
     top: 30px;
     position: relative;

@@ -1,4 +1,5 @@
 local hud = false
+local compass = false
 RegisterCommand("hud", function(source, args, rawCommand)
 	if hud == true then
         hud = false
@@ -21,16 +22,35 @@ exports('DisplayProgressBar', function(time)
         end
     end
 end)
-RegisterNetEvent("gum:SelectedCharacter")
-AddEventHandler("gum:SelectedCharacter", function(charid)
+
+
+RegisterNetEvent('gum_status:enable_compass')
+AddEventHandler('gum_status:enable_compass', function()
+    if compass == false then
+        compass = true
+    else
+        compass = false
+    end
+end)
+
+-- RegisterNetEvent("gum:SelectedCharacter")
+-- AddEventHandler("gum:SelectedCharacter", function(charid)
     Citizen.CreateThread(function()
         hud = true
     end)
-end)
+-- end)
 
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(5)
+        if compass == true then
+            local ped = PlayerPedId()
+            local h = GetEntityHeading(PlayerPedId())        
+            h = h + GetGameplayCamRelativeHeading()
+            SendNUIMessage({compass=true, angle=h})
+        else
+            SendNUIMessage({compass=false})
+        end
         Citizen.InvokeNative(0x4CC5F2FC1332577F, GetHashKey("HUD_CTX_INFINITE_AMMO"))
         Citizen.InvokeNative(0x4CC5F2FC1332577F, GetHashKey("HUD_CTX_SHARP_SHOOTER_EVENT"))
         Citizen.InvokeNative(0x4CC5F2FC1332577F ,GetHashKey("HUD_CTX_RESTING_BY_FIRE"))

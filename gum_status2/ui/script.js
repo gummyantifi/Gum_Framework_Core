@@ -117,10 +117,23 @@ $(document).ready(function () {
                 show_horse_stats(event.data.on_horse)
             } else{
                 show_hud(event.data.show);
-           
             }
+
     });
 });
+
+$(function() {
+    window.addEventListener('message', function(event) {
+        var item = event.data;
+        if (item.compass == true) {
+            $("#compass").show();
+            $('#compass').css('transform','rotate(' + event.data.angle + 'deg)');
+        } else if (item.compass == false) {
+            $("#compass").hide();
+        }
+    });
+});
+
 
 function show_hud(show_hud) {
     if (show_hud) {
