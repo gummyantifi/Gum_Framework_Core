@@ -29,7 +29,7 @@ $(function () {
         if (event.data.type == "open_answer"){
             if (event.data.status == true) {
                 display_answer(true)
-                set_input_answer(event.data.title)
+                set_input_answer(event.data.title, event.data.first, event.data.second)
             } else {
                 display_answer(false)  
             }
@@ -41,8 +41,11 @@ function set_input_info(title, subtext) {
     document.getElementById("header").innerHTML = title;
     document.getElementById("button_2").innerHTML = subtext;
 }
-function set_input_answer(title) {
+function set_input_answer(title, first, second) {
     document.getElementById("header2").innerHTML = title;
+
+    document.getElementById("button_2_ans").innerHTML = first;
+    document.getElementById("button_1_ans").innerHTML = second;
 }
 
 function send_values() {

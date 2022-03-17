@@ -17,9 +17,9 @@ AddEventHandler('guminputs:getInput', function(title, subtext, cb)
 end)
 
 RegisterNetEvent('guminputs:getAnswer')
-AddEventHandler('guminputs:getAnswer', function(title, cb)
+AddEventHandler('guminputs:getAnswer', function(title, first, second, cb)
 	SetNuiFocus(true, true);
-	SendNUIMessage({type= "open_answer", status = true, title = title})
+	SendNUIMessage({type= "open_answer", status = true, title = title, first=first, second=second})
 	while (answer_value == nil) do
 		Citizen.Wait(300)
 	end
@@ -40,7 +40,7 @@ RegisterCommand("test", function()
 end)
 
 RegisterCommand("test2", function()
-	TriggerEvent("guminputs:getAnswer", "Are you OK", function(cb)
+	TriggerEvent("guminputs:getAnswer", "Are you OK", "Yes", "No", function(cb)
 		local input = cb
 		if input == true then
 			print("YES")
