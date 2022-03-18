@@ -515,6 +515,7 @@ end)
 RegisterServerEvent('gum_inventory:transfer_item_from_storage')
 AddEventHandler('gum_inventory:transfer_item_from_storage', function(item, count, id)
 	local _source = source
+	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
@@ -563,6 +564,7 @@ end)
 RegisterServerEvent('gum_inventory:transfer_weapon_to_storage')
 AddEventHandler('gum_inventory:transfer_weapon_to_storage', function(id_item, item, id)
 	local _source = source
+	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
 	Inventory.subWeapon(tonumber(_source), id_item)
@@ -592,6 +594,7 @@ end)
 RegisterServerEvent('gum_inventory:transfer_weapon_from_storage')
 AddEventHandler('gum_inventory:transfer_weapon_from_storage', function(item, id)
 	local _source = source
+	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then

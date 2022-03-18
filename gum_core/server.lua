@@ -404,7 +404,7 @@ function gumCore.getUser(source)
 				end
 			end
 		else
-			return gumCore.Debug("User not found.")
+			return gumCore.Error("User not found.")
 		end
 	else
 		return gumCore.Error("User not found")
