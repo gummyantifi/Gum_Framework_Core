@@ -8,7 +8,7 @@ local count_char = 0
 local can_have = 0
 
 RegisterCommand('character', function()
-    exports['gum_notify']:DisplayLeftNotification("Character selection", "You switch character wait 10 second.", 'character', 10000)
+    exports['gum_notify']:DisplayLeftNotification(Config.Language[190].text, Config.Language[191].text, 'character', 10000)
     RemoveAllPedWeapons(PlayerPedId(), false, true)
     local GetCoords = GetEntityCoords(PlayerPedId())
     local GetHeading = GetEntityHeading(PlayerPedId())
@@ -187,7 +187,7 @@ RegisterNUICallback('make_new', function(data, cb)
         })
         TriggerEvent('gum_character:make_character')
     else
-        exports['gum_notify']:DisplayLeftNotification("Character selection", "You cant make character, becouse you have max limit.", 'character', 2000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[190].text, Config.Language[192].text, 'character', 2000)
     end
 end)
 

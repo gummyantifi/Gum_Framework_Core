@@ -1,6 +1,10 @@
 Config = {}
 Config.SpawnCoords = {1240.63, -1282.88, 75.94, 312.0}
 
+Config.Language = {
+    [1] = "Male",
+    [2] = "Female",
+}
 
 Config.DefaultChar = {
 	["Male"] = {
