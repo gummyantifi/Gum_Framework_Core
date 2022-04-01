@@ -279,6 +279,9 @@ RegisterNUICallback('transfer_from_storage', function(data, cb)
 	end
 end)
 
+RegisterCommand("inv", function(source, args, rawCommand)
+	Show_Items(true)
+end)
 
 -- RegisterCommand("locker_update", function(source, args, rawCommand)
 -- 	TriggerServerEvent("gumCore:updatestorage", GetPlayerServerId(PlayerId()), args[1], args[2])
@@ -1925,7 +1928,8 @@ Citizen.CreateThread(function()
 		local isTargetting, targetEntity = GetPlayerTargetEntity(PlayerId())
 		local closestPlayer, closestDistance, playerid, tgt1 = GetClosestPlayer()
 		local coords = GetEntityCoords(tgt1, true)
-		if isTargetting and tgt1 == targetEntity and cant_target == false then
+		local holding = Citizen.InvokeNative(0xD806CD2A4F2C2996, PlayerPedId())
+		if isTargetting and tgt1 == targetEntity and cant_target == false and holding == false then
 			SetPedNameDebug(tgt1, playerid)
 			SetPedPromptName(tgt1, playerid)
 			for k,v in pairs(GetPlayers()) do
