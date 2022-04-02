@@ -118,7 +118,6 @@ AddEventHandler('gumCore:getUserInventory', function(source, cb)
 	cb(inv_table[tonumber(_source)])
 end)
 
-
 RegisterServerEvent('gumCore:canCarryItem')
 AddEventHandler('gumCore:canCarryItem', function(source, name, count, cb)
 	local _source = source
@@ -127,17 +126,21 @@ AddEventHandler('gumCore:canCarryItem', function(source, name, count, cb)
 	for k,v in pairs(inv_table[tonumber(_source)]) do
 		for k2,v2 in pairs(itm_table) do
 			if k == v2.item then
-				in_inventory[tonumber(_source)] = v*v2.limit+in_inventory[tonumber(_source)]
+				in_inventory[tonumber(_source)] = v*tonumber(v2.limit)+tonumber(in_inventory[tonumber(_source)])
 			end
-			if k == name then
-				in_inventory_count[tonumber(_source)] = count*v2.limit
+		end
+	end
+	for k2,v2 in pairs(itm_table) do
+		for k,v in pairs(inv_table[tonumber(_source)]) do
+			if v2.item == name and k == name then
+				in_inventory_count[tonumber(_source)] = tonumber(count)*tonumber(v2.limit)
 			end
 		end
 	end
 	if in_inventory[tonumber(_source)] == nil then
 		in_inventory[tonumber(_source)] = 0
 	end
-	if tonumber(in_inventory[tonumber(_source)]+in_inventory_count[tonumber(_source)]) >= Config.Max_Items then
+	if tonumber(in_inventory[tonumber(_source)])+tonumber(in_inventory_count[tonumber(_source)]) >= Config.Max_Items then
 		cb(false)
 	else
 		cb(true)
