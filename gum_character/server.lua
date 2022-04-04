@@ -17,11 +17,6 @@ AddEventHandler('gum_character:check_character', function()
 				if result[1] ~= nil then
 					TriggerClientEvent("gum_character:check_char", _source, true)
 					TriggerClientEvent("gum_character:select_char", tonumber(_source), result, User)
-					-- exports.ghmattimysql:execute('SELECT title,comps FROM outfits WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
-					-- 	if result ~= nil then
-					-- 		TriggerClientEvent("gum_clothes:save_outfits", tonumber(_source), result)
-					-- 	end
-					-- end)
 				end
 			end)
 		else
@@ -32,10 +27,11 @@ AddEventHandler('gum_character:check_character', function()
 	end
 end)
 
+
 RegisterServerEvent('gum_character:select_char')
 AddEventHandler('gum_character:select_char', function(charid, skin_table, outfit_table, coords, is_dead)
+	print("SELECT CHARACTER : "..charid)
 	local _source = source
-
 	local User = gumCore.getUser(tonumber(_source))
 	TriggerClientEvent("gum_character:send_data_back", tonumber(_source), skin_table, outfit_table, coords, is_dead, true)
 	TriggerClientEvent("gum_clothes:send_outfit", tonumber(_source), skin_table, outfit_table)

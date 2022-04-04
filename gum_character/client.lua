@@ -220,11 +220,11 @@ AddEventHandler('gum_character:send_data_back', function(skin_table_receive, out
         Citizen.InvokeNative(0xBF25EB89375A37AD, 5, GetHashKey("PLAYER"), GetHashKey("PLAYER"))
         FreezeEntityPosition(PlayerPedId(), false)
         Citizen.Wait(1000)
-        SetEntityVisible(PlayerPedId(), true)
         while is_loaded_character == false do
             Citizen.Wait(200)
         end
         exports['gum_character']:loading(false)
+        SetEntityVisible(PlayerPedId(), true)
         SendNUIMessage({
             type = "volume_stop",
             status = true,

@@ -25,6 +25,7 @@ local equip_spam = 0
 local speed = 0
 local count_in_inventory = 0.0
 local can_save = false
+
 function Button_Prompt()
 	Citizen.CreateThread(function()
 		local str = Config.Language[0].text
@@ -96,6 +97,7 @@ AddEventHandler('gum_inventory:reset_inventory', function()
 	size = 0
 	backup_save_throw = 0
 	is_last_ammo = false
+	RemoveAllWeapons()
 end)
 
 RegisterNetEvent('gum_inventory:get_storage')

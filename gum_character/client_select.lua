@@ -8,12 +8,13 @@ local count_char = 0
 local can_have = 0
 
 RegisterCommand('character', function()
-    exports['gum_notify']:DisplayLeftNotification(Config.Language[190].text, Config.Language[191].text, 'character', 10000)
+    exports['gum_notify']:DisplayLeftNotification("Character selection", "You switch character wait 10 second.", 'character', 5000)
     RemoveAllPedWeapons(PlayerPedId(), false, true)
     local GetCoords = GetEntityCoords(PlayerPedId())
     local GetHeading = GetEntityHeading(PlayerPedId())
     local coords_save = {x= tonumber(string.format("%.2f", GetCoords.x)), y=tonumber(string.format("%.2f", GetCoords.y)), z=tonumber(string.format("%.2f", GetCoords.z)), heading=tonumber(string.format("%.2f", GetHeading))}
     TriggerServerEvent("gumCore:save_coords", coords_save)
+    Citizen.Wait(100)
     exports['gum_character']:loading(true)
     TriggerEvent("gum_inventory:reset_inventory")
     SendNUIMessage({
@@ -38,6 +39,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(500)
     end
 end)
+
 RegisterNetEvent('gum_character:del_old')
 AddEventHandler('gum_character:del_old', function(table, tableuser)
     DeletePed(character_1)
@@ -187,7 +189,7 @@ RegisterNUICallback('make_new', function(data, cb)
         })
         TriggerEvent('gum_character:make_character')
     else
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[190].text, Config.Language[192].text, 'character', 2000)
+        exports['gum_notify']:DisplayLeftNotification("Character selection", "You cant make character, becouse you have max limit.", 'character', 2000)
     end
 end)
 

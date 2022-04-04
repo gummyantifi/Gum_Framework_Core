@@ -97,7 +97,7 @@ local TeethsTable = {}
 
 RegisterNetEvent('gum_creator:new_char')
 AddEventHandler('gum_creator:new_char', function(char_text)
-    if Config.Language[1] == char_text then
+    if "Muž" == char_text then
         Skin_Table["sex"] = "mp_male"
     else
         Skin_Table["sex"] = "mp_female"
@@ -599,7 +599,6 @@ RegisterNUICallback('send_change', function(data, cb)
         else
             for k,v in pairs(TeethsTable) do
                 if k == tonumber(data.value) then
-                    print(tonumber(v.hash))
                     RequestAnimDict("FACE_HUMAN@GEN_MALE@BASE")
                     while not HasAnimDictLoaded("FACE_HUMAN@GEN_MALE@BASE") do
                         Citizen.Wait(100)
