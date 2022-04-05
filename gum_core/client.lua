@@ -22,7 +22,7 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
             end 
             SetDiscordAppId(880082083295420478)
 			SetDiscordRichPresenceAsset('biglogo')
-			SetDiscordRichPresenceAssetText('RedWest Roleplay')
+			SetDiscordRichPresenceAssetText('DEV RedWest Roleplay')
 			SetDiscordRichPresenceAssetSmall('smalllogo')
 			SetDiscordRichPresenceAssetSmallText('Česko-Slovenský Roleplay')
 			SetDiscordRichPresenceAction(0, "Discord", "https://discord.com/invite/4ZZFgqtF8J") -- (OPTIONAL)
