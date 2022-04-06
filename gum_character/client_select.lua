@@ -16,14 +16,12 @@ RegisterCommand('character', function()
     TriggerServerEvent("gumCore:save_coords", coords_save)
     Citizen.Wait(100)
     exports['gum_character']:loading(true)
-    TriggerEvent("gum_inventory:reset_inventory")
     SendNUIMessage({
         type = "volume_stop",
         status = false,
     })
     Citizen.Wait(1000)
     SetEntityCoords(PlayerPedId(), 1407.5758056640625, -1139.779541015625, 75.34298706054688)
-    TriggerServerEvent("gum_character:check_character")
 end)
 
 Citizen.CreateThread(function()
@@ -140,8 +138,8 @@ AddEventHandler('gum_character:select_char', function(table, tableuser)
     end
 
     StartCam(1408.50, -1145.73, 76.60, -175.99, 35.0)
-
 end)
+
 RegisterNUICallback('switch_char', function(data, cb)
     if tonumber(data.char) == 1 then
         SwitchCam(1408.50, -1145.73, 76.60, -175.99, 35.0)
