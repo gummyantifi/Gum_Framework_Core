@@ -1,15 +1,15 @@
-# Gum_Framework_Core
+# Gum_Framework_Core</br></br>
 
-setting.cfg example
+setting.cfg example</br></br>
 
-#GUM BASE
-ensure gum_sounds
-ensure gum_core
-ensure gum_inputs
-ensure gum_menu
-ensure gum_sounds
-
-ensure gum_inventory
-ensure gum_character
-ensure gum_creator
+#GUM BASE</br></br>
+ensure gum_sounds</br></br>
+ensure gum_core</br>
+ensure gum_inputs</br>
+ensure gum_menu</br>
+ensure gum_sounds</br>
+</br>
+ensure gum_inventory</br>
+ensure gum_character</br>
+ensure gum_creator</br>
 
