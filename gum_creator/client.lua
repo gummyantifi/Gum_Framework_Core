@@ -97,7 +97,7 @@ local TeethsTable = {}
 
 RegisterNetEvent('gum_creator:new_char')
 AddEventHandler('gum_creator:new_char', function(char_text)
-    if Config.Language[1] == char_text then
+    if "Muž" == char_text then
         Skin_Table["sex"] = "mp_male"
     else
         Skin_Table["sex"] = "mp_female"

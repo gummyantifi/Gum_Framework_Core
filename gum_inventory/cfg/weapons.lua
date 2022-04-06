@@ -17,7 +17,7 @@ RECORDSW = {
         label = "Melee cleaver"
     },
     {
-        item = "WEAPON_MELEE_HATCHET_HUNTER",
+        item = "WEAPON_MELEE_HATCHET",
         label = "Hatchet hunter"
     },
     {
@@ -162,23 +162,23 @@ RECORDSW = {
     },
     {
         item = "weapon_kit_binoculars_improved",
-        label = "Vylepšený dalekohled"
+        label = "Improved binoculars"
     },
     {
         item = "weapon_kit_binoculars",
-        label = "Dalekohled"
+        label = "Binoculars"
     },
     {
         item = "WEAPON_FISHINGROD",
-        label = "Rybářský prut"
+        label = "Fishing rod"
     },
     {
         item = "WEAPON_KIT_CAMERA",
-        label = "Fotoaparát"
+        label = "Camera"
     },
     {
         item = "weapon_kit_camera_advanced",
-        label = "Vylepšený fotoaparát"
+        label = "Camera advanced"
     },
     {
         item = "weapon_melee_lantern",
@@ -186,10 +186,10 @@ RECORDSW = {
     },
     {
         item = "weapon_melee_davy_lantern",
-        label = "Lucerna"
+        label = "Davy lantern"
     },
-	{
-		item = "WEAPON_MELEE_LANTERN_HALLOWEEN",
+    {
+        item = "WEAPON_MELEE_LANTERN_HALLOWEEN",
         label = "Lucerna Horor"
     },
     {

@@ -1,7 +1,6 @@
 Config = {}
 
 Config.WalkFaceStyle = true
-Config.Housing = true
 
 Config.TimeToRespawn = 300--Second
 Config.SpawnCoords = {1240.63, -1282.88, 75.94, 312.0}
@@ -207,6 +206,9 @@ Config.Language = {
     [187] = {text = "Nemáš zvolenout texturu těla",},
     [188] = {text = "Nemáš zvolenout texturu nohou",},
     [189] = {text = "Nemáš zvolené jméno a přijmení",},
+    [190] = {text = "Character selection",},
+    [191] = {text = "You switch character wait 10 second.",},
+    [192] = {text = "You cant make character, becouse you have max limit."}
 }
 
 Config.DefaultChar = {

@@ -29,14 +29,6 @@ exports('gumAPI',function()
         TriggerEvent("gum:removeMoney",source,tonumber(currency),tonumber(quantity))
     end
 
-    self.addXp = function(source,quantity)
-        TriggerEvent("gum:addXp",source,tonumber(quantity))
-    end
-
-    self.removeXp = function(source,quantity)
-        TriggerEvent("gum:removeXp",source,tonumber(quantity))
-    end
-
     self.setJob = function(source,jobname,grade)
         TriggerEvent("gum:setJob",source,jobname,grade)
     end

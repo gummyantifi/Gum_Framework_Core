@@ -236,7 +236,6 @@ AddEventHandler('gum_character:send_data_back', function(skin_table_receive, out
             SetEntityCoords(PlayerPedId(), 1258.91, -1291.45, 75.66-1.0)
         end
         TriggerServerEvent("gum_character:send_save_func")
-        TriggerEvent("gum_inventory:can_save")
     end
 end)
 
@@ -613,7 +612,6 @@ Citizen.CreateThread(function()
         SetEntityCoords(PlayerPedId(), -563.77, -3776.49, 238.56)
         SelectChar()
         exports['gum_character']:loading(false) 
-        TriggerEvent("gum_inventory:reset_inventory")
         StartCam(-560.51, -3776.08, 239.35, -90.00, 50.0)
         SetClockTime(12, 00, 00)
         SetEntityCoords(PlayerPedId(), -563.77, -3776.49, 238.56)

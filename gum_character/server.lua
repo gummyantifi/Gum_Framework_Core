@@ -30,6 +30,7 @@ end)
 
 RegisterServerEvent('gum_character:select_char')
 AddEventHandler('gum_character:select_char', function(charid, skin_table, outfit_table, coords, is_dead)
+	print("SELECT CHARACTER : "..charid)
 	local _source = source
 	local User = gumCore.getUser(tonumber(_source))
 	TriggerClientEvent("gum_character:send_data_back", tonumber(_source), skin_table, outfit_table, coords, is_dead, true)
