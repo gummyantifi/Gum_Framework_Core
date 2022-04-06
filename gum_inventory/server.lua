@@ -19,6 +19,7 @@ local in_inventory = {}
 local weapon_table = {}
 local in_inventory_count = {}
 local count_calc = {}
+local open_my_storages = {}
 
 RegisterServerEvent('gumCore:registerUsableItem')
 AddEventHandler('gumCore:registerUsableItem', function(name, cb)
@@ -102,6 +103,16 @@ Inventory.RegisterUsableItem("cleanshort", function(data)
 	Inventory.subItem(data.source, "cleanshort", 1)
 end)
 
+RegisterServerEvent('gum_inventory:clear_inventory')
+AddEventHandler('gum_inventory:clear_inventory', function()
+	local _source = source
+	in_inventory[tonumber(_source)] = 0
+	in_inventory_count[tonumber(_source)] = 0
+	inv_table[tonumber(_source)] = {}
+	inventory_table_sended[tonumber(_source)] = {}
+	new_table[tonumber(_source)] = {}
+end)
+
 RegisterServerEvent('gumCore:getItemCount')
 AddEventHandler('gumCore:getItemCount', function(source, item, cb)
 	local _source = source
@@ -157,14 +168,14 @@ AddEventHandler('gumCore:registerstorage', function(source, id, size)
 
 	if id == 0 then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
-			if result[1] == nil then
+			if result == nil then
 				local Parameters = { ['identifier'] = identifier, ['charid'] = charid, ['size']=tonumber(size)}
 				exports.ghmattimysql:execute("INSERT INTO inventory_storage ( `identifier`,`charid`,`size`) VALUES (@identifier,@charid,@size)", Parameters)
 			end
 		end)
 	else
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
-			if result[1] == nil then
+			if result == nil then
 				exports.ghmattimysql:execute("INSERT inventory_storage SET identifier=@identifier, charid=@charid, size=@size", {['identifier']= id, ['charid']= 0, ['size']=tonumber(size)},
 				function (result)
 				end)
@@ -172,7 +183,7 @@ AddEventHandler('gumCore:registerstorage', function(source, id, size)
 		end)
 	end
 end)
-local open_my_storages = {}
+
 RegisterServerEvent('gumCore:openstorage')
 AddEventHandler('gumCore:openstorage', function(source, id)
 	local _source = source
@@ -433,6 +444,7 @@ AddEventHandler('gum_inventory:transfer_money_from_storage', function(item, coun
 	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
+
 	if tostring(id) ~= '0' then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then

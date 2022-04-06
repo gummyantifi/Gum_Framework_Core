@@ -42,6 +42,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 						money=v.money,
 						gold=v.gold,
 						rol=v.rol,
+						xp=v.xp,
 						job=v.job,
 						jobgrade=v.jobgrade,
 						coords=v.coords
@@ -68,6 +69,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 					money=0.0,
 					gold=0.0,
 					rol=0.0,
+					xp=0,
 					job='Unemploeyed',
 					jobgrade=0,
 					coords=json.encode('{}')
@@ -872,7 +874,7 @@ function gumCore.addCharacter(source, firstname, lastname, skintable, clothetabl
 			if result2 ~= nil then
 				for k,v in pairs(result2) do
 					if identifier == v.identifier then
-						table.insert(AllCharacters, {setJob=Character.setJob,setMeta=Character.setMeta,addCurrency=Character.addCurrency,removeCurrency=Character.removeCurrency,buySkin=Character.buySkin,changeSkin=Character.changeSkin,buySkinPlayer=Character.buySkinPlayer,identifier=v.identifier,charIdentifier=v.charidentifier,firstname=v.firstname,lastname=v.lastname,skin=v.skinPlayer,comp=v.compPlayer,money=v.money,meta=v.meta,gold=v.gold,rol=v.rol,inventory=v.inventory,job=v.job,jobgrade=v.jobgrade,coords=coords_start})
+						table.insert(AllCharacters, {setJob=Character.setJob,setMeta=Character.setMeta,addCurrency=Character.addCurrency,removeCurrency=Character.removeCurrency,buySkin=Character.buySkin,changeSkin=Character.changeSkin,buySkinPlayer=Character.buySkinPlayer,identifier=v.identifier,charIdentifier=v.charidentifier,firstname=v.firstname,lastname=v.lastname,skin=v.skinPlayer,comp=v.compPlayer,money=v.money,meta=v.meta,gold=v.gold,rol=v.rol,xp=v.xp,inventory=v.inventory,job=v.job,jobgrade=v.jobgrade,coords=coords_start})
 						-- setUsedAfterCreate(source, v.charIdentifier)
 					end
 				end
@@ -881,8 +883,13 @@ function gumCore.addCharacter(source, firstname, lastname, skintable, clothetabl
 	end)
 end
 
+AddEventHandler('playerDropped', function (reason)
+	local _source = source
+    local identifier = GetPlayerIdentifier(tonumber(_source))
+	LoadedUsers[identifier].setUsedCharacter = User.setUsedCharacter
+end)
+
 function User.setUsedCharacter(source, charidentifier)
-	print("USED")
 	local _source = source
 	local trfirstname = ""
 	local trlastname = ""

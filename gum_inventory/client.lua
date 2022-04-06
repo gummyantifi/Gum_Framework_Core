@@ -74,10 +74,7 @@ function Show_Other(bool, open, storage)
 		size = size,
 	})
 end
-RegisterNetEvent('gum_inventory:can_save')
-AddEventHandler('gum_inventory:can_save', function()
-	can_save = true
-end)
+
 RegisterNetEvent('gum_inventory:reset_inventory')
 AddEventHandler('gum_inventory:reset_inventory', function()
 	inventory_table = {}
@@ -97,6 +94,7 @@ AddEventHandler('gum_inventory:reset_inventory', function()
 	size = 0
 	backup_save_throw = 0
 	is_last_ammo = false
+	TriggerServerEvent("gum_inventory:clear_inventory")
 	RemoveAllWeapons()
 end)
 
@@ -361,13 +359,15 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 						for key,value in pairs(weapon_table) do
 							if value.used == 1 then
 								if ammo_type_weapon ~= "THROWWABLE" then
-									condition_level[value.id] = Citizen.InvokeNative(0x0D78E1097F89E637, weaponEntityIndex, Citizen.ResultAsFloat())
-									if condition_level[value.id] ~= bp_condition[value.id] and (weaponEntityIndex ~= 0 and wepHash == GetHashKey(value.name)) then
+									if (weaponEntityIndex ~= 0 and wepHash == GetHashKey(value.name)) then
 										if not sended then
 											sended = true
-											bp_condition[value.id] = value.conditionlevel
-											Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, bp_condition[value.id])
-											Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, bp_condition[value.id], 0)
+											if condition_level[value.id]+0.0001 <= 1.0 then
+												condition_level[value.id] = condition_level[value.id]+0.0001
+											end
+											local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
+											Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(condition_level[value.id]))
+											Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(condition_level[value.id]), 0)
 											TriggerServerEvent("gum_inventory:save_ammo", value.name, new_ammo_table, condition_level[value.id])
 										end
 									end
@@ -399,6 +399,7 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 		end
 	end)
 end)
+
 
 
 RegisterNetEvent('gum_inventory:cleaning_weapons')
@@ -462,17 +463,9 @@ function equip_weapon_login()
 					end
 					local comps_decoded = json.decode(v.comps)
 					TriggerEvent("gum_weapons:load_components", comps_decoded)
-					local load_dirt = 0
-					local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-					while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-						load_dirt = load_dirt+1
-						Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-						Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-						Citizen.Wait(10)
-					end
 					bp_condition[v.id] = v.conditionlevel
 					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1500)
+					Citizen.Wait(1000)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					Citizen.Wait(500)
 				else
@@ -486,17 +479,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)			
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-							load_dirt = load_dirt+1
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(10)
-						end
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					end
@@ -513,17 +498,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-							load_dirt = load_dirt+1
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(10)
-						end
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -537,17 +514,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -564,17 +533,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-							load_dirt = load_dirt+1
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(10)
-						end
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -588,17 +549,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -615,17 +568,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -639,17 +584,9 @@ function equip_weapon_login()
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								local load_dirt = 0
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-								while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-									load_dirt = load_dirt+1
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.Wait(10)
-								end
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							end
@@ -679,19 +616,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -705,17 +632,9 @@ function equip_weapon_login()
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								local load_dirt = 0
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-								while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-									load_dirt = load_dirt+1
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.Wait(10)
-								end
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							else
@@ -735,7 +654,7 @@ function equip_weapon_login()
 										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
 										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
 									end
-									Citizen.Wait(1500)
+									Citizen.Wait(1000)
 									Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 									Citizen.Wait(500)
 								end
@@ -748,7 +667,7 @@ function equip_weapon_login()
 		Citizen.Wait(100)
 	end
 	RemoveAllWeapons()
-	Citizen.Wait(2000)
+	Citizen.Wait(1000)
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
 			if string.match(v.name, "REVOLVER")  then
@@ -762,17 +681,9 @@ function equip_weapon_login()
 					end
 					local comps_decoded = json.decode(v.comps)
 					TriggerEvent("gum_weapons:load_components", comps_decoded)
-					local load_dirt = 0
-					local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-					while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-						load_dirt = load_dirt+1
-						Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-						Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-						Citizen.Wait(10)
-					end
 					bp_condition[v.id] = v.conditionlevel
 					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1500)
+					Citizen.Wait(1000)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					Citizen.Wait(500)
 				else
@@ -786,17 +697,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)			
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-							load_dirt = load_dirt+1
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(10)
-						end
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					end
@@ -813,17 +716,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-							load_dirt = load_dirt+1
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(10)
-						end
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -837,17 +732,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -864,17 +751,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-							load_dirt = load_dirt+1
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(10)
-						end
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -888,17 +767,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -915,17 +786,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -939,17 +802,9 @@ function equip_weapon_login()
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								local load_dirt = 0
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-								while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-									load_dirt = load_dirt+1
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.Wait(10)
-								end
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							end
@@ -979,19 +834,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-								load_dirt = load_dirt+1
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -1005,17 +850,9 @@ function equip_weapon_login()
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								local load_dirt = 0
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-								while Citizen.InvokeNative(0x810E8AE9AFEA7E54, weaponEntityIndex, Citizen.ResultAsFloat()) ~= v.conditionlevel and load_dirt < 150 do
-									load_dirt = load_dirt+1
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.Wait(10)
-								end
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							else
@@ -1030,7 +867,7 @@ function equip_weapon_login()
 									Citizen.Wait(50)
 									bp_condition[v.id] = v.conditionlevel
 									condition_level[v.id] = v.conditionlevel
-									Citizen.Wait(1500)
+									Citizen.Wait(1000)
 									if v.name == 'weapon_melee_davy_lantern' then
 										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
 										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
@@ -1048,7 +885,7 @@ function equip_weapon_login()
 		Citizen.Wait(100)
 	end
 	RemoveAllWeapons()
-	Citizen.Wait(2000)
+	Citizen.Wait(1000)
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
 			if string.match(v.name, "REVOLVER")  then
@@ -1062,15 +899,9 @@ function equip_weapon_login()
 					end
 					local comps_decoded = json.decode(v.comps)
 					TriggerEvent("gum_weapons:load_components", comps_decoded)
-					local load_dirt = 0
-					local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						load_dirt = load_dirt+1
-						Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-						Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-						Citizen.Wait(500)
 					bp_condition[v.id] = v.conditionlevel
 					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1500)
+					Citizen.Wait(1000)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					Citizen.Wait(500)
 				else
@@ -1084,14 +915,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)			
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(500)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					end
@@ -1108,14 +934,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(500)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -1129,14 +950,13 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
 							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
 							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
 							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
 							Citizen.Wait(500)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -1153,14 +973,9 @@ function equip_weapon_login()
 						end
 						local comps_decoded = json.decode(v.comps)
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						local load_dirt = 0
-						local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-						Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-						Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+						Citizen.Wait(1000)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -1174,15 +989,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(500)
-	
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -1199,13 +1008,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -1219,14 +1024,10 @@ function equip_weapon_login()
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								local load_dirt = 0
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
 								Citizen.Wait(10)
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							end
@@ -1256,16 +1057,9 @@ function equip_weapon_login()
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local load_dirt = 0
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(500)
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -1279,15 +1073,9 @@ function equip_weapon_login()
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								local load_dirt = 0
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-								Citizen.Wait(10)
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							else
@@ -1302,7 +1090,7 @@ function equip_weapon_login()
 									Citizen.Wait(50)
 									bp_condition[v.id] = v.conditionlevel
 									condition_level[v.id] = v.conditionlevel
-									Citizen.Wait(1500)
+									Citizen.Wait(1000)
 									if v.name == 'weapon_melee_davy_lantern' then
 										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
 										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
@@ -1324,9 +1112,10 @@ function equip_weapon_login()
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);
 	end
-	Citizen.Wait(1000)
+	Citizen.Wait(500)
 	TriggerEvent("gum_character:selected_char")
 	logged_true = true
+	can_save = true
 end
 
 RegisterNUICallback('show_weapon', function(data, cb)
@@ -1447,7 +1236,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 							end
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
@@ -1471,7 +1260,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
@@ -1517,7 +1306,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 							SetPedAmmoByType(PlayerPedId(), GetHashKey('AMMO_ARROW'), 1);
 							local comps_decoded = json.decode(v.comps)
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							Citizen.Wait(1500)
+							Citizen.Wait(1000)
 							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
@@ -1544,7 +1333,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 								end
 								local comps_decoded = json.decode(v.comps)
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								Citizen.Wait(1500)
+								Citizen.Wait(1000)
 								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
@@ -1572,7 +1361,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 									end
 									local comps_decoded = json.decode(v.comps)
 									TriggerEvent("gum_weapons:load_components", comps_decoded)
-									Citizen.Wait(1500)
+									Citizen.Wait(1000)
 									local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
 									bp_condition[v.id] = v.conditionlevel
 									condition_level[v.id] = v.conditionlevel
