@@ -1,11 +1,11 @@
-CREATE TABLE `mail` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` longtext CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT NULL,
-  `name` longtext CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT NULL,
-  `lastname` longtext CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT NULL,
-  `text` longtext CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT NULL,
-  `date` datetime DEFAULT NULL ON UPDATE current_timestamp(),
-  `readed` varchar(255) COLLATE latin1_general_cs DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+CREATE TABLE `bank_users` (
+  `identifier` varchar(50) DEFAULT '0',
+  `charidentifier` varchar(5) DEFAULT '0',
+  `money` varchar(255) '0',
+  `gold` varchar(255) DEFAULT '0',
+  `name` varchar(255) DEFAULT '0',
+  `borrow` double DEFAULT 0,
+  `borrow_pay` datetime DEFAULT NULL,
+  `borrow_money` double DEFAULT 0
+) ENGINE=InnoDB;
 
