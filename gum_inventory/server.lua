@@ -165,17 +165,16 @@ AddEventHandler('gumCore:registerstorage', function(source, id, size)
 	local Character = User.getUsedCharacter
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
-
 	if id == 0 then
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
-			if result == nil then
+			if result[1] == nil then
 				local Parameters = { ['identifier'] = identifier, ['charid'] = charid, ['size']=tonumber(size)}
 				exports.ghmattimysql:execute("INSERT INTO inventory_storage ( `identifier`,`charid`,`size`) VALUES (@identifier,@charid,@size)", Parameters)
 			end
 		end)
 	else
 		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
-			if result == nil then
+			if result[1] == nil then
 				exports.ghmattimysql:execute("INSERT inventory_storage SET identifier=@identifier, charid=@charid, size=@size", {['identifier']= id, ['charid']= 0, ['size']=tonumber(size)},
 				function (result)
 				end)
