@@ -1224,7 +1224,6 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 			--REVOLVERS AND PISTOLS
 			if (IsRevolver == 1 or IsPistol == 1) then
 				if weapon_first_used == false then
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[12].text, 'pistol', 2000)
 					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 
 					weapon_first_used = data.model
@@ -1247,9 +1246,9 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 					Citizen.Wait(500)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[12].text, 'pistol', 1200)
 				else
 					if weapon_second_used == false then
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[13].text, 'pistol', 2000)
 						SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 						weapon_second_used = data.model
 						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
@@ -1273,8 +1272,9 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 						GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
 						GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[13].text, 'pistol', 1200)
 					else
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[14].text, 'pistol', 2000)
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[14].text, 'pistol', 1200)
 					end
 				end
 			else
@@ -1295,7 +1295,6 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 				end
 				if rifle_first_used == false and weapon_what ~= "other" then
 					rifle_first_used = data.model
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[15].text, 'rifle', 2000)
 					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 					Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(data.model), 0, true, 0);
 					for k,v in pairs(weapon_table) do
@@ -1317,10 +1316,10 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 					Citizen.Wait(500)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[15].text, 'rifle', 1200)
 				else
 					if rifle_second_used == false and weapon_what ~= "other" then
 						rifle_second_used = data.model
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[16].text, 'rifle', 2000)
 						SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(data.model), 0, true, 0);
 						if weapon_what == "BOW" then
@@ -1344,13 +1343,13 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						Citizen.Wait(500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[16].text, 'rifle', 1200)
 					else
 						if rifle_first_used ~= false and rifle_second_used ~= false and weapon_what ~= "other" then
-							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[17].text, 'rifle', 2000)
+							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[17].text, 'rifle', 1200)
 						end
 
 						if weapon_what == "other" then
-							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[18].text, 'other', 2000)
 							SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(data.model), 0, true, 0);
 							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
@@ -1376,6 +1375,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 								GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
 								Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
 							end
+							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[18].text, 'other', 1200)
 						end
 					end
 				end
@@ -1385,43 +1385,43 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 			local IsPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(data.model))
 			if (IsRevolver == 1 or IsPistol == 1) then
 				if data.model == weapon_second_used then
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[13].text, 'bag', 2000)
 					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 					weapon_second_used = false
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					Citizen.Wait(200)
 					Citizen.InvokeNative("0xB282DC6EBD803C75", PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[19].text, 'bag', 1000)
 				end
 				Citizen.Wait(0)
 				if data.model == weapon_first_used then
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					weapon_first_used = false
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[12].text, 'bag', 2000)
 					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[20].text, 'bag', 1000)
 				end
 			else
 				if rifle_first_used ~= data.model and rifle_second_used ~= data.model then
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[21].text, 'bag', 2000)
 					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[21].text, 'bag', 1000)
 				end
 				Citizen.Wait(0)
 				if rifle_first_used == data.model then
 					rifle_first_used = false
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[22].text, 'bag', 2000)
 					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[22].text, 'bag', 1000)
 				else
 					if rifle_second_used == data.model then
 						rifle_second_used = false
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[23].text, 'bag', 2000)
 						SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[23].text, 'bag', 1000)
 					end
 				end
 			end

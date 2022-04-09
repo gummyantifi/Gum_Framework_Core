@@ -23,9 +23,10 @@ var dragged = false
 var size = 0
 var moneysd = 0
 var goldsd = 0
-
+var id_for_use_item = -1
+var id_for_use_weapon =-1
 $(document).keydown(function(e) {
-    var close = 27;
+    var close = 27, presse=69;
     switch (e.keyCode) {
         case close:
             $.post('http://gum_inventory/exit', JSON.stringify({id:id_container}));
@@ -33,6 +34,18 @@ $(document).keydown(function(e) {
             removeAllChildNodes(table_for_delete);
             changed= false
             id_container = 0
+        break;
+        case presse:
+            if (Number(id_for_use_item) !== -1) {
+                if (table_inv[id_for_use_item].usable !== undefined){
+                    if (table_inv[id_for_use_item].usable == 1) {
+                        $.post('http://gum_inventory/use_item', JSON.stringify({ item: table_inv[id_for_use_item].item }));
+                    }
+                }
+            }
+            if (Number(id_for_use_weapon) !== -1) {
+                $.post('http://gum_inventory/use_UseWeapon', JSON.stringify({ id: wtable_inv[id_for_use_weapon].id, model:wtable_inv[id_for_use_weapon].name }));
+            }
         break;
     }
 });
@@ -161,7 +174,7 @@ function loadTableData(table_inv, money, wtable_inv, gold) {
     for (var i in table_inv) {
         count_inventory = table_inv[i].count*table_inv[i].limit+count_inventory
         weight_item = table_inv[i].count*table_inv[i].limit
-        dataHtml += '<div class="item"><div id="'+ i +'" class="item-content" onMouseOver="change_name('+ i +')"  ondblclick="UseItem('+i+')"><img src="images/items/' + table_inv[i].item + '.png" width="50" height="50"  id="item"><div class="bottom-right" id="count_'+i+'">' + table_inv[i].count + '/'+Math.round(weight_item*100)/100+'kg</div></div></div>'
+        dataHtml += '<div class="item"><div id="'+ i +'" class="item-content" onMouseOver="change_name('+ i +')" ondblclick="UseItem('+i+')"><img src="images/items/' + table_inv[i].item + '.png" width="50" height="50"  id="item"><div class="bottom-right" id="count_'+i+'">' + table_inv[i].count + '/'+Math.round(weight_item*100)/100+'kg</div></div></div>'
     }
     for (var i in wtable_inv) {
         count_winventory = count_winventory+1
@@ -423,6 +436,7 @@ function update_item(table_inv, name, count, money, gold) {
 }
 
 function change_name(id) {
+    id_for_use_item = -1
     document.getElementById("id05").innerHTML = "";
     if (dragged == false) {
         if (id == -1){
@@ -435,6 +449,8 @@ function change_name(id) {
             dragged_item_inv = 'gold'
         } else{
             if (document.getElementById("id01").innerHTML !== undefined) {
+                id_for_use_item = id
+                id_for_use_weapon = -1
                 document.getElementById("id01").innerHTML = ''+table_inv[id].label+'';
                 dragged_item_inv = id
                 dragged_witem_inv = undefined
@@ -449,6 +465,8 @@ function change_name(id) {
 }
 
 function change_name_wep(id) { 
+    id_for_use_weapon = id
+    id_for_use_item = -1
     document.getElementById("id05").innerHTML = "";
     if (dragged == false) {
         if (wtable_inv[id].used !== undefined) {
@@ -465,6 +483,8 @@ function change_name_wep(id) {
 }
 
 function change_name_other(id) {
+    id_for_use_weapon = -1
+    id_for_use_item = -1
     document.getElementById("id01").innerHTML = "";
     document.getElementById("id02").innerHTML = "";
     if (dragged === false) {

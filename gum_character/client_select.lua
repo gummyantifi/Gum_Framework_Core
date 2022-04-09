@@ -49,7 +49,7 @@ end)
 RegisterNetEvent('gum_character:select_char')
 AddEventHandler('gum_character:select_char', function(table, tableuser)
     SetEntityCoords(PlayerPedId(), 1407.5758056640625, -1139.779541015625, 75.34298706054688)
-    Citizen.Wait(3000)
+    Citizen.Wait(2000)
     NetworkClockTimeOverride(08, 00, 00, 0, true)
     PlayerTable = table
     can_have = tableuser.chars
@@ -106,7 +106,7 @@ AddEventHandler('gum_character:select_char', function(table, tableuser)
             Ped_Data_Load(character_4, json.decode(v.skinPlayer), json.decode(v.compPlayer), k)
         end
     end
-    Citizen.Wait(200)
+    Citizen.Wait(100)
     playAnim(character_1, 'script_mp@photo_studio@sit_on_crate@male', 'idle_m02', -1, 1)
     playAnim(character_2, 'script_mp@photo_studio@sit_on_crate@male', 'idle_m04', -1, 1)
     playAnim(character_3, 'script_mp@photostudio@dog@male', 'idle_m02', -1, 1)
@@ -277,25 +277,24 @@ end
 
 function Has_Body_Loaded(ped, type, hash_for_load, text)
     local timeout = 0
-    while Citizen.InvokeNative(0xFB4891BD7578CDC1, ped, type) == false and timeout < 20 do
-        if timeout == 19 then
+    while Citizen.InvokeNative(0xFB4891BD7578CDC1, ped, type) == false and timeout < 5 do
+        if timeout == 4 then
             again = true
         end
         timeout = timeout+1
         Citizen.InvokeNative(0xD710A5007C2AC539, ped, type, 0)
         Citizen.InvokeNative(0xD3A7B003ED343FD9, ped, hash_for_load, false, true, true)
-        Citizen.InvokeNative(0xD3A7B003ED343FD9, ped, hash_for_load, true, true, true)
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, ped, 0, 1, 1, 1, false);
         Citizen.Wait(0)
     end
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, ped, 0, 1, 1, 1, false);
     return true
 end
 
 function Has_Body_Loaded_Clothe(ped, type, hash_for_load, text)
     local timeout = 0
-    while Citizen.InvokeNative(0xFB4891BD7578CDC1, ped, type) == false and timeout < 20 do
+    while Citizen.InvokeNative(0xFB4891BD7578CDC1, ped, type) == false and timeout < 5 do
         timeout = timeout+1
-        if timeout == 19 then
+        if timeout == 4 then
             again = true
         end
         Citizen.InvokeNative(0xD710A5007C2AC539, ped, type, 0)
@@ -303,8 +302,8 @@ function Has_Body_Loaded_Clothe(ped, type, hash_for_load, text)
         Citizen.InvokeNative(0xD3A7B003ED343FD9, ped, hash_for_load, false, true, true)
         -- Citizen.InvokeNative(0x704C908E9C405136, ped)
         -- Citizen.InvokeNative(0xAAB86462966168CE, ped, 1)
+        Citizen.Wait(50)
         Citizen.InvokeNative(0xCC8CA3E88256E58F, ped, 0, 1, 1, 1, false);
-        Citizen.Wait(0)
     end
     return true
 end
@@ -550,7 +549,7 @@ function Ped_Data_Load(ppid, Skin_Table, Clothe_Table, key)
     Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
     Citizen.Wait(0)
 
-    if again == true and tonumber(reload_data) <= 10 then
+    if again == true and tonumber(reload_data) <= 20 then
         DeletePed(ppid)
         Reload_Func(key)
     end

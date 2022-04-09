@@ -257,6 +257,7 @@ RegisterCommand('db', function()
             if tonumber(reload_data) >= 10 then
                 Data_Character_Load_2()
             else
+                reload_data = 0
                 Data_Character_Load()
             end
         end
@@ -3094,16 +3095,15 @@ end
 
 function HasBodyComponentsLoaded(type, hash_for_load, text)
     local timeout = 0
-    while Citizen.InvokeNative(0xFB4891BD7578CDC1, PlayerPedId(), type) == false and timeout <= 5 do
-        if timeout == 4 then
+    while Citizen.InvokeNative(0xFB4891BD7578CDC1, PlayerPedId(), type) == false and timeout <= 8 do
+        if timeout == 7 then
             again = true
         end
         timeout = timeout+1
         Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), hash_for_load, false, true, true)
+        Citizen.Wait(100)
         Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
-        Citizen.Wait(0)
     end
-    Wait(100)
     Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
     return true
 end
@@ -3166,11 +3166,9 @@ function Data_Character_Load(first)
     if Skin_Table["Eyes"] ~= -1 then
         HasBodyComponentsLoaded(0xEA24B45E, Skin_Table["Eyes"], "EYES")
     end
-    Wait(0)
     if Skin_Table["Hair"] ~= -1 then
         HasBodyComponentsLoaded(0x864B03AE, Skin_Table["Hair"], "HAIR")
     end
-    Wait(0)
     if Skin_Table["Beard"] ~= -1 then
         HasBodyComponentsLoaded(0xF8016BCA, Skin_Table["Beard"], "BEARD")
     end
@@ -3288,12 +3286,12 @@ function Data_Character_Load(first)
     Citizen.InvokeNative(0xD710A5007C2AC539, ppid, 0xDA0E2C55, 0)
     Citizen.InvokeNative(0x704C908E9C405136, ppid)
     Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.Wait(10)
+    Citizen.Wait(0)
 
     Citizen.InvokeNative(0x25ACFC650B65C538, ppid, Skin_Table["Scale"])
     Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
 
-    Citizen.Wait(10)
+    Citizen.Wait(0)
     Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x84D6, Skin_Table["HeadSize"]);
     Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3303, Skin_Table["EyeBrowH"]);
     Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x2FF9, Skin_Table["EyeBrowW"]);
@@ -3333,7 +3331,7 @@ function Data_Character_Load(first)
     Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3C0F, Skin_Table["ChinH"]);
     Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xC3B2, Skin_Table["ChinW"]);
     Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xE323, Skin_Table["ChinD"]);
-    Citizen.Wait(10)
+    Citizen.Wait(0)
     if Skin_Table["scars_visibility"] ~= nil and Skin_Table["scars_tx_id"] ~= nil  and Skin_Table["scars_opacity"] ~= nil then
         TriggerEvent("gum_characters:colors", "scars", Skin_Table["scars_visibility"], Skin_Table["scars_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["scars_opacity"])
     end
