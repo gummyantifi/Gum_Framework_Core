@@ -25,6 +25,11 @@ var moneysd = 0
 var goldsd = 0
 var id_for_use_item = -1
 var id_for_use_weapon =-1
+var slot1 = ""
+var slot2 = ""
+var slot3 = ""
+var slot4 = ""
+var slot5 = ""
 $(document).keydown(function(e) {
     var close = 27, presse=69;
     switch (e.keyCode) {
@@ -69,9 +74,11 @@ $(function() {
             $("#container").show();
             $("#container_other").hide();
             $("#show_weapons").hide();
-        } else {
+            $("#hotbar").show();
+         } else {
             $("#container_other").hide();
             $("#container").hide();
+            $("#hotbar").hide();
         }
     }
 
@@ -199,7 +206,66 @@ function loadTableData(table_inv, money, wtable_inv, gold) {
                 }
     }); }, 5);
 }
+function show_hotbar(id){
+    if (drag_to_normal == true){
+        if (id == 1 && dragged == true) {
+            if (table_inv[dragged_item_inv] !== undefined) {
+                $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:1, item:table_inv[dragged_item_inv].item}));
+                slot1 = table_inv[dragged_item_inv].item
+                document.getElementById("slot1").style.backgroundImage = "url(images/items/"+ table_inv[dragged_item_inv].item + ".png";
+            }
+        } else if (id == 2 && dragged == true){
+            if (table_inv[dragged_item_inv] !== undefined) {
+                $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:2, item:table_inv[dragged_item_inv].item}));
+                slot2 = table_inv[dragged_item_inv].item
+                document.getElementById("slot2").style.backgroundImage = "url(images/items/"+ table_inv[dragged_item_inv].item + ".png";
+            }
+        } else if (id == 3 && dragged == true){
+            if (table_inv[dragged_item_inv] !== undefined) {
+                $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:3, item:table_inv[dragged_item_inv].item}));
+                slot3 = table_inv[dragged_item_inv].item
+                document.getElementById("slot3").style.backgroundImage = "url(images/items/"+ table_inv[dragged_item_inv].item + ".png";
+            }
+        } else if (id == 4 && dragged == true){
+            if (table_inv[dragged_item_inv] !== undefined) {
+                $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:4, item:table_inv[dragged_item_inv].item}));
+                slot4 = table_inv[dragged_item_inv].item
+                document.getElementById("slot4").style.backgroundImage = "url(images/items/"+ table_inv[dragged_item_inv].item + ".png";
+            }
+        } else if (id == 5 && dragged == true){
+            if (table_inv[dragged_item_inv] !== undefined) {
+                $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:5, item:table_inv[dragged_item_inv].item}));
+                slot5 = table_inv[dragged_item_inv].item
+                document.getElementById("slot5").style.backgroundImage = "url(images/items/"+ table_inv[dragged_item_inv].item + ".png";
+            }
+        }
+        drag_to_normal = false
+    }
+}
 
+function clear_hotbar(id){
+    if (id == 1 ) {
+        $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:1, item:""}));
+        slot1 = ""
+        document.getElementById("slot1").style.backgroundImage = "";
+    } else if (id == 2){
+        $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:2, item:""}));
+        slot2 = ""
+        document.getElementById("slot2").style.backgroundImage = "";
+    } else if (id == 3){
+        $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:3, item:""}));
+        slot3 = ""
+        document.getElementById("slot3").style.backgroundImage = "";
+    } else if (id == 4){
+        $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:4, item:""}));
+        slot4 = ""
+        document.getElementById("slot4").style.backgroundImage = "";
+    } else if (id == 5){
+        $.post('http://gum_inventory/hotbar_set', JSON.stringify({slot:5, item:""}));
+        slot5 = ""
+        document.getElementById("slot5").style.backgroundImage = "";
+    }
+}
 function transfer_to_storage() {
     if (dragged_item_inv === 'money') {
         $.post('http://gum_inventory/transfer_to_storage', JSON.stringify({weapon:false, item: "money", count: moneysd, container_id:id_container, size:count_sinventory}));
@@ -212,6 +278,7 @@ function transfer_to_storage() {
             $.post('http://gum_inventory/transfer_to_storage', JSON.stringify({weapon:false, item: table_inv[dragged_item_inv].item, count: table_inv[dragged_item_inv].count, container_id:id_container, size:count_sinventory, limit:table_inv[dragged_item_inv].limit}));
         }
     }
+    drag_to_other = false
 }
 function transfer_from_storage() {
     if (dragged_stor_inv == "money") {
@@ -221,6 +288,7 @@ function transfer_from_storage() {
     } else {
         $.post('http://gum_inventory/transfer_from_storage', JSON.stringify({ item: storage_inv[dragged_stor_inv].item, weapon: storage_inv[dragged_stor_inv].weapon, count: storage_inv[dragged_stor_inv].count, container_id:id_container, limit:storage_inv[dragged_stor_inv].limit }));
     }
+    drag_to_normal = false
 }
 
 function loadstoragedata(strg_dt) {
@@ -284,6 +352,22 @@ var frst2 = document.getElementById('grid0');
 if(frst2){
     document.getElementById("grid1").addEventListener("mouseenter", function() {drag_to_other=false ,drag_to_normal=true;});
 }
+
+var slot1 = document.getElementById('slot1');
+if(slot1) {document.getElementById("slot1").addEventListener("mouseenter", function() {slot1=true,slot2=false,slot3=false,slot4=false,slot5=false;});}
+
+var slot2 = document.getElementById('slot2');
+if(slot2) {document.getElementById("slot2").addEventListener("mouseenter", function() {document.getElementById("slot2").addEventListener("mouseenter", function() {slot1=false,slot2=true,slot3=false,slot4=false,slot5=false;});});}
+
+var slot3 = document.getElementById('slot3');
+if(slot3) {document.getElementById("slot3").addEventListener("mouseenter", function() {document.getElementById("slot3").addEventListener("mouseenter", function() {slot1=false,slot2=false,slot3=true,slot4=false,slot5=false;});});}
+
+var slot4 = document.getElementById('slot4');
+if(slot4) {document.getElementById("slot4").addEventListener("mouseenter", function() {document.getElementById("slot4").addEventListener("mouseenter", function() {slot1=false,slot2=false,slot3=false,slot4=true,slot5=false;});});}
+
+var slot5 = document.getElementById('slot5');
+if(slot5) {document.getElementById("slot5").addEventListener("mouseenter", function() {document.getElementById("slot5").addEventListener("mouseenter", function() {slot1=false,slot2=false,slot3=false,slot4=false,slot5=true;});});}
+
 
 document.getElementById("container_other").addEventListener("mouseenter", function() {drag_to_other=true,drag_to_normal=false;});
 document.getElementById("expand_container").addEventListener("mouseenter", function() {drag_to_other=true,drag_to_normal=false;});

@@ -17,7 +17,7 @@ RECORDSW = {
         label = "Melee cleaver"
     },
     {
-        item = "WEAPON_MELEE_HATCHET",
+        item = "WEAPON_MELEE_HATCHET_HUNTER",
         label = "Hatchet hunter"
     },
     {

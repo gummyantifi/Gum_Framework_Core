@@ -7,6 +7,9 @@
     font-family: crock;
     box-sizing: inherit;
     touch-action: manipulation;
+    overflow-x: hidden;
+    overflow-y: hidden;
+
 }
 ::-webkit-scrollbar {
     width: 5px;
@@ -32,6 +35,15 @@
     bottom: 2px;
     right: 2px;
     font-size: 11px;
+    text-shadow: 1px -1px 2px #201F20;
+}
+
+.top-right {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 11px;
+    text-shadow: 1px -1px 2px #201F20;
 }
 
 #playerData {
@@ -56,6 +68,72 @@
     height: 550px;
     max-height: 581px;
     background-image: url('images/background.png');
+    background-size: 100% 100%;
+    animation: fadeIn;
+    animation-duration: 0.3s;
+}
+#slot0 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 23px;
+    left: 15px;
+    width: 13px;
+    height: 13px;
+    background-size: 100% 100%;
+}
+#slot1 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 23px;
+    left: 100px;
+    width: 13px;
+    height: 13px;
+    background-size: 100% 100%;
+}
+
+#slot2 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 23px;
+    left: 172px;
+    width: 13px;
+    height: 13px;
+    background-size: 100% 100%;
+}
+
+#slot3 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 23px;
+    left: 244px;
+    width: 13px;
+    height: 13px;
+    background-size: 100% 100%;
+}
+
+#slot4 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 23px;
+    left: 318px;
+    width: 13px;
+    height: 13px;
+    background-size: 100% 100%;
+}
+
+#slot5 {
+    padding: 25px;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 23px;
+    left: 388px;
+    width: 13px;
+    height: 13px;
     background-size: 100% 100%;
 }
 
@@ -112,6 +190,20 @@
 }
 .show {
     display: block;
+}
+
+#hotbar {
+    position: fixed;
+	bottom: 2%;
+	left: 40%;
+    width: 480px;
+    height: 100px;
+    background-image: url('images/hotbar.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    animation: fadeIn;
+    animation-duration: 0.3s;
 }
 
 #btn_1 {
@@ -561,6 +653,8 @@
      max-height: 581px;
      background-image: url('images/background.png');
      background-size: 100% 100%;
+     animation: fadeIn;
+     animation-duration: 0.3s;
  }
 
 .item {

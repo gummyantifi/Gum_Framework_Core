@@ -25,6 +25,11 @@ local equip_spam = 0
 local speed = 0
 local count_in_inventory = 0.0
 local can_save = false
+local slot1 = ""
+local slot2 = ""
+local slot3 = ""
+local slot4 = ""
+local slot5 = ""
 
 function Button_Prompt()
 	Citizen.CreateThread(function()
@@ -161,6 +166,19 @@ AddEventHandler('gum_inventory:refresh_storage', function(storage, itm, wpn,id)
 	end
 	Citizen.Wait(100)
 	Show_Other(true, id, storage_table, money_state, size)
+end)
+RegisterNUICallback('hotbar_set', function(data, cb)
+	if (tonumber(data.slot) == 1) then
+		slot1 = data.item
+	elseif (tonumber(data.slot) == 2) then
+		slot2 = data.item
+	elseif (tonumber(data.slot) == 3) then
+		slot3 = data.item
+	elseif (tonumber(data.slot) == 4) then
+		slot4 = data.item
+	elseif (tonumber(data.slot) == 5) then
+		slot5 = data.item
+	end
 end)
 
 RegisterNUICallback('transfer_to_storage', function(data, cb)
@@ -326,9 +344,16 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 						if ammo_type_weapon ~= "THROWWABLE" then
 							if string.match(v[2], ammo_type_weapon)  then
 								for key,value in pairs(weapon_table) do
-									if value.used == 1 and wepHash == GetHashKey(value.name) and GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])) ~= 0 then
-										SetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]), GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])))
-										new_ammo_table[v[2]] = GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]))
+									if v[2] == "AMMO_RIFLE_VARMINT" then
+										if value.used == 1 and wepHash == GetHashKey(value.name) and GetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22")) ~= 0 then
+											SetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22"), GetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22")))
+											new_ammo_table["AMMO_22"] = GetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22"))
+										end
+									else
+										if value.used == 1 and wepHash == GetHashKey(value.name) and GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])) ~= 0 then
+											SetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]), GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])))
+											new_ammo_table[v[2]] = GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]))
+										end
 									end
 								end
 							end
@@ -362,13 +387,15 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 									if (weaponEntityIndex ~= 0 and wepHash == GetHashKey(value.name)) then
 										if not sended then
 											sended = true
-											if condition_level[value.id]+0.0001 <= 1.0 then
-												condition_level[value.id] = condition_level[value.id]+0.0001
+											if condition_level[value.id] ~= nil then
+												if condition_level[value.id]+0.0001 <= 1.0 then
+													condition_level[value.id] = condition_level[value.id]+0.0001
+												end
+												local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
+												Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(condition_level[value.id]))
+												Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(condition_level[value.id]), 0)
+												TriggerServerEvent("gum_inventory:save_ammo", value.name, new_ammo_table, condition_level[value.id])
 											end
-											local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-											Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(condition_level[value.id]))
-											Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(condition_level[value.id]), 0)
-											TriggerServerEvent("gum_inventory:save_ammo", value.name, new_ammo_table, condition_level[value.id])
 										end
 									end
 								end
@@ -408,34 +435,35 @@ AddEventHandler('gum_inventory:cleaning_weapons', function()
     local cloth_clean = CreateObject(GetHashKey('s_balledragcloth01x'), GetEntityCoords(PlayerPedId()), false, true, false, false, true)
     local retval, weaponHash = GetCurrentPedWeapon(PlayerPedId(), false, weaponHash, false)
     local model = GetWeapontypeGroup(weaponHash)
-    local object = GetObjectIndexFromEntityIndex(GetCurrentPedWeaponEntityIndex(PlayerPedId(),0))
+	local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
+	local object = GetObjectIndexFromEntityIndex(GetCurrentPedWeaponEntityIndex(PlayerPedId(),0))
     if model == 416676503 or model == -1101297303 then
         TriggerEvent("gum_inventory:CloseInv");
         Citizen.InvokeNative(0x72F52AA2D2B172CC,  PlayerPedId(), 1242464081, cloth_clean, GetHashKey("CLOTH"), GetHashKey("SHORTARM_CLEAN_ENTER"), 1, 0, -1.0)   
-        Citizen.Wait(15000)
 		for key,value in pairs(weapon_table) do
 			if value.used == 1 then
 				if weaponHash == GetHashKey(value.name)  then
 					TriggerServerEvent("gum_inventory:save_cleaning", value.name, condition_level)
-					value.conditionlevel = 0.0
-					value.dirtlevel = 0.0
-					Citizen.InvokeNative(0xA7A57E89E965D839,object,0.0,0)
-					Citizen.InvokeNative(0x812CE61DEBCAB948,object,0.0,0)
+					Citizen.Wait(5000)
+					condition_level[value.id] = 0.0
+					condition_level[value.id] = 0.0
+					Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(condition_level[value.id]))
+					Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(condition_level[value.id]), 0)
 				end
 			end
 		end
     else
         TriggerEvent("gum_inventory:CloseInv");
         Citizen.InvokeNative(0x72F52AA2D2B172CC,  PlayerPedId(), 1242464081, cloth_clean, GetHashKey("CLOTH"), GetHashKey("LONGARM_CLEAN_ENTER"), 1, 0, -1.0)   
-        Citizen.Wait(15000)
 		for key,value in pairs(weapon_table) do
 			if value.used == 1 then
 				if weaponHash == GetHashKey(value.name)  then
 					TriggerServerEvent("gum_inventory:save_cleaning", value.name, condition_level)
-					value.conditionlevel = 0.0
-					value.dirtlevel = 0.0
-					Citizen.InvokeNative(0xA7A57E89E965D839,object,0.0,0)
-					Citizen.InvokeNative(0x812CE61DEBCAB948,object,0.0,0)
+					Citizen.Wait(5000)
+					condition_level[value.id] = 0.0
+					condition_level[value.id] = 0.0
+					Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(condition_level[value.id]))
+					Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(condition_level[value.id]), 0)
 				end
 			end
 		end
@@ -465,7 +493,7 @@ function equip_weapon_login()
 					TriggerEvent("gum_weapons:load_components", comps_decoded)
 					bp_condition[v.id] = v.conditionlevel
 					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1000)
+					Citizen.Wait(1500)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					Citizen.Wait(500)
 				else
@@ -481,7 +509,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)			
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					end
@@ -500,7 +528,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -516,7 +544,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -535,7 +563,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -551,7 +579,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -570,7 +598,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -586,7 +614,7 @@ function equip_weapon_login()
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1000)
+								Citizen.Wait(1500)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							end
@@ -618,7 +646,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -634,7 +662,7 @@ function equip_weapon_login()
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1000)
+								Citizen.Wait(1500)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							else
@@ -649,7 +677,7 @@ function equip_weapon_login()
 									Citizen.Wait(50)
 									bp_condition[v.id] = v.conditionlevel
 									condition_level[v.id] = v.conditionlevel
-									Citizen.Wait(1000)
+									Citizen.Wait(1500)
 									if v.name == 'weapon_melee_davy_lantern' then
 										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
 										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
@@ -683,7 +711,7 @@ function equip_weapon_login()
 					TriggerEvent("gum_weapons:load_components", comps_decoded)
 					bp_condition[v.id] = v.conditionlevel
 					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1000)
+					Citizen.Wait(1500)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					Citizen.Wait(500)
 				else
@@ -699,7 +727,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)			
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					end
@@ -718,7 +746,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -734,7 +762,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -753,7 +781,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -769,7 +797,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -788,7 +816,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -804,7 +832,7 @@ function equip_weapon_login()
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1000)
+								Citizen.Wait(1500)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							end
@@ -836,7 +864,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -852,7 +880,7 @@ function equip_weapon_login()
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1000)
+								Citizen.Wait(1500)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							else
@@ -867,7 +895,7 @@ function equip_weapon_login()
 									Citizen.Wait(50)
 									bp_condition[v.id] = v.conditionlevel
 									condition_level[v.id] = v.conditionlevel
-									Citizen.Wait(1000)
+									Citizen.Wait(1500)
 									if v.name == 'weapon_melee_davy_lantern' then
 										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
 										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
@@ -901,7 +929,7 @@ function equip_weapon_login()
 					TriggerEvent("gum_weapons:load_components", comps_decoded)
 					bp_condition[v.id] = v.conditionlevel
 					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1000)
+					Citizen.Wait(1500)
 					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					Citizen.Wait(500)
 				else
@@ -917,7 +945,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)			
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					end
@@ -936,7 +964,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -956,7 +984,7 @@ function equip_weapon_login()
 							Citizen.Wait(500)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -975,7 +1003,7 @@ function equip_weapon_login()
 						TriggerEvent("gum_weapons:load_components", comps_decoded)
 						bp_condition[v.id] = v.conditionlevel
 						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1000)
+						Citizen.Wait(1500)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						Citizen.Wait(500)
 					else
@@ -991,7 +1019,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						end
@@ -1010,7 +1038,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -1059,7 +1087,7 @@ function equip_weapon_login()
 							TriggerEvent("gum_weapons:load_components", comps_decoded)
 							bp_condition[v.id] = v.conditionlevel
 							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1000)
+							Citizen.Wait(1500)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 							Citizen.Wait(500)
 						else
@@ -1075,7 +1103,7 @@ function equip_weapon_login()
 								TriggerEvent("gum_weapons:load_components", comps_decoded)
 								bp_condition[v.id] = v.conditionlevel
 								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1000)
+								Citizen.Wait(1500)
 								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 								Citizen.Wait(500)
 							else
@@ -1095,7 +1123,7 @@ function equip_weapon_login()
 										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
 										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
 									end
-									Citizen.Wait(500)
+									Citizen.Wait(1500)
 									Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 									Citizen.Wait(500)
 								end
@@ -1712,6 +1740,56 @@ Citizen.CreateThread(function()
 	local player_prompt2
 	while true do
 		local combat_stance = IsPedInMeleeCombat(PlayerPedId())
+		if slot1 ~= "" then
+			DisableControlAction(0, 0x1CE6D9EB, true)
+			if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0x1CE6D9EB) then
+				for k,v in pairs(inventory_table) do
+					if v.item == slot1 then
+						TriggerServerEvent("gum:use", slot1)
+					end
+				end
+			end
+		end
+		if slot2 ~= "" then
+			DisableControlAction(0, 0x4F49CC4C, true)
+			if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0x4F49CC4C) then
+				for k,v in pairs(inventory_table) do
+					if v.item == slot2 then
+						TriggerServerEvent("gum:use", slot2)
+					end
+				end
+			end
+		end
+		if slot3 ~= "" then
+			DisableControlAction(0, 0x8F9F9E58, true)
+			if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0x8F9F9E58) then
+				for k,v in pairs(inventory_table) do
+					if v.item == slot3 then
+						TriggerServerEvent("gum:use", slot3)
+					end
+				end
+			end
+		end
+		if slot4 ~= "" then
+			DisableControlAction(0, 0xAB62E997, true)
+			if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0xAB62E997) then
+				for k,v in pairs(inventory_table) do
+					if v.item == slot4 then
+						TriggerServerEvent("gum:use", slot4)
+					end
+				end
+			end
+		end
+		if slot5 ~= "" then
+			DisableControlAction(0, 0xA1FDE2A6, true)
+			if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0xA1FDE2A6) then
+				for k,v in pairs(inventory_table) do
+					if v.item == slot5 then
+						TriggerServerEvent("gum:use", slot5)
+					end
+				end
+			end
+		end
 		DisableControlAction(0, 0xE2B557A3, true)
 		DisableControlAction(0, 0x1C826362, true)
 		DisableControlAction(0, 0x7E75F4DC, true)
@@ -2008,6 +2086,7 @@ AddEventHandler('gum_inventory:drop_list', function(drop_list)
 				FreezeEntityPosition(dropped_item, true)
 				Citizen.InvokeNative(0x7DFB49BCDB73089A, dropped_item, true)
 				table.insert(dropped_items_entity, {id=v.id, entity=dropped_item, x=v.x ,y=v.y, z=v.z, item=v.item, count=v.count, weapon=v.weapon, weapon_model=v.weapon_model})
+				SetEntityCollision(dropped_item, false, false)
 			elseif v.weapon == false then
 				if v.item == "money" then
 					dropped_item = CreateObject("p_moneystack01x", v.x, v.y, v.z, false, false, false)
@@ -2015,6 +2094,7 @@ AddEventHandler('gum_inventory:drop_list', function(drop_list)
 					FreezeEntityPosition(dropped_item, true)
 					Citizen.InvokeNative(0x7DFB49BCDB73089A, dropped_item, true)
 					table.insert(dropped_items_entity, {id=v.id, entity=dropped_item, x=v.x ,y=v.y, z=v.z, item=v.item, count=v.count, weapon=v.weapon, weapon_model=v.weapon_model})
+					SetEntityCollision(dropped_item, false, false)
 				else
 					if v.item == "gold" then
 						dropped_item = CreateObject("p_goldstack01x", v.x, v.y, v.z, false, false, false)
@@ -2022,12 +2102,14 @@ AddEventHandler('gum_inventory:drop_list', function(drop_list)
 						FreezeEntityPosition(dropped_item, true)
 						Citizen.InvokeNative(0x7DFB49BCDB73089A, dropped_item, true)
 						table.insert(dropped_items_entity, {id=v.id, entity=dropped_item, x=v.x ,y=v.y, z=v.z, item=v.item, count=v.count, weapon=v.weapon, weapon_model=v.weapon_model})
+						SetEntityCollision(dropped_item, false, false)
 					else
 						dropped_item = CreateObject("p_cs_dirtybag01x", v.x, v.y, v.z, false, false, false)
 						PlaceObjectOnGroundProperly(dropped_item)
 						FreezeEntityPosition(dropped_item, true)
 						Citizen.InvokeNative(0x7DFB49BCDB73089A, dropped_item, true)
 						table.insert(dropped_items_entity, {id=v.id, entity=dropped_item, x=v.x ,y=v.y, z=v.z, item=v.item, count=v.count, weapon=v.weapon, weapon_model=v.weapon_model})
+						SetEntityCollision(dropped_item, false, false)
 					end
 				end
 			end
