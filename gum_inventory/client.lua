@@ -11,7 +11,6 @@ local dropped_items_entity = {}
 local active = false
 local buttons_prompt = GetRandomIntInRange(0, 0xffffff)
 local condition_level = {}
-local bp_condition = {}
 local money_state = 0
 local gold_state = 0
 local new_ammo_table = {}
@@ -21,7 +20,7 @@ local backup_save_throw = 0
 local is_last_ammo = false
 local logged_true = true
 local id_container = 0
-local equip_spam = 0
+local equip_spam = false
 local speed = 0
 local count_in_inventory = 0.0
 local can_save = false
@@ -91,7 +90,6 @@ AddEventHandler('gum_inventory:reset_inventory', function()
 	dropped_items = {}
 	dropped_items_entity = {}
 	condition_level = {}
-	bp_condition = {}
 	money_state = 0
 	gold_state = 0
 	new_ammo_table = {}
@@ -337,8 +335,8 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 				end
 				Citizen.Wait(0)
 				for k,v in pairs(ammo_list) do
-					if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REPEATER"				elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "SHOTGUN"
-					elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "RIFLE"				elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "SNIPER"
+					if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "RIFLE"
+					elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "RIFLE"				
 					elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "THROWWABLE"				end
 					if ammo_type_weapon ~= "" then
 						if ammo_type_weapon ~= "THROWWABLE" then
@@ -374,12 +372,9 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 					end
 				end
 				for k,v in pairs(ammo_list) do
-					if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REPEATER"				elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "SHOTGUN"
-					elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "RIFLE"				elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "SNIPER"
-					elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "BOW"
-					elseif 1548507267 == GetWeapontypeGroup(wepHash) then
-						ammo_type_weapon = "THROWWABLE"
-					end
+					if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "RIFLE"
+					elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "RIFLE"	
+					elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "THROWWABLE"				end
 					if ammo_type_weapon ~= "" then
 						for key,value in pairs(weapon_table) do
 							if value.used == 1 then
@@ -477,665 +472,191 @@ AddEventHandler('gum_inventory:CloseInv', function()
 	guiEnabled = false
 end)
 
+function LoadModel(model)
+	local timer = 0
+	if not IsModelInCdimage(model) then
+		return false
+	end
+	RequestModel(model)
+	while not HasModelLoaded(model) and timer > 300 do
+		timer = timer+1
+		Wait(0)
+	end
+	return true
+end
+
+RegisterNetEvent('gum_inventory:reload_weap')
+AddEventHandler('gum_inventory:reload_weap', function()
+	RemoveAllWeapons()
+	Citizen.Wait(500)
+	for k,v in pairs(weapon_table) do
+		if v.used == 1 then
+			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
+				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+					if weapon_first_used ~= false and weapon_second_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
+						weapon_second_used = v.name
+					end
+					if weapon_first_used == false and weapon_second_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
+						weapon_first_used = v.name
+					end
+				end
+			else
+				if not Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+					if not Citizen.InvokeNative(0x30E7C16B12DA8211, GetHashKey(v.name)) then
+						LoadWeaponChar(v.name)
+					else
+						Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(v.name), 0, false, true, true, 1.0)
+						SetCurrentPedWeapon(PlayerPedId(),GetHashKey(v.name), true)
+					end
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					if "weapon_melee_davy_lantern" == v.name then
+						Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
+					else
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+					end
+				end
+			end
+			if Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+				if rifle_first_used ~= false and rifle_second_used == false then
+					LoadWeaponChar(v.name)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					rifle_second_used = v.name
+				end
+				if rifle_first_used == false and rifle_second_used == false then
+					LoadWeaponChar(v.name)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					rifle_first_used = v.name
+				end
+			end
+		end
+	end
+end)
+
 function equip_weapon_login()
+	local login_continue = false
+	RemoveAllWeapons()
+	Citizen.Wait(500)
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
-			if string.match(v.name, "REVOLVER")  then
-				if weapon_first_used == false then
-					weapon_first_used = v.name
-					--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-					Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-					Citizen.Wait(10)
-					for k2,v2 in pairs(json.decode(v.ammo)) do
-						SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-					end
-					local comps_decoded = json.decode(v.comps)
-					TriggerEvent("gum_weapons:load_components", comps_decoded)
-					bp_condition[v.id] = v.conditionlevel
-					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1500)
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-					Citizen.Wait(500)
-				else
-					if weapon_second_used == false then
+			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
+				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+					if weapon_first_used ~= false and weapon_second_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-						Citizen.Wait(10)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)			
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
+					end
+					if weapon_first_used == false and weapon_second_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
+						weapon_first_used = v.name
 					end
 				end
 			else
-				if string.match(v.name, "revolver") then
-					if weapon_first_used == false then
-						weapon_first_used = v.name
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-						Citizen.Wait(10)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
+				if not Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+					if not Citizen.InvokeNative(0x30E7C16B12DA8211, GetHashKey(v.name)) then
+						LoadWeaponChar(v.name)
 					else
-						if weapon_second_used == false then
-							weapon_second_used = v.name
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-							Citizen.Wait(10)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						end
+						Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(v.name), 0, false, true, true, 1.0)
+						SetCurrentPedWeapon(PlayerPedId(),GetHashKey(v.name), true)
 					end
-				end
-				if string.match(v.name, "PISTOL") then
-					if weapon_first_used == false then
-						weapon_first_used = v.name
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-						Citizen.Wait(10)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					if "weapon_melee_davy_lantern" == v.name then
+						Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
+					else
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
-					else
-						if weapon_second_used == false then
-							weapon_second_used = v.name
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-							Citizen.Wait(500)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						end
-					end
-				else
-					if string.match(v.name, "pistol") then
-						if weapon_first_used == false then
-							weapon_first_used = v.name
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-							Citizen.Wait(10)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						else
-							if weapon_second_used == false then
-								weapon_second_used = v.name
-								--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-								Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-								Citizen.Wait(10)
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
-								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-								Citizen.Wait(500)
-							end
-						end
-					else
-						local weapon_what = "other"
-						if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(v.name) then
-							weapon_what = "REPEATER"
-						elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(v.name) then
-							weapon_what = "SHOTGUN"
-						elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(v.name) then
-							weapon_what = "RIFLE"
-						elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(v.name) then
-							weapon_what = "SNIPER"
-						elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(v.name) then
-							weapon_what = "BOW"
-						else
-							weapon_what = "other"
-						end
-						if rifle_first_used == false and weapon_what ~= "other" then
-							rifle_first_used = v.name
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(rifle_first_used), 0, true, 0);
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(rifle_first_used), 0, false, true, true, 1.0)
-							Citizen.Wait(10)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						else
-							if rifle_second_used == false and weapon_what ~= "other" then
-								rifle_second_used = v.name
-								Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(rifle_second_used), 0, true, 0);
-								--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(rifle_second_used), 0, false, true, true, 1.0)
-								Citizen.Wait(10)
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
-								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-								Citizen.Wait(500)
-							else
-								if weapon_what == "other" then
-									Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(v.name), 0, true, 0);
-									--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(v.name), 0, false, true, true, 1.0);
-									local comps_decoded = json.decode(v.comps)
-									TriggerEvent("gum_weapons:load_components", comps_decoded)
-									local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.Wait(50)
-									bp_condition[v.id] = v.conditionlevel
-									condition_level[v.id] = v.conditionlevel
-									Citizen.Wait(1500)
-									if v.name == 'weapon_melee_davy_lantern' then
-										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
-										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
-									end
-									Citizen.Wait(1000)
-									Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-									Citizen.Wait(500)
-								end
-							end
-						end
 					end
 				end
 			end
+			if Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+				if rifle_first_used ~= false and rifle_second_used == false then
+					LoadWeaponChar(v.name)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					rifle_second_used = v.name
+				end
+				if rifle_first_used == false and rifle_second_used == false then
+					LoadWeaponChar(v.name)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					rifle_first_used = v.name
+				end
+			end
 		end
-		Citizen.Wait(100)
 	end
 	RemoveAllWeapons()
-	Citizen.Wait(1000)
+	Citizen.Wait(500)
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
-			if string.match(v.name, "REVOLVER")  then
-				if weapon_first_used == false then
-					weapon_first_used = v.name
-					--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-					Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-					Citizen.Wait(10)
-					for k2,v2 in pairs(json.decode(v.ammo)) do
-						SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-					end
-					local comps_decoded = json.decode(v.comps)
-					TriggerEvent("gum_weapons:load_components", comps_decoded)
-					bp_condition[v.id] = v.conditionlevel
-					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1500)
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-					Citizen.Wait(500)
-				else
-					if weapon_second_used == false then
+			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
+				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+					if weapon_first_used ~= false and weapon_second_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-						Citizen.Wait(10)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)			
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
+					end
+					if weapon_first_used == false and weapon_second_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
+						weapon_first_used = v.name
 					end
 				end
 			else
-				if string.match(v.name, "revolver") then
-					if weapon_first_used == false then
-						weapon_first_used = v.name
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-						Citizen.Wait(10)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
+				if not Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+					if not Citizen.InvokeNative(0x30E7C16B12DA8211, GetHashKey(v.name)) then
+						LoadWeaponChar(v.name)
 					else
-						if weapon_second_used == false then
-							weapon_second_used = v.name
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-							Citizen.Wait(10)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						end
+						Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(v.name), 0, false, true, true, 1.0)
+						SetCurrentPedWeapon(PlayerPedId(),GetHashKey(v.name), true)
 					end
-				end
-				if string.match(v.name, "PISTOL") then
-					if weapon_first_used == false then
-						weapon_first_used = v.name
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-						Citizen.Wait(10)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					if "weapon_melee_davy_lantern" == v.name then
+						Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
+					else
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
-					else
-						if weapon_second_used == false then
-							weapon_second_used = v.name
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-							Citizen.Wait(500)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						end
-					end
-				else
-					if string.match(v.name, "pistol") then
-						if weapon_first_used == false then
-							weapon_first_used = v.name
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-							Citizen.Wait(10)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						else
-							if weapon_second_used == false then
-								weapon_second_used = v.name
-								--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-								Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-								Citizen.Wait(10)
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
-								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-								Citizen.Wait(500)
-							end
-						end
-					else
-						local weapon_what = "other"
-						if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(v.name) then
-							weapon_what = "REPEATER"
-						elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(v.name) then
-							weapon_what = "SHOTGUN"
-						elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(v.name) then
-							weapon_what = "RIFLE"
-						elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(v.name) then
-							weapon_what = "SNIPER"
-						elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(v.name) then
-							weapon_what = "BOW"
-						else
-							weapon_what = "other"
-						end
-						if rifle_first_used == false and weapon_what ~= "other" then
-							rifle_first_used = v.name
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(rifle_first_used), 0, true, 0);
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(rifle_first_used), 0, false, true, true, 1.0)
-							Citizen.Wait(10)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						else
-							if rifle_second_used == false and weapon_what ~= "other" then
-								rifle_second_used = v.name
-								Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(rifle_second_used), 0, true, 0);
-								--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(rifle_second_used), 0, false, true, true, 1.0)
-								Citizen.Wait(10)
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
-								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-								Citizen.Wait(500)
-							else
-								if weapon_what == "other" then
-									Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(v.name), 0, true, 0);
-									--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(v.name), 0, false, true, true, 1.0);
-									local comps_decoded = json.decode(v.comps)
-									TriggerEvent("gum_weapons:load_components", comps_decoded)
-									local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.Wait(50)
-									bp_condition[v.id] = v.conditionlevel
-									condition_level[v.id] = v.conditionlevel
-									Citizen.Wait(1500)
-									if v.name == 'weapon_melee_davy_lantern' then
-										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
-										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
-									end
-									Citizen.Wait(100)
-									Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-									Citizen.Wait(500)
-								end
-							end
-						end
 					end
 				end
 			end
+			if Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+				if rifle_first_used ~= false and rifle_second_used == false then
+					LoadWeaponChar(v.name)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					rifle_second_used = v.name
+				end
+				if rifle_first_used == false and rifle_second_used == false then
+					LoadWeaponChar(v.name)
+					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+					SetDirtToWeapon(v.id, v.conditionlevel)
+					rifle_first_used = v.name
+				end
+			end
 		end
-		Citizen.Wait(100)
+		if k == #weapon_table then
+			login_continue = true
+		end
 	end
-	RemoveAllWeapons()
+	if #weapon_table == 0 then
+		login_continue = true
+	end
+	while login_continue == false do
+		Citizen.Wait(50)
+	end
 	Citizen.Wait(1000)
-	for k,v in pairs(weapon_table) do
-		if v.used == 1 then
-			if string.match(v.name, "REVOLVER")  then
-				if weapon_first_used == false then
-					weapon_first_used = v.name
-					--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-					Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-					Citizen.Wait(500)
-					for k2,v2 in pairs(json.decode(v.ammo)) do
-						SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-					end
-					local comps_decoded = json.decode(v.comps)
-					TriggerEvent("gum_weapons:load_components", comps_decoded)
-					bp_condition[v.id] = v.conditionlevel
-					condition_level[v.id] = v.conditionlevel
-					Citizen.Wait(1500)
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-					Citizen.Wait(500)
-				else
-					if weapon_second_used == false then
-						weapon_second_used = v.name
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-						Citizen.Wait(500)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)			
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
-					end
-				end
-			else
-				if string.match(v.name, "revolver") then
-					if weapon_first_used == false then
-						weapon_first_used = v.name
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-						Citizen.Wait(500)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
-					else
-						if weapon_second_used == false then
-							weapon_second_used = v.name
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-							Citizen.Wait(500)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-							Citizen.Wait(500)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						end
-					end
-				end
-				if string.match(v.name, "PISTOL") then
-					if weapon_first_used == false then
-						weapon_first_used = v.name
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-						--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-						Citizen.Wait(500)
-						for k2,v2 in pairs(json.decode(v.ammo)) do
-							SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-						end
-						local comps_decoded = json.decode(v.comps)
-						TriggerEvent("gum_weapons:load_components", comps_decoded)
-						bp_condition[v.id] = v.conditionlevel
-						condition_level[v.id] = v.conditionlevel
-						Citizen.Wait(1500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						Citizen.Wait(500)
-					else
-						if weapon_second_used == false then
-							weapon_second_used = v.name
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-							Citizen.Wait(500)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						end
-					end
-				else
-					if string.match(v.name, "pistol") then
-						if weapon_first_used == false then
-							weapon_first_used = v.name
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, false, true, true, 1.0)
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-							Citizen.Wait(500)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						else
-							if weapon_second_used == false then
-								weapon_second_used = v.name
-								--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, false, true, true, 1.0)
-								Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-								Citizen.Wait(500)
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								Citizen.Wait(10)
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1000)
-								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-								Citizen.Wait(500)
-							end
-						end
-					else
-						local weapon_what = "other"
-						if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(v.name) then
-							weapon_what = "REPEATER"
-						elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(v.name) then
-							weapon_what = "SHOTGUN"
-						elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(v.name) then
-							weapon_what = "RIFLE"
-						elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(v.name) then
-							weapon_what = "SNIPER"
-						elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(v.name) then
-							weapon_what = "BOW"
-						else
-							weapon_what = "other"
-						end
-						if rifle_first_used == false and weapon_what ~= "other" then
-							rifle_first_used = v.name
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(rifle_first_used), 0, true, 0);
-							--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(rifle_first_used), 0, false, true, true, 1.0)
-							Citizen.Wait(500)
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.Wait(1500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-							Citizen.Wait(500)
-						else
-							if rifle_second_used == false and weapon_what ~= "other" then
-								rifle_second_used = v.name
-								Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(rifle_second_used), 0, true, 0);
-								--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(rifle_second_used), 0, false, true, true, 1.0)
-								Citizen.Wait(500)
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.Wait(1500)
-								Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-								Citizen.Wait(500)
-							else
-								if weapon_what == "other" then
-									Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(v.name), 0, true, 0);
-									--Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(v.name), 0, false, true, true, 1.0);
-									local comps_decoded = json.decode(v.comps)
-									TriggerEvent("gum_weapons:load_components", comps_decoded)
-									local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(v.conditionlevel))
-									Citizen.Wait(50)
-									bp_condition[v.id] = v.conditionlevel
-									condition_level[v.id] = v.conditionlevel
-									Citizen.Wait(1000)
-									if v.name == 'weapon_melee_davy_lantern' then
-										GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
-										Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
-									end
-									Citizen.Wait(1500)
-									Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-									Citizen.Wait(500)
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-		Citizen.Wait(100)
-	end
-	Citizen.Wait(200)
 	if weapon_second_used ~= false and weapon_first_used ~= false then
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);
@@ -1238,227 +759,135 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 	can_save = false
 	if equip_spam == false then
 		equip_spam = true
-		can_again = false
-		for k,v in pairs(eWeaponAttachPoint) do
-			local reval, weaponhash = GetCurrentPedWeapon(PlayerPedId(), 0, v, 0)
-			if weaponhash == GetHashKey(data.model) then
-				can_again = true
-			end
-		end
-		Citizen.Wait(0)
-		if not can_again and logged_true == true then
-			local IsRevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(data.model))
-			local IsPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(data.model))
-			--REVOLVERS AND PISTOLS
-			if (IsRevolver == 1 or IsPistol == 1) then
-				if weapon_first_used == false then
-					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
-
-					weapon_first_used = data.model
-					Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-					for k,v in pairs(weapon_table) do
-						if tonumber(v.id) == tonumber(data.id) then
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							Citizen.Wait(1000)
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, v.conditionlevel)
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, v.dirtlevel, 0)
-						end
-					end
-					Citizen.Wait(500)
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[12].text, 'pistol', 1200)
-				else
-					if weapon_second_used == false then
-						SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
-						weapon_second_used = data.model
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(weapon_second_used), 0, true, 0);
-						for k,v in pairs(weapon_table) do
-							if tonumber(v.id) == tonumber(data.id) then
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								Citizen.Wait(1000)
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, v.conditionlevel)
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, v.dirtlevel, 0)
-							end
-						end
-						Citizen.Wait(500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
-						GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
-						GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[13].text, 'pistol', 1200)
-					else
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[14].text, 'pistol', 1200)
-					end
-				end
-			else
-				---RIFLES AND REPEATERS
-				local weapon_what = "other"
-				if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(data.model) then
-					weapon_what = "REPEATER"
-				elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(data.model) then
-					weapon_what = "SHOTGUN"
-				elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(data.model) then
-					weapon_what = "RIFLE"
-				elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(data.model) then
-					weapon_what = "SNIPER"
-				elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(data.model) then
-					weapon_what = "BOW"
-				else
-					weapon_what = "other"
-				end
-				if rifle_first_used == false and weapon_what ~= "other" then
-					rifle_first_used = data.model
-					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
-					Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(data.model), 0, true, 0);
-					for k,v in pairs(weapon_table) do
-						if tonumber(v.id) == tonumber(data.id) then
-							for k2,v2 in pairs(json.decode(v.ammo)) do
-								SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-							end
-							SetPedAmmoByType(PlayerPedId(), GetHashKey('AMMO_ARROW'), 1);
-							local comps_decoded = json.decode(v.comps)
-							TriggerEvent("gum_weapons:load_components", comps_decoded)
-							Citizen.Wait(1000)
-							local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-							bp_condition[v.id] = v.conditionlevel
-							condition_level[v.id] = v.conditionlevel
-							Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, v.conditionlevel)
-							Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, v.dirtlevel, 0)
-						end
-					end
-					Citizen.Wait(500)
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[15].text, 'rifle', 1200)
-				else
-					if rifle_second_used == false and weapon_what ~= "other" then
-						rifle_second_used = data.model
-						SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
-						Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(data.model), 0, true, 0);
-						if weapon_what == "BOW" then
-							SetPedAmmoByType(PlayerPedId(), GetHashKey('AMMO_ARROW'), 1);
-						end
-						for k,v in pairs(weapon_table) do
-							if tonumber(v.id) == tonumber(data.id) then
-								for k2,v2 in pairs(json.decode(v.ammo)) do
-									SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
-								end
-								local comps_decoded = json.decode(v.comps)
-								TriggerEvent("gum_weapons:load_components", comps_decoded)
-								Citizen.Wait(1000)
-								local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-								bp_condition[v.id] = v.conditionlevel
-								condition_level[v.id] = v.conditionlevel
-								Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, v.conditionlevel)
-								Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, v.dirtlevel, 0)
-							end
-						end
-						Citizen.Wait(500)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[16].text, 'rifle', 1200)
-					else
-						if rifle_first_used ~= false and rifle_second_used ~= false and weapon_what ~= "other" then
-							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[17].text, 'rifle', 1200)
-						end
-
-						if weapon_what == "other" then
-							SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
-							Citizen.InvokeNative(0xB282DC6EBD803C75, PlayerPedId(), GetHashKey(data.model), 0, true, 0);
-							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
-							for k,v in pairs(weapon_table) do
-								if tonumber(v.id) == tonumber(data.id) then
-									if weapon_what == "BOW" then
-										SetPedAmmoByType(PlayerPedId(), GetHashKey('AMMO_ARROW'), 1);
-									end
-									local comps_decoded = json.decode(v.comps)
-									TriggerEvent("gum_weapons:load_components", comps_decoded)
-									Citizen.Wait(1000)
-									local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-									bp_condition[v.id] = v.conditionlevel
-									condition_level[v.id] = v.conditionlevel
-									Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, v.conditionlevel)
-									Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, v.dirtlevel, 0)
-								end
-							end
-							Citizen.Wait(500)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
-
-							if data.model == 'weapon_melee_davy_lantern' then
-								GiveWeaponToPed_2(PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, true,true, 12, false, 0.5, 1.0, 752097756, false,0, false);
-								Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
-							end
-							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[18].text, 'other', 1200)
-						end
-					end
-				end
-			end
-		else
-			local IsRevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(data.model))
-			local IsPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(data.model))
-			if (IsRevolver == 1 or IsPistol == 1) then
-				if data.model == weapon_second_used then
-					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
+		for k,v in pairs(weapon_table) do
+			if v.used == 1 and tonumber(data.id) == v.id then
+				if v.name == weapon_first_used and data.model == weapon_first_used then
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					weapon_second_used = false
-					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
-					Citizen.Wait(200)
-					Citizen.InvokeNative("0xB282DC6EBD803C75", PlayerPedId(), GetHashKey(weapon_first_used), 0, true, 0);
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[19].text, 'bag', 1000)
-				end
-				Citizen.Wait(0)
-				if data.model == weapon_first_used then
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					weapon_first_used = false
+					equip_spam = false
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[20].text.."", 'bag', 1000)
+					return false
+				elseif v.name == weapon_second_used and data.model == weapon_second_used then
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[20].text, 'bag', 1000)
-				end
-			else
-				if rifle_first_used ~= data.model and rifle_second_used ~= data.model then
-					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[21].text, 'bag', 1000)
-				end
-				Citizen.Wait(0)
-				if rifle_first_used == data.model then
+					weapon_second_used = false
+					equip_spam = false
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[19].text.."", 'bag', 1000)
+					return false
+				elseif v.name == rifle_first_used and data.model == rifle_first_used then
+					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
+					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 					rifle_first_used = false
+					equip_spam = false
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[22].text.."", 'bag', 1000)
+					return false
+				elseif v.name == rifle_second_used and data.model == rifle_second_used then
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[22].text, 'bag', 1000)
+					rifle_second_used = false
+					equip_spam = false
+					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[23].text.."", 'bag', 1000)
+					return false
 				else
-					if rifle_second_used == data.model then
-						rifle_second_used = false
+					if data.model == v.name and tonumber(data.id) == v.id then
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-						SendNUIMessage({type = "weapon_desc_update", data_info = data.id})
 						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
-						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, Config.Language[23].text, 'bag', 1000)
+						equip_spam = false
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[21].text.."", 'bag', 1000)
+						return false
 					end
 				end
 			end
 		end
+		for k,v in pairs(weapon_table) do
+			if v.name == data.model and v.used == 0 and tonumber(data.id) == v.id then
+				if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
+					if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+						if weapon_first_used == false then
+							LoadWeaponChar(v.name)
+							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+							SetDirtToWeapon(v.id, v.conditionlevel)
+							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+							weapon_first_used = v.name
+							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[12].text.."", 'bag', 1000)
+						elseif weapon_second_used == false then
+							LoadWeaponChar(v.name)
+							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+							SetDirtToWeapon(v.id, v.conditionlevel)
+							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+							weapon_second_used = v.name
+							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[13].text.."", 'bag', 1000)
+						end
+					end
+				else
+					if not Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+						if not Citizen.InvokeNative(0x30E7C16B12DA8211, GetHashKey(v.name)) then
+							LoadWeaponChar(v.name)
+						else
+							Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(v.name), 0, false, true, true, 1.0)
+							SetCurrentPedWeapon(PlayerPedId(),GetHashKey(v.name), true)
+						end
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[18].text.."", 'bag', 1000)
+					end
+				end
+				if Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
+					if rifle_first_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+						rifle_first_used = v.name
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[15].text.."", 'bag', 1000)
+					elseif rifle_second_used == false then
+						LoadWeaponChar(v.name)
+						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
+						SetDirtToWeapon(v.id, v.conditionlevel)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
+						rifle_second_used = v.name
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[16].text.."", 'bag', 1000)
+					end
+				end
+			end
+		end
+		equip_spam = false
 	end
-	Citizen.Wait(1000)
-	equip_spam = false
 	can_save = true
 end)
+
+
+function LoadWeaponChar(name)
+	while wep_load ~= GetHashKey(name) do
+		_, wep_load = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)
+		Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(name), 0, false, true, true, 1.0)
+		SetCurrentPedWeapon(PlayerPedId(),GetHashKey(name), true)
+		Citizen.Wait(300)
+	end
+	wep_load = nil
+end
+
+function LoadCompAndAmmo(ammo, comps)
+	TriggerEvent("gum_weapons:load_components", comps)
+	for k2,v2 in pairs(ammo) do
+		SetPedAmmoByType(PlayerPedId(), GetHashKey(k2), v2);
+	end
+end
+
+function SetDirtToWeapon(wpId, wpCondition)
+	local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
+	Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(wpCondition))
+	Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(wpCondition), 0)
+	condition_level[wpId] = tonumber(wpCondition)
+	Citizen.Wait(1000)
+end
 
 RegisterNetEvent('gum_inventory:remove_wepo')
 AddEventHandler('gum_inventory:remove_wepo', function(model)
@@ -1561,13 +990,8 @@ Citizen.CreateThread(function()
 		end
 		if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0x52D29063) then
 			if weapon_first_used ~= false and weapon_second_used ~= false then
-				GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
-				GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);		
-				Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey(weapon_first_used), 0, 0, 0, 0);
-				Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey(weapon_second_used), 0, 1, 0, 0);
-				Citizen.Wait(400)
-				GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
-				GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);		
+				Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_first_used), 0, 1, 1, 2, 0, 0.5, 1.0, GetHashKey('ADD_REASON_DEFAULT'), 0, 0.0, false)
+				Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(weapon_second_used), 0, 1, 1, 3, 1, 0.5, 1.0, GetHashKey('ADD_REASON_DEFAULT'), 1, 0.0, false)
 				Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey(weapon_first_used), 0, 0, 0, 0);
 				Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey(weapon_second_used), 0, 1, 0, 0);
 			end
@@ -1735,6 +1159,7 @@ Citizen.CreateThread(function()
 		Citizen.Wait(10)
 	end
 end)
+
 Citizen.CreateThread(function()
 	local player_prompt
 	local player_prompt2

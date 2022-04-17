@@ -1195,15 +1195,17 @@ RegisterServerEvent('gum_inventory:save_ammo')
 AddEventHandler('gum_inventory:save_ammo', function(name, new_ammo_table, condition_level)
 	local User = gumCore.getUser(tonumber(source))
 	local Character = User.getUsedCharacter
-	local identifier = Character.identifier
-	local charid = Character.charIdentifier
+	if User ~= nil then
+		local identifier = Character.identifier
+		local charid = Character.charIdentifier
 
-	if tonumber(condition_level) <= 0.99 then
-		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
-		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
-	else
-		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
-		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+		if tonumber(condition_level) <= 0.99 then
+			local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
+			exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+		else
+			local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
+			exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+		end
 	end
 end)
 RegisterServerEvent('gum_inventory:save_p_ammo')
