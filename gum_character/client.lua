@@ -205,7 +205,7 @@ AddEventHandler('gum_character:selected_char', function()
 end)
 
 RegisterNetEvent('gum_character:send_data_back')
-AddEventHandler('gum_character:send_data_back', function(skin_table_receive, outfit_table_receive, coord_table_receive, isdeaded, update)
+AddEventHandler('gum_character:send_data_back', function(skin_table_receive, outfit_table_receive, coord_table_receive, isdeaded, update, new_char)
     Skin_Table = skin_table_receive
     Clothe_Table = outfit_table_receive
     Coord_Table = coord_table_receive
@@ -223,13 +223,15 @@ AddEventHandler('gum_character:send_data_back', function(skin_table_receive, out
         while is_loaded_character == false do
             Citizen.Wait(200)
         end
+        startanim("script_rc@bch2@leadout@rsc_6", "wakeup_slow_charles", -1, 0)
+        Citizen.Wait(100)
         exports['gum_character']:loading(false)
         SetEntityVisible(PlayerPedId(), true)
         SendNUIMessage({
             type = "volume_stop",
             status = true,
         })
-        startanim("script_rc@bch2@leadout@rsc_6", "wakeup_slow_charles", -1, 0)
+        reload_scars()
         Citizen.Wait(200)
         local GetCoords = GetEntityCoords(PlayerPedId())
         if GetDistanceBetweenCoords(GetCoords.x, GetCoords.y, GetCoords.z, 2946.486328125, -2084.0859375, 49.65571594238281, false) < 10.0 then
@@ -254,26 +256,13 @@ RegisterCommand('db', function()
     local health = Citizen.InvokeNative(0x36731AC041289BB1, PlayerPedId(), 0) --health
     if stamina ~= nil and stamina ~= false and health ~= nil and health ~= false then
         if tonumber(stamina) >= 49 and tonumber(health) >= 49 then
-            if tonumber(reload_data) >= 10 then
-                Data_Character_Load_2()
-            else
-                reload_data = 0
-                Data_Character_Load()
-            end
+            ReloadCloth()
         end
     end
 end)
-
 RegisterCommand('dbs', function()
-    local stamina = Citizen.InvokeNative(0x36731AC041289BB1, PlayerPedId(), 1) --health
-    local health = Citizen.InvokeNative(0x36731AC041289BB1, PlayerPedId(), 0) --health
-    if stamina ~= nil and stamina ~= false and health ~= nil and health ~= false then
-        if tonumber(stamina) >= 49 and tonumber(health) >= 49 then
-            Data_Character_Load_2()
-        end
-    end
+    Data_Character_Load(nil, true)
 end)
-
 function Make_Data(gender)
     if gender == Config.Language[175].text then
         Skin_Table["sex"] = "mp_male"
@@ -619,7 +608,7 @@ Citizen.CreateThread(function()
         SetClockTime(12, 00, 00)
         SetEntityCoords(PlayerPedId(), -563.77, -3776.49, 238.56)
     else
-        SetEntityCoords(PlayerPedId(), 1407.5758056640625, -1139.779541015625, 75.34298706054688)
+        SetEntityCoords(PlayerPedId(), 270.33380126953125, -4076.84521484375, 215.644775390625)
         -- SetEntityCoords(PlayerPedId(), Coord_Table.x, Coord_Table.y, Coord_Table.z-1.0)
         -- FreezeEntityPosition(PlayerPedId(), true)
         -- SetEntityVisible(PlayerPedId(), false)
@@ -2036,6 +2025,7 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
     end)
 end)
 
+
 RegisterNetEvent('gum_characters:colors')
 AddEventHandler('gum_characters:colors', function(name,visibility,tx_id,tx_normal,tx_material,tx_color_type,tx_opacity,tx_unk,palette_id,palette_color_primary,palette_color_secondary,palette_color_tertiary,var,opacity)
     for k,v in pairs(Config.overlay_all_layers) do
@@ -2066,6 +2056,7 @@ AddEventHandler('gum_characters:colors', function(name,visibility,tx_id,tx_norma
     end
     is_overlay_change_active = true
 end)
+
 
 function Open_Body()
 	MenuData.CloseAll()
@@ -2861,7 +2852,6 @@ function ApplyDefaultSkinCanaryEdition_2(ped, gender)
         Citizen.Wait(100)
         Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
     end
-
 end
 
 
@@ -2896,9 +2886,7 @@ function ApplyDefaultSkinCanaryEdition(ped)
                 end
             end
         end
-
         Citizen.InvokeNative(0xCC8CA3E88256E58F, ped, 0, 1, 1, 1, false)
-
     else
         for k,v in pairs(Config.DefaultChar["Female"]) do
             if k == 1 then
@@ -3094,17 +3082,9 @@ function Mount_States()
 end
 
 function HasBodyComponentsLoaded(type, hash_for_load, text)
-    local timeout = 0
-    while Citizen.InvokeNative(0xFB4891BD7578CDC1, PlayerPedId(), type) == false and timeout <= 8 do
-        if timeout == 7 then
-            again = true
-        end
-        timeout = timeout+1
-        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), hash_for_load, false, true, true)
-        Citizen.Wait(100)
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
-    end
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), type, 0)
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), hash_for_load, false, true, true)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
     return true
 end
 
@@ -3121,20 +3101,37 @@ function LoadModel(model)
 		return false
 	end
 end
-function Data_Character_Load(first)
-    reload_data = reload_data+1
-    if tonumber(reload_data) >= 10 then
-        Data_Character_Load_2()
-        return false
-    end
-    again = false
-    LoadModel(GetHashKey(Skin_Table["sex"]))
-    if LoadModel(GetHashKey(Skin_Table["sex"])) then
-        SetPlayerModel(PlayerId(), GetHashKey(Skin_Table["sex"]), true)
-    end 
 
+function SetModelPed(pped, name)
+	local model = GetHashKey(name)
+
+	if not IsModelValid(model) then
+        return
+    end
+	PerformRequest(model)
+
+	if HasModelLoaded(model) then
+		Citizen.InvokeNative(0x283978A15512B2FE, pped, true)
+		SetModelAsNoLongerNeeded(model)
+	end
+end
+
+function Data_Character_Load(first, state)
+    local model = GetHashKey(Skin_Table["sex"])
+    RequestModel(model)
+    while not HasModelLoaded(model) do
+        RequestModel(model)
+        Citizen.Wait(0)
+    end
+    SetPlayerModel(PlayerId(), model)
+ 
+    -- SetModelPed(PlayerPedId(), Skin_Table["sex"])
+    Citizen.Wait(1000)
+    HasBodyComponentsLoaded(0xB3966C9, Skin_Table["Body"], "Body")
+    HasBodyComponentsLoaded(0x378AD10C, Skin_Table["HeadType"], "Head")
+    HasBodyComponentsLoaded(0x823687F5, Skin_Table["LegsType"], "Legs")
     Citizen.Wait(0)
-    local ppid = PlayerPedId()
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
     Citizen.Wait(0)
     for i=1,6 do
         if Skin_Table["Nation"] == i then
@@ -3144,25 +3141,20 @@ function Data_Character_Load(first)
                         if x == 1 then
                             local hash = ("0x"..y)
                             HeadCategory = i
-                            Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, tonumber(hash), true, true, true)
-                            Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
+                            Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), tonumber(hash), true, true, true)
                         end
                     end
                 end
             end
         end
     end
-    Citizen.Wait(0)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["BodyType"], false, true, true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["Body"], false, true, true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["HeadType"], false, true, true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["LegsType"], false, true, true)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-
-    HasBodyComponentsLoaded(0xB3966C9, Skin_Table["BodyType"], "Body")
-    HasBodyComponentsLoaded(0xB3966C9, Skin_Table["Body"], "Body")
-    HasBodyComponentsLoaded(0x378AD10C, Skin_Table["HeadType"], "Head")
-    Citizen.Wait(0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), Skin_Table["Body"], false, true, true)
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), Skin_Table["HeadType"], false, true, true)
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), Skin_Table["BodyType"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["Waist"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
     if Skin_Table["Eyes"] ~= -1 then
         HasBodyComponentsLoaded(0xEA24B45E, Skin_Table["Eyes"], "EYES")
     end
@@ -3172,12 +3164,10 @@ function Data_Character_Load(first)
     if Skin_Table["Beard"] ~= -1 then
         HasBodyComponentsLoaded(0xF8016BCA, Skin_Table["Beard"], "BEARD")
     end
-    Citizen.Wait(0)
-    Citizen.InvokeNative(0x1902C4CFCC5BE57C, ppid, Skin_Table["BodyType"], false, true, true);
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.InvokeNative(0x1902C4CFCC5BE57C, ppid, Skin_Table["Waist"], false, true, true);
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
- 
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["BodyType"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["Waist"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
     if Clothe_Table["Hat"] ~= -1 then
         HasBodyComponentsLoaded(0x9925C067, Clothe_Table["Hat"], "HAT")
     end
@@ -3189,6 +3179,9 @@ function Data_Character_Load(first)
     end
     if Clothe_Table["NeckWear"] ~= -1 then
         HasBodyComponentsLoaded(0x5FC29285, Clothe_Table["NeckWear"], "NeckWear")
+    end
+    if Clothe_Table["Suspender"] ~= -1 then
+        HasBodyComponentsLoaded(0x877A2CF7, Clothe_Table["Suspender"], "Suspender")
     end
     if Clothe_Table["NeckTies"] ~= -1 then
         HasBodyComponentsLoaded(0x7A96FACA, Clothe_Table["NeckTies"], "NeckTies")
@@ -3229,19 +3222,13 @@ function Data_Character_Load(first)
     if Clothe_Table["Chap"] ~= -1 then
         HasBodyComponentsLoaded(0x3107499B, Clothe_Table["Chap"], "Chap")
     end
-    if Clothe_Table["Suspender"] ~= -1 then
-        HasBodyComponentsLoaded(0x877A2CF7, Clothe_Table["Suspender"], "Suspender")
-    end
-    if Clothe_Table["Pant"] ~= -1 and Clothe_Table["Skirt"] == -1 then
-        HasBodyComponentsLoaded(0x1D4C528A, Clothe_Table["Pant"], "Pant")
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
-        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), Clothe_Table["Pant"], false, true, true)
-        Citizen.Wait(100)
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
-    else
-        Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x1D4C528A, 0)
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+    if Clothe_Table["Skirt"] ~= -1 then
         HasBodyComponentsLoaded(0xA0E3AB7F, Clothe_Table["Skirt"], "Skirt")
+    end
+    if Clothe_Table["Pant"] == -1 then
+        HasBodyComponentsLoaded(0x823687F5, Skin_Table["LegsType"], "Legs")
+    else
+        HasBodyComponentsLoaded(0x1D4C528A, Clothe_Table["Pant"], "Pant")
     end
     if Clothe_Table["Boots"] ~= -1 then
         HasBodyComponentsLoaded(0x777EC6EF, Clothe_Table["Boots"], "Boots")
@@ -3276,303 +3263,486 @@ function Data_Character_Load(first)
     if Clothe_Table["Holster"] ~= -1 then
         HasBodyComponentsLoaded(0xB6B6122D, Clothe_Table["Holster"], "Holster")
     end
-    if Skin_Table["Teeth"] ~= -1 then
-        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), Skin_Table["Teeth"], false, true, true)
-        Citizen.Wait(100)
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
+    if Skin_Table["Teeth"] ~= -1 and Skin_Table["Teeth"] ~= nil then
+        HasBodyComponentsLoaded(0x96EDAE5C, Skin_Table["Teeth"], "Teeth")
     end
-
-    Citizen.InvokeNative(0xD710A5007C2AC539, ppid, 0x3F1F01E5, 0)
-    Citizen.InvokeNative(0xD710A5007C2AC539, ppid, 0xDA0E2C55, 0)
-    Citizen.InvokeNative(0x704C908E9C405136, ppid)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x3F1F01E5, 0)
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xDA0E2C55, 0)
+    Citizen.InvokeNative(0x704C908E9C405136, PlayerPedId())
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
     Citizen.Wait(0)
-
-    Citizen.InvokeNative(0x25ACFC650B65C538, ppid, Skin_Table["Scale"])
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-
+    Citizen.InvokeNative(0x25ACFC650B65C538, PlayerPedId(), Skin_Table["Scale"])
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
     Citizen.Wait(0)
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x84D6, Skin_Table["HeadSize"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3303, Skin_Table["EyeBrowH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x2FF9, Skin_Table["EyeBrowW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x4AD1, Skin_Table["EyeBrowD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xC04F, Skin_Table["EarsH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xB6CE, Skin_Table["EarsW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x2844, Skin_Table["EarsD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xED30, Skin_Table["EarsL"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x8B2B, Skin_Table["EyeLidH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x1B6B, Skin_Table["EyeLidW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xEE44, Skin_Table["EyeD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xD266, Skin_Table["EyeAng"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xA54E, Skin_Table["EyeDis"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xDDFB, Skin_Table["EyeH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x6E7F, Skin_Table["NoseW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3471, Skin_Table["NoseS"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x03F5, Skin_Table["NoseH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x34B1, Skin_Table["NoseAng"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xF156, Skin_Table["NoseC"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x561E, Skin_Table["NoseDis"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x6A0B, Skin_Table["CheekBonesH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xABCF, Skin_Table["CheekBonesW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x358D, Skin_Table["CheekBonesD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xF065, Skin_Table["MouthW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xAA69, Skin_Table["MouthD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x7AC3, Skin_Table["MouthX"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x410D, Skin_Table["MouthY"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x1A00, Skin_Table["ULiphH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x91C1, Skin_Table["ULiphW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xC375, Skin_Table["ULiphD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xBB4D, Skin_Table["LLiphH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xB0B0, Skin_Table["LLiphW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x5D16, Skin_Table["LLiphD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x8D0A, Skin_Table["JawH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xEBAE, Skin_Table["JawW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x1DF6, Skin_Table["JawD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3C0F, Skin_Table["ChinH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xC3B2, Skin_Table["ChinW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xE323, Skin_Table["ChinD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x84D6, Skin_Table["HeadSize"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x3303, Skin_Table["EyeBrowH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x2FF9, Skin_Table["EyeBrowW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x4AD1, Skin_Table["EyeBrowD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xC04F, Skin_Table["EarsH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xB6CE, Skin_Table["EarsW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x2844, Skin_Table["EarsD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xED30, Skin_Table["EarsL"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x8B2B, Skin_Table["EyeLidH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x1B6B, Skin_Table["EyeLidW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xEE44, Skin_Table["EyeD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xD266, Skin_Table["EyeAng"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xA54E, Skin_Table["EyeDis"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xDDFB, Skin_Table["EyeH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x6E7F, Skin_Table["NoseW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x3471, Skin_Table["NoseS"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x03F5, Skin_Table["NoseH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x34B1, Skin_Table["NoseAng"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xF156, Skin_Table["NoseC"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x561E, Skin_Table["NoseDis"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x6A0B, Skin_Table["CheekBonesH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xABCF, Skin_Table["CheekBonesW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x358D, Skin_Table["CheekBonesD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xF065, Skin_Table["MouthW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xAA69, Skin_Table["MouthD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x7AC3, Skin_Table["MouthX"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x410D, Skin_Table["MouthY"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x1A00, Skin_Table["ULiphH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x91C1, Skin_Table["ULiphW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xC375, Skin_Table["ULiphD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xBB4D, Skin_Table["LLiphH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xB0B0, Skin_Table["LLiphW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x5D16, Skin_Table["LLiphD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x8D0A, Skin_Table["JawH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xEBAE, Skin_Table["JawW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x1DF6, Skin_Table["JawD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x3C0F, Skin_Table["ChinH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xC3B2, Skin_Table["ChinW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xE323, Skin_Table["ChinD"]);
     Citizen.Wait(0)
-    if Skin_Table["scars_visibility"] ~= nil and Skin_Table["scars_tx_id"] ~= nil  and Skin_Table["scars_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "scars", Skin_Table["scars_visibility"], Skin_Table["scars_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["scars_opacity"])
-    end
-    if Skin_Table["spots_visibility"] ~= nil and Skin_Table["spots_tx_id"] ~= nil  and Skin_Table["spots_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "spots", Skin_Table["spots_visibility"], Skin_Table["spots_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["spots_opacity"])
-    end
-    if Skin_Table["disc_visibility"] ~= nil and Skin_Table["disc_tx_id"] ~= nil  and Skin_Table["disc_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "disc", Skin_Table["disc_visibility"], Skin_Table["disc_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["disc_opacity"])
-    end
-    if Skin_Table["complex_visibility"] ~= nil and Skin_Table["complex_tx_id"] ~= nil  and Skin_Table["complex_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "complex", Skin_Table["complex_visibility"], Skin_Table["complex_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["complex_opacity"])
-    end
-    if Skin_Table["acne_visibility"] ~= nil and Skin_Table["acne_tx_id"] ~= nil  and Skin_Table["acne_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "acne", Skin_Table["acne_visibility"], Skin_Table["acne_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["acne_opacity"])
-    end
-    if Skin_Table["ageing_visibility"] ~= nil and Skin_Table["ageing_tx_id"] ~= nil  and Skin_Table["ageing_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "ageing", Skin_Table["ageing_visibility"], Skin_Table["ageing_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["ageing_opacity"])
-    end
-    if Skin_Table["freckles_visibility"] ~= nil and Skin_Table["freckles_tx_id"] ~= nil  and Skin_Table["freckles_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "freckles", Skin_Table["freckles_visibility"], Skin_Table["freckles_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["freckles_opacity"])
-    end
-    if Skin_Table["moles_visibility"] ~= nil and Skin_Table["moles_tx_id"] ~= nil  and Skin_Table["moles_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "moles", Skin_Table["moles_visibility"], Skin_Table["moles_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["moles_opacity"])
-    end
-    if Skin_Table["eyebrows_visibility"] ~= nil and Skin_Table["eyebrows_tx_id"] ~= nil  and Skin_Table["eyebrows_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "eyebrows", Skin_Table["eyebrows_visibility"], Skin_Table["eyebrows_tx_id"], 1, 0, 0, 1.0, 0, 1, Skin_Table["eyebrows_color"],0,0,1,Skin_Table["eyebrows_opacity"])
-    end
-    if Skin_Table["blush_visibility"] ~= nil and Skin_Table["blush_tx_id"] ~= nil  and Skin_Table["blush_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "blush", Skin_Table["blush_visibility"], Skin_Table["blush_tx_id"], 1, 0, 0, 1.0, 0, 1, Skin_Table["blush_color_1"],0,0,1,Skin_Table["blush_opacity"])
-    end
-    if Skin_Table["eyeliners_visibility"] ~= nil and Skin_Table["eyeliners_tx_id"] ~= nil  and Skin_Table["eyeliners_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "eyeliners", Skin_Table["eyeliners_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["eyeliners_color_1"],0,0,Skin_Table["eyeliners_tx_id"],Skin_Table["eyeliners_opacity"])
-    end
-    if Skin_Table["lipsticks_visibility"] ~= nil and Skin_Table["lipsticks_tx_id"] ~= nil  and Skin_Table["lipsticks_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "lipsticks", Skin_Table["lipsticks_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["lipsticks_color_1"],Skin_Table["lipsticks_color_2"],Skin_Table["lipsticks_color_3"], Skin_Table["lipsticks_tx_id"], Skin_Table["lipsticks_opacity"])
-    end
-    if Skin_Table["shadows_visibility"] ~= nil and Skin_Table["shadows_tx_id"] ~= nil  and Skin_Table["shadows_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "shadows", Skin_Table["shadows_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["shadows_color_1"],Skin_Table["shadows_color_2"],Skin_Table["shadows_color_3"],Skin_Table["shadows_tx_id"],Skin_Table["shadows_opacity"])
-    end
-    if Skin_Table["beardstabble_visibility"] ~= nil and Skin_Table["beardstabble_tx_id"] ~= nil  and Skin_Table["beardstabble_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "beardstabble", Skin_Table["beardstabble_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["beardstabble_color_1"],Skin_Table["beardstabble_color_2"],Skin_Table["beardstabble_color_3"],Skin_Table["beardstabble_tx_id"],Skin_Table["beardstabble_opacity"])
-    end
-    Citizen.Wait(10)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["HeadType"], false, true, true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["BodyType"], false, true, true)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    if Config.WalkFaceStyle then
-        TriggerEvent("gum_walkingfacestyle:active")
-    end
-    if again then
-        Data_Character_Load()
-    end
-end
-
-function Data_Character_Load_2()
-    SetModel(Skin_Table["sex"])
-
-    Citizen.Wait(500)
-    local ppid = PlayerPedId()
-
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["Body"], false, true, true)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.Wait(500)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["BodyType"], false, true, true)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.Wait(500)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["LegsType"], false, true, true)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.Wait(500)
-    for i=1,6 do
-        if Skin_Table["Nation"] == i then
-            for k,v in pairs(Config.DefaultChar["Male"][i]) do
-                if k == "Heads" then
-                    for x,y in pairs(v) do
-                        if x == 1 then
-                            local hash = ("0x"..y)
-                            HeadCategory = i
-                            Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, tonumber(hash), true, true, true)
-                            Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-                        end
-                    end
-                end
-            end
-        end
-    end
-    Citizen.Wait(500)    
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["HeadType"], false, true, true)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    
-    Citizen.Wait(500)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["Eyes"], false, true, true);
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["Hair"], false, true, true);
-    Citizen.InvokeNative(0x1902C4CFCC5BE57C, ppid, Skin_Table["BodyType"], false, true, true);
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.InvokeNative(0x1902C4CFCC5BE57C, ppid, Skin_Table["Waist"], false, true, true);
-    Citizen.InvokeNative(0x59BD177A1A48600A, ppid, 0xF8016BCA);
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["Beard"], false, true, true);
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.Wait(100)
-    if Skin_Table["Teeth"] ~= nil then
-        Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Skin_Table["Teeth"], false, true, true);
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    end
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false)
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), Skin_Table["HeadType"], false, true, true)
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["BodyType"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["Waist"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
     Citizen.Wait(1000)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Hat"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["EyeWear"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Mask"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["NeckWear"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["NeckTies"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Shirt"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Suspender"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Vest"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Coat"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["CoatClosed"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Poncho"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Cloak"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Glove"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["RingRh"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["RingLh"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Bracelet"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Buckle"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Holster"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Chap"], false,true,true)
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xEA24B45E, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x864B03AE, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xF8016BCA, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x9925C067, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x5E47CA6, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x662AC34, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x5FC29285, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x7A96FACA, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x2026C46D, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x877A2CF7, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x485EE834, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xE06D30CE, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xAF14310B, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x3C1A74CD, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xEABE0032, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x7A6BBD0B, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xF16A1D23, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x7BC10759, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x9B2C8B89, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xA6D134C6, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xFAE9107F, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xB6B6122D, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x1D4C528A, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xA0E3AB7F, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x3107499B, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x777EC6EF, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x18729F39, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xF1542D11, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x514ADCEA, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x91CE9B20, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x83887E88, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x79D7DF96, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x94504D26, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x96EDAE5C, 0);
+
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xB3966C9, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x378AD10C, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x823687F5, 0);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0);
+    Citizen.Wait(1000)
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Body"],       true, true, false);
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["HeadType"],       true, true, false);
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["LegsType"],       true, true, false);
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Eyes"],       true, true, false);
+    Citizen.Wait(1000)
+    if Skin_Table["Teeth"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Teeth"],       true, true, false);
+    end
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0);
+    Citizen.Wait(0)
+    if Skin_Table["Beard"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Beard"],       true, true, false);
+    end
+    if Skin_Table["Hair"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Hair"],       true, true, false);
+    end
+    if Clothe_Table["Hat"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Hat"],       true, true, false);
+    end
+    if Clothe_Table["EyeWear"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["EyeWear"],   true, true, false);
+    end
+    if Clothe_Table["Mask"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Mask"],      true, true, false);
+    end
+    if Clothe_Table["NeckWear"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["NeckWear"],  true, true, false);
+    end
+    if Clothe_Table["Suspender"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Suspender"], true, true, false);
+    end
+    if Clothe_Table["NeckTies"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["NeckTies"],  true, true, false);
+    end
+    if Clothe_Table["Shirt"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Shirt"],     true, true, false);
+    end
+    if Clothe_Table["Vest"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Vest"],      true, true, false);
+    end
+    if Clothe_Table["Coat"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Coat"],      true, true, false);
+    end
+    if Clothe_Table["CoatClosed"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["CoatClosed"],true, true, false);
+    end
+    if Clothe_Table["Poncho"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Poncho"],    true, true, false);
+    end
+    if Clothe_Table["Cloak"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Cloak"],     true, true, false);
+    end
+    if Clothe_Table["Glove"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Glove"],    true, true, false);
+    end
+    if Clothe_Table["RingRh"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["RingRh"],   true, true, false);
+    end
+    if Clothe_Table["RingLh"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["RingLh"],   true, true, false);
+    end
+    if Clothe_Table["Bracelet"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Bracelet"], true, true, false);
+    end
+    if Clothe_Table["Buckle"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Buckle"],   true, true, false);
+    end
+    if Clothe_Table["Chap"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Chap"],     true, true, false);
+    end
     if Clothe_Table["Skirt"] ~= -1 then
-        Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x1D4C528A, 0)
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-        Citizen.Wait(500)
-        Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Skirt"], false,true,true)
-        Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-   else
-        Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Pant"], false,true,true)
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Skirt"],    true, true, false);
     end
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Boots"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Spurs"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Spats"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Gauntlets"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Loadouts"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Accessories"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Belt"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Gunbelt"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["GunbeltAccs"], false,true,true)
-    Citizen.InvokeNative(0xD3A7B003ED343FD9, ppid, Clothe_Table["Satchels"], false,true,true)
-    Citizen.InvokeNative(0xD710A5007C2AC539, ppid, 0x3F1F01E5, 0)
-    Citizen.InvokeNative(0xD710A5007C2AC539, ppid, 0xDA0E2C55, 0)
-    Citizen.InvokeNative(0x704C908E9C405136, ppid)
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-    Citizen.Wait(500)
+    if Clothe_Table["Pant"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Pant"],     true, true, false);
+    end
+    if Clothe_Table["Boots"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Boots"],    true, true, false);
+    end
+    if Clothe_Table["Spurs"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Spurs"],    true, true, false);
+    end
+    if Clothe_Table["Spats"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Spats"],   true, true, false);
+    end
+    if Clothe_Table["Gauntlets"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Gauntlets"],true, true, false);
+    end
+    if Clothe_Table["Loadouts"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Loadouts"], true, true, false);
+    end
+    if Clothe_Table["Accessories"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Accessories"],true, true, false);
+    end
+    if Clothe_Table["Belt"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Belt"], true, true, false);
+    end
+    if Clothe_Table["Gunbelt"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Gunbelt"], true, true, false);
+    end
+    if Clothe_Table["GunbeltAccs"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["GunbeltAccs"], true, true, false);
+    end
+    if Clothe_Table["Satchels"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Satchels"], true, true, false);
+    end
+    if Clothe_Table["Holster"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Holster"], true, true, false);
+    end
+    if Clothe_Table["Teeth"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Teeth"], true, true, false);
+    end
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
 
-    Citizen.InvokeNative(0x25ACFC650B65C538, ppid, Skin_Table["Scale"])
-    Citizen.InvokeNative(0xCC8CA3E88256E58F, ppid, 0, 1, 1, 1, false);
-
-    Citizen.Wait(500)
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x84D6, Skin_Table["HeadSize"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3303, Skin_Table["EyeBrowH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x2FF9, Skin_Table["EyeBrowW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x4AD1, Skin_Table["EyeBrowD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xC04F, Skin_Table["EarsH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xB6CE, Skin_Table["EarsW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x2844, Skin_Table["EarsD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xED30, Skin_Table["EarsL"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x8B2B, Skin_Table["EyeLidH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x1B6B, Skin_Table["EyeLidW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xEE44, Skin_Table["EyeD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xD266, Skin_Table["EyeAng"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xA54E, Skin_Table["EyeDis"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xDDFB, Skin_Table["EyeH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x6E7F, Skin_Table["NoseW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3471, Skin_Table["NoseS"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x03F5, Skin_Table["NoseH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x34B1, Skin_Table["NoseAng"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xF156, Skin_Table["NoseC"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x561E, Skin_Table["NoseDis"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x6A0B, Skin_Table["CheekBonesH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xABCF, Skin_Table["CheekBonesW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x358D, Skin_Table["CheekBonesD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xF065, Skin_Table["MouthW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xAA69, Skin_Table["MouthD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x7AC3, Skin_Table["MouthX"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x410D, Skin_Table["MouthY"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x1A00, Skin_Table["ULiphH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x91C1, Skin_Table["ULiphW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xC375, Skin_Table["ULiphD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xBB4D, Skin_Table["LLiphH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xB0B0, Skin_Table["LLiphW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x5D16, Skin_Table["LLiphD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x8D0A, Skin_Table["JawH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xEBAE, Skin_Table["JawW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x1DF6, Skin_Table["JawD"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0x3C0F, Skin_Table["ChinH"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xC3B2, Skin_Table["ChinW"]);
-    Citizen.InvokeNative(0x5653AB26C82938CF, ppid, 0xE323, Skin_Table["ChinD"]);
-
-    if Skin_Table["scars_visibility"] ~= nil and Skin_Table["scars_tx_id"] ~= nil  and Skin_Table["scars_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "scars", Skin_Table["scars_visibility"], Skin_Table["scars_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["scars_opacity"])
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["Waist"])
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["Waist"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    reload_scars()
+    if state == true then
+        TriggerEvent("gum_inventory:reload_weap")
     end
-    if Skin_Table["spots_visibility"] ~= nil and Skin_Table["spots_tx_id"] ~= nil  and Skin_Table["spots_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "spots", Skin_Table["spots_visibility"], Skin_Table["spots_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["spots_opacity"])
-    end
-    if Skin_Table["disc_visibility"] ~= nil and Skin_Table["disc_tx_id"] ~= nil  and Skin_Table["disc_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "disc", Skin_Table["disc_visibility"], Skin_Table["disc_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["disc_opacity"])
-    end
-    if Skin_Table["complex_visibility"] ~= nil and Skin_Table["complex_tx_id"] ~= nil  and Skin_Table["complex_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "complex", Skin_Table["complex_visibility"], Skin_Table["complex_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["complex_opacity"])
-    end
-    if Skin_Table["acne_visibility"] ~= nil and Skin_Table["acne_tx_id"] ~= nil  and Skin_Table["acne_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "acne", Skin_Table["acne_visibility"], Skin_Table["acne_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["acne_opacity"])
-    end
-    if Skin_Table["ageing_visibility"] ~= nil and Skin_Table["ageing_tx_id"] ~= nil  and Skin_Table["ageing_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "ageing", Skin_Table["ageing_visibility"], Skin_Table["ageing_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["ageing_opacity"])
-    end
-    if Skin_Table["freckles_visibility"] ~= nil and Skin_Table["freckles_tx_id"] ~= nil  and Skin_Table["freckles_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "freckles", Skin_Table["freckles_visibility"], Skin_Table["freckles_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["freckles_opacity"])
-    end
-    if Skin_Table["moles_visibility"] ~= nil and Skin_Table["moles_tx_id"] ~= nil  and Skin_Table["moles_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "moles", Skin_Table["moles_visibility"], Skin_Table["moles_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["moles_opacity"])
-    end
-    if Skin_Table["eyebrows_visibility"] ~= nil and Skin_Table["eyebrows_tx_id"] ~= nil  and Skin_Table["eyebrows_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "eyebrows", Skin_Table["eyebrows_visibility"], Skin_Table["eyebrows_tx_id"], 1, 0, 0, 1.0, 0, 1, Skin_Table["eyebrows_color"],0,0,1,Skin_Table["eyebrows_opacity"])
-    end
-    if Skin_Table["blush_visibility"] ~= nil and Skin_Table["blush_tx_id"] ~= nil  and Skin_Table["blush_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "blush", Skin_Table["blush_visibility"], Skin_Table["blush_tx_id"], 1, 0, 0, 1.0, 0, 1, Skin_Table["blush_color_1"],0,0,1,Skin_Table["blush_opacity"])
-    end
-    if Skin_Table["eyeliners_visibility"] ~= nil and Skin_Table["eyeliners_tx_id"] ~= nil  and Skin_Table["eyeliners_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "eyeliners", Skin_Table["eyeliners_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["eyeliners_color_1"],0,0,Skin_Table["eyeliners_tx_id"],Skin_Table["eyeliners_opacity"])
-    end
-    if Skin_Table["lipsticks_visibility"] ~= nil and Skin_Table["lipsticks_tx_id"] ~= nil  and Skin_Table["lipsticks_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "lipsticks", Skin_Table["lipsticks_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["lipsticks_color_1"],Skin_Table["lipsticks_color_2"],Skin_Table["lipsticks_color_3"], Skin_Table["lipsticks_tx_id"], Skin_Table["lipsticks_opacity"])
-    end
-    if Skin_Table["shadows_visibility"] ~= nil and Skin_Table["shadows_tx_id"] ~= nil  and Skin_Table["shadows_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "shadows", Skin_Table["shadows_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["shadows_color_1"],Skin_Table["shadows_color_2"],Skin_Table["shadows_color_3"],Skin_Table["shadows_tx_id"],Skin_Table["shadows_opacity"])
-    end
-    if Skin_Table["beardstabble_visibility"] ~= nil and Skin_Table["beardstabble_tx_id"] ~= nil  and Skin_Table["beardstabble_opacity"] ~= nil then
-        TriggerEvent("gum_characters:colors", "beardstabble", Skin_Table["beardstabble_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["beardstabble_color_1"],Skin_Table["beardstabble_color_2"],Skin_Table["beardstabble_color_3"],Skin_Table["beardstabble_tx_id"],Skin_Table["beardstabble_opacity"])
-    end
-
-    Citizen.Wait(500)
     if Config.WalkFaceStyle then
         TriggerEvent("gum_walkingfacestyle:active")
     end
 end
 
+function ReloadCloth()
+    print("HIDE : "..PlayerPedId())
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xEA24B45E, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x864B03AE, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xF8016BCA, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x9925C067, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x5E47CA6, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x662AC34, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x5FC29285, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x7A96FACA, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x2026C46D, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x877A2CF7, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x485EE834, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xE06D30CE, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xAF14310B, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x3C1A74CD, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xEABE0032, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x7A6BBD0B, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xF16A1D23, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x7BC10759, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x9B2C8B89, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xA6D134C6, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xFAE9107F, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xB6B6122D, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x1D4C528A, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xA0E3AB7F, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x3107499B, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x777EC6EF, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x18729F39, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xF1542D11, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x514ADCEA, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x91CE9B20, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x83887E88, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x79D7DF96, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x94504D26, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x96EDAE5C, 0);
+
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xB3966C9, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x378AD10C, 0);
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x823687F5, 0);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0);
+    Citizen.Wait(500)
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Body"],       true, true, false);
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["HeadType"],       true, true, false);
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["LegsType"],       true, true, false);
+    Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Eyes"],       true, true, false);
+    print("SHOW")
+    if Skin_Table["Teeth"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Teeth"],       true, true, false);
+    end
+    if Skin_Table["Beard"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Beard"],       true, true, false);
+    end
+    if Skin_Table["Hair"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Hair"],       true, true, false);
+    end
+    if Clothe_Table["Hat"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Hat"],       true, true, false);
+    end
+    if Clothe_Table["EyeWear"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["EyeWear"],   true, true, false);
+    end
+    if Clothe_Table["Mask"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Mask"],      true, true, false);
+    end
+    if Clothe_Table["NeckWear"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["NeckWear"],  true, true, false);
+    end
+    if Clothe_Table["Suspender"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Suspender"], true, true, false);
+    end
+    if Clothe_Table["NeckTies"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["NeckTies"],  true, true, false);
+    end
+    if Clothe_Table["Shirt"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Shirt"],     true, true, false);
+    end
+    if Clothe_Table["Vest"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Vest"],      true, true, false);
+    end
+    if Clothe_Table["Coat"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Coat"],      true, true, false);
+    end
+    if Clothe_Table["CoatClosed"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["CoatClosed"],true, true, false);
+    end
+    if Clothe_Table["Poncho"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Poncho"],    true, true, false);
+    end
+    if Clothe_Table["Cloak"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Cloak"],     true, true, false);
+    end
+    if Clothe_Table["Glove"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Glove"],    true, true, false);
+    end
+    if Clothe_Table["RingRh"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["RingRh"],   true, true, false);
+    end
+    if Clothe_Table["RingLh"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["RingLh"],   true, true, false);
+    end
+    if Clothe_Table["Bracelet"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Bracelet"], true, true, false);
+    end
+    if Clothe_Table["Buckle"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Buckle"],   true, true, false);
+    end
+    if Clothe_Table["Chap"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Chap"],     true, true, false);
+    end
+    if Clothe_Table["Skirt"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Skirt"],    true, true, false);
+    end
+    if Clothe_Table["Pant"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Pant"],     true, true, false);
+    end
+    if Clothe_Table["Boots"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Boots"],    true, true, false);
+    end
+    if Clothe_Table["Spurs"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Spurs"],    true, true, false);
+    end
+    if Clothe_Table["Spats"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Spats"],   true, true, false);
+    end
+    if Clothe_Table["Gauntlets"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Gauntlets"],true, true, false);
+    end
+    if Clothe_Table["Loadouts"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Loadouts"], true, true, false);
+    end
+    if Clothe_Table["Accessories"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Accessories"],true, true, false);
+    end
+    if Clothe_Table["Belt"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Belt"], true, true, false);
+    end
+    if Clothe_Table["Gunbelt"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Gunbelt"], true, true, false);
+    end
+    if Clothe_Table["GunbeltAccs"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["GunbeltAccs"], true, true, false);
+    end
+    if Clothe_Table["Satchels"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Satchels"], true, true, false);
+    end
+    if Clothe_Table["Holster"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Clothe_Table["Holster"], true, true, false);
+    end
+    if Clothe_Table["Teeth"] ~= -1 then
+        Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),  Skin_Table["Teeth"], true, true, false);
+    end
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x3F1F01E5, 0)
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xDA0E2C55, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0);
+    Citizen.Wait(0)
+    Citizen.InvokeNative(0x25ACFC650B65C538, PlayerPedId(), Skin_Table["Scale"])
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.Wait(0)
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x84D6, Skin_Table["HeadSize"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x3303, Skin_Table["EyeBrowH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x2FF9, Skin_Table["EyeBrowW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x4AD1, Skin_Table["EyeBrowD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xC04F, Skin_Table["EarsH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xB6CE, Skin_Table["EarsW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x2844, Skin_Table["EarsD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xED30, Skin_Table["EarsL"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x8B2B, Skin_Table["EyeLidH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x1B6B, Skin_Table["EyeLidW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xEE44, Skin_Table["EyeD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xD266, Skin_Table["EyeAng"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xA54E, Skin_Table["EyeDis"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xDDFB, Skin_Table["EyeH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x6E7F, Skin_Table["NoseW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x3471, Skin_Table["NoseS"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x03F5, Skin_Table["NoseH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x34B1, Skin_Table["NoseAng"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xF156, Skin_Table["NoseC"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x561E, Skin_Table["NoseDis"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x6A0B, Skin_Table["CheekBonesH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xABCF, Skin_Table["CheekBonesW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x358D, Skin_Table["CheekBonesD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xF065, Skin_Table["MouthW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xAA69, Skin_Table["MouthD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x7AC3, Skin_Table["MouthX"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x410D, Skin_Table["MouthY"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x1A00, Skin_Table["ULiphH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x91C1, Skin_Table["ULiphW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xC375, Skin_Table["ULiphD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xBB4D, Skin_Table["LLiphH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xB0B0, Skin_Table["LLiphW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x5D16, Skin_Table["LLiphD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x8D0A, Skin_Table["JawH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xEBAE, Skin_Table["JawW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x1DF6, Skin_Table["JawD"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0x3C0F, Skin_Table["ChinH"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xC3B2, Skin_Table["ChinW"]);
+    Citizen.InvokeNative(0x5653AB26C82938CF, PlayerPedId(), 0xE323, Skin_Table["ChinD"]);
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["BodyType"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.InvokeNative(0x1902C4CFCC5BE57C, PlayerPedId(), Skin_Table["Waist"], false, true, true);
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, false);
+    Citizen.Wait(0)
+    reload_scars()
+    if Config.WalkFaceStyle then
+        TriggerEvent("gum_walkingfacestyle:active")
+    end
+
+
+end
+
+function reload_scars()
+    if Skin_Table["scars_visibility"] ~= nil and Skin_Table["scars_visibility"] ~= 0 and Skin_Table["scars_tx_id"] ~= nil  and Skin_Table["scars_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "scars", Skin_Table["scars_visibility"], Skin_Table["scars_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["scars_opacity"])
+    end
+    if Skin_Table["spots_visibility"] ~= nil and Skin_Table["spots_visibility"] ~= 0 and Skin_Table["spots_tx_id"] ~= nil  and Skin_Table["spots_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "spots", Skin_Table["spots_visibility"], Skin_Table["spots_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["spots_opacity"])
+    end
+    if Skin_Table["disc_visibility"] ~= nil and Skin_Table["disc_visibility"] ~= 0 and Skin_Table["disc_tx_id"] ~= nil  and Skin_Table["disc_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "disc", Skin_Table["disc_visibility"], Skin_Table["disc_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["disc_opacity"])
+    end
+    if Skin_Table["complex_visibility"] ~= nil and Skin_Table["complex_visibility"] ~= 0 and Skin_Table["complex_tx_id"] ~= nil  and Skin_Table["complex_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "complex", Skin_Table["complex_visibility"], Skin_Table["complex_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["complex_opacity"])
+    end
+    if Skin_Table["acne_visibility"] ~= nil and Skin_Table["acne_visibility"] ~= 0 and Skin_Table["acne_tx_id"] ~= nil  and Skin_Table["acne_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "acne", Skin_Table["acne_visibility"], Skin_Table["acne_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["acne_opacity"])
+    end
+    if Skin_Table["ageing_visibility"] ~= nil and Skin_Table["ageing_visibility"] ~= 0 and Skin_Table["ageing_tx_id"] ~= nil  and Skin_Table["ageing_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "ageing", Skin_Table["ageing_visibility"], Skin_Table["ageing_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["ageing_opacity"])
+    end
+    if Skin_Table["freckles_visibility"] ~= nil and Skin_Table["freckles_visibility"] ~= 0 and Skin_Table["freckles_tx_id"] ~= nil  and Skin_Table["freckles_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "freckles", Skin_Table["freckles_visibility"], Skin_Table["freckles_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["freckles_opacity"])
+    end
+    if Skin_Table["moles_visibility"] ~= nil and Skin_Table["moles_visibility"] ~= 0 and Skin_Table["moles_tx_id"] ~= nil  and Skin_Table["moles_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "moles", Skin_Table["moles_visibility"], Skin_Table["moles_tx_id"], 0, 0, 1, 1.0, 0, 1, 0,0,0,1,Skin_Table["moles_opacity"])
+    end
+    if Skin_Table["eyebrows_visibility"] ~= nil and Skin_Table["eyebrows_visibility"] ~= 0  and Skin_Table["eyebrows_tx_id"] ~= nil  and Skin_Table["eyebrows_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "eyebrows", Skin_Table["eyebrows_visibility"], Skin_Table["eyebrows_tx_id"], 1, 0, 0, 1.0, 0, 1, Skin_Table["eyebrows_color"],0,0,1,Skin_Table["eyebrows_opacity"])
+    end
+    if Skin_Table["blush_visibility"] ~= nil and Skin_Table["blush_visibility"] ~= 0 and Skin_Table["blush_tx_id"] ~= nil  and Skin_Table["blush_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "blush", Skin_Table["blush_visibility"], Skin_Table["blush_tx_id"], 1, 0, 0, 1.0, 0, 1, Skin_Table["blush_color_1"],0,0,1,Skin_Table["blush_opacity"])
+    end
+    if Skin_Table["eyeliners_visibility"] ~= nil and Skin_Table["eyeliners_visibility"] ~= 0 and Skin_Table["eyeliners_tx_id"] ~= nil  and Skin_Table["eyeliners_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "eyeliners", Skin_Table["eyeliners_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["eyeliners_color_1"],0,0,Skin_Table["eyeliners_tx_id"],Skin_Table["eyeliners_opacity"])
+    end
+    if Skin_Table["lipsticks_visibility"] ~= nil and Skin_Table["lipsticks_visibility"] ~= 0 and Skin_Table["lipsticks_tx_id"] ~= nil  and Skin_Table["lipsticks_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "lipsticks", Skin_Table["lipsticks_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["lipsticks_color_1"],Skin_Table["lipsticks_color_2"],Skin_Table["lipsticks_color_3"], Skin_Table["lipsticks_tx_id"], Skin_Table["lipsticks_opacity"])
+    end
+    if Skin_Table["shadows_visibility"] ~= nil and Skin_Table["shadows_visibility"] ~= 0 and Skin_Table["shadows_tx_id"] ~= nil  and Skin_Table["shadows_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "shadows", Skin_Table["shadows_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["shadows_color_1"],Skin_Table["shadows_color_2"],Skin_Table["shadows_color_3"],Skin_Table["shadows_tx_id"],Skin_Table["shadows_opacity"])
+    end
+    if Skin_Table["beardstabble_visibility"] ~= nil and Skin_Table["beardstabble_visibility"] ~= 0 and Skin_Table["beardstabble_tx_id"] ~= nil  and Skin_Table["beardstabble_opacity"] ~= nil then
+        TriggerEvent("gum_characters:colors", "beardstabble", Skin_Table["beardstabble_visibility"], 1, 1, 0, 0, 1.0, 0, 1, Skin_Table["beardstabble_color_1"],Skin_Table["beardstabble_color_2"],Skin_Table["beardstabble_color_3"],Skin_Table["beardstabble_tx_id"],Skin_Table["beardstabble_opacity"])
+    end
+end
 
 function DrawText3D(x, y, z, text)
 	local onScreen,_x,_y=GetScreenCoordFromWorldCoord(x, y, z)

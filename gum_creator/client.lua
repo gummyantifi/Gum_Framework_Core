@@ -1230,7 +1230,6 @@ RegisterNUICallback('save_character', function(data, cb)
     Citizen.InvokeNative(0xBF25EB89375A37AD, 5, GetHashKey("PLAYER"), GetHashKey("PLAYER"))
     TriggerEvent("gum_status:start_status")
     SetEntityCoords(PlayerPedId(), Config.SpawnCoords[1], Config.SpawnCoords[2], Config.SpawnCoords[3])
-
 end)
 function EndCam()
     RenderScriptCams(false, true, 1000, true, false)
