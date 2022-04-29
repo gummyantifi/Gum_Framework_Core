@@ -3,8 +3,8 @@
 setting.cfg example</br></br>
 
 #GUM BASE</br></br>
-ensure uiprompt
-ensure gum_sounds</br></br>
+ensure uiprompt</br></br>
+ensure gum_sounds</br>
 ensure gum_core</br>
 ensure gum_inputs</br>
 ensure gum_menu</br>
