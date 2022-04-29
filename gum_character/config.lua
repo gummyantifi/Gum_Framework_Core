@@ -192,7 +192,7 @@ Config.Language = {
     [173] = {text = "Přiblížit +",},
     [174] = {text = "Oddálit -",},
     [175] = {text = "Male",},
-    [176] = {text = "Female",},
+    [176] = {text = "Female",},--
     [177] = {text = "Výběr si postavu",},
     [178] = {text = "Strniště",},
     [179] = {text = "Zobrazení strniště",},
