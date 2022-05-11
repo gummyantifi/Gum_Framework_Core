@@ -15,6 +15,19 @@ Date: 2022-03-07 11:09:15
 
 SET FOREIGN_KEY_CHECKS=0;
 
+CREATE TABLE `bank_users` (
+  `identifier` varchar(50) DEFAULT '0',
+  `charidentifier` varchar(5) DEFAULT '0',
+  `money` varchar(255)  DEFAULT '0',
+  `gold` varchar(255) DEFAULT '0',
+  `name` varchar(255) DEFAULT '0',
+  `borrow` double DEFAULT 0,
+  `borrow_pay` datetime DEFAULT NULL,
+  `borrow_money` double DEFAULT 0
+) ENGINE=InnoDB DEFAULT;
+
+
+
 -- ----------------------------
 -- Table structure for bans
 -- ----------------------------
