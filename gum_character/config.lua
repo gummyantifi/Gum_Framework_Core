@@ -17,7 +17,7 @@ Config.RespawnCoords = {
         [9] = {x=1335.76, y=-7025.03, z=53.60},--Guarma
         [10] = {x=366.85, y=1464.64, z=179.61},--Fort Wallace
 }
-
+--
 Config.Language = {
     [1] = {text = "Tvoření postavy",},
     [175] = {text = "Male",},
