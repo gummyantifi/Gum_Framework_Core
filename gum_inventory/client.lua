@@ -661,6 +661,7 @@ function equip_weapon_login()
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);
 	end
+	Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 	Citizen.Wait(500)
 	TriggerEvent("gum_character:selected_char")
 	logged_true = true
@@ -803,7 +804,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 		for k,v in pairs(weapon_table) do
 			if v.name == data.model and v.used == 0 and tonumber(data.id) == v.id then
 				if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
-					if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+					if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) or Citizen.InvokeNative(0xC75386174ECE95D5, GetHashKey(v.name)) then
 						if weapon_first_used == false then
 							LoadWeaponChar(v.name)
 							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
