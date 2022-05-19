@@ -34,27 +34,6 @@ RegisterNetEvent('GetActivePlayers:CB')
 AddEventHandler('GetActivePlayers:CB', function(count)
     playerCount = count
 end)
-RegisterNetEvent("gum:SelectedCharacter")
-AddEventHandler("gum:SelectedCharacter", function(charid)
-	Citizen.CreateThread(function()
-		while true do
-			TriggerServerEvent('GetActivePlayers')
-			Citizen.Wait(100)
-			SetDiscordAppId(880082083295420478)
-			SetDiscordRichPresenceAsset('biglogo')
-			SetDiscordRichPresenceAssetText('RedWest Roleplay')
-			SetDiscordRichPresenceAssetSmall('smalllogo')
-			SetDiscordRichPresenceAssetSmallText('Česko-Slovenský Roleplay')
-			SetDiscordRichPresenceAction(0, "Discord", "https://discord.com/invite/4ZZFgqtF8J") -- (OPTIONAL)
-
-			--local playerCount = #GetActivePlayers()
-			local playerName = GetPlayerName(PlayerId())
-			local maxPlayerSlots = 96
-			SetRichPresence(string.format("%s - %s/%s", playerName, playerCount, maxPlayerSlots))
-			Citizen.Wait(120000) -- 2 min update
-		end
-	end)
-end)
 
 RegisterNetEvent("gum:SelectedCharacter")
 AddEventHandler("gum:SelectedCharacter", function(charid)
