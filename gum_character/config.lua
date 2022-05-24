@@ -20,8 +20,17 @@ Config.RespawnCoords = {
 --
 Config.Language = {
     [1] = {text = "Tvoření postavy",},
+    [167] = {text = "Změnit postavu",},
+    [168] = {text = "Vybrat postavu",},
+    [169] = {text = "Otočit doleva",},
+    [170] = {text = "Otočit doprava",},
+    [171] = {text = "Dolů",},
+    [172] = {text = "Nahoru",},
+    [173] = {text = "Přiblížit +",},
+    [174] = {text = "Oddálit -",},
     [175] = {text = "Male",},
     [176] = {text = "Female",},--
+    [177] = {text = "Výběr si postavu",},
     [183] = {text = "Nemáš zvolené pohlaví",},
     [184] = {text = "Nemáš zvolenou barvu očí",},
     [185] = {text = "Nemáš zvolené body type",},
