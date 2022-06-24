@@ -6,6 +6,7 @@ Config.Info_print = true
 Config.Char_Count = 2
 
 Config.Eagle_Eye = true
+Config.Whitelist = false
 
 Config.Language = {
     [1] = {text = "",},

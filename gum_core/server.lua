@@ -450,18 +450,20 @@ AddEventHandler('gum:setJob', function(source, job, grade)
 	local _source = source
 	if _source ~= nil and job ~= nil and grade ~= nil then
 		local User = gumCore.getUser(tonumber(_source))
-		local Character = User.getUsedCharacter
-		local Identifier = Character.identifier
-		local CharIdentifier = Character.charIdentifier
-		Character.job = job
-		Character.jobgrade = grade
-		if Config.Info_print then
-			gumCore.Debug("CharIdentifier : "..CharIdentifier.." Get job "..job.." with grade "..grade.."")
-		end
+		if User ~= nil then
+			local Character = User.getUsedCharacter
+			local Identifier = Character.identifier
+			local CharIdentifier = Character.charIdentifier
+			Character.job = job
+			Character.jobgrade = grade
+			if Config.Info_print then
+				gumCore.Debug("CharIdentifier : "..CharIdentifier.." Get job "..job.." with grade "..grade.."")
+			end
 
-		exports.ghmattimysql:execute("UPDATE characters SET job = @job,jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['job'] = job, ['jobgrade'] = grade},
-		function (result)
-		end)
+			exports.ghmattimysql:execute("UPDATE characters SET job = @job,jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['job'] = job, ['jobgrade'] = grade},
+			function (result)
+			end)
+		end
 	else
 		gumCore.Error("Someting is wrong, check function\nCharacter.setJob(source, 'example', 1)\nArgs : Target, JobName, JobGrade")
 	end
@@ -935,15 +937,15 @@ local function OnPlayerConnecting(name, setKickReason, deferrals)
 
     Wait(0)
 
-    deferrals.update(string.format("Vítej na připojení na RedWest RP serveru : %s. \n Kontrola spuštěného steam účtu.", name))
+    deferrals.update(string.format("Welcome on connecting too gum script server : %s. \n Checking your steam account.", name))
 
 	Wait(2000)
 
 
 	if not identifiers then
-        deferrals.done("\n\n Nemáš spuštěný steam, nebo nemáš spuštěnou Canary verzi. \n Jak na to?  Nahoře v pravo dej nastavení, zvol Build Canary \n Poté stačí hru spustit jako Nosteam hru v knihovně steam. A vše půjde jak má. S pozdravem RedWest Tým. ")
+        deferrals.done("\n\n You dont have started steam \n ")
     end
-	deferrals.update(string.format("Vítej na připojení na RedWest RP serveru : %s. \n Kontrola blokací účtů.", name))
+	deferrals.update(string.format("Welcome on connecting too gum script server : %s. \n Checking ban account.", name))
 	Wait(2000)
 
 	exports.ghmattimysql:execute('SELECT reason,DATE_FORMAT(date,"%d.%m.%Y") AS date_convert FROM bans WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
@@ -956,20 +958,23 @@ local function OnPlayerConnecting(name, setKickReason, deferrals)
 		end
 	end)
 
-    deferrals.update(string.format("Vítej na připojení na RedWest RP serveru : %s. \n Kontrola whitelist.", name))
+	if Config.Whitelist == false then
+        whitelisted = true
+	else
+		deferrals.update(string.format("Welcome on connecting too gum script server : %s. \n Checking whitelist.", name))
+		exports.ghmattimysql:execute('SELECT * FROM whitelist WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
+			if result[1] then
+				whitelisted = true
+			else
+				whitelisted = false
+			end
+		end)
+		Wait(3000)
+	end
 
-	exports.ghmattimysql:execute('SELECT * FROM whitelist WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
-		if result[1] then
-        	whitelisted = true
-		else
-			whitelisted = false
-		end
-	end)
-
-	Wait(3000)
 
 	if banned then
-		deferrals.done("\n\n Na tomto server jsi zablokován z důvodu : \n "..block_reason.." \n \n Do datu : \n "..block_date.." \n\n Pro více informací můžeš navštívit discord a založit ticket.")
+		deferrals.done("\n\n On this server you are blocked : \n "..block_reason.." \n \n Do datu : \n "..block_date.." \n\n Pro více informací můžeš navštívit discord a založit ticket.")
 	end
 
 	if whitelisted then
