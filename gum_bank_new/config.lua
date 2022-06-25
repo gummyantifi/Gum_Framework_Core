@@ -20,7 +20,7 @@ Config.Language = {
     [11] = {text="You take : "},
     [13] = {text="Now you have : "},
     [14] = {text="You have 1 borrow. You cant more. You can after you pay all money"},
-    [15] = {text="You borrow : "}
+    [15] = {text="You borrow : "},
     [16] = {text="Now you every day get down : "}
 }
 
