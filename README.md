@@ -1,3 +1,8 @@
+How work with framework : http://gum-framework.eu/natives/
+</br></br></br></br>
+
+
+
 # Gum_Framework_Core</br></br>
 
 setting.cfg example</br></br>
