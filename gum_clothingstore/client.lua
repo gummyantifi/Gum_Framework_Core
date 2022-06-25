@@ -263,7 +263,7 @@ end)
 
 function Button_Prompt()
 	Citizen.CreateThread(function()
-        local str = "Open"
+        local str = Config.Language[1].text
         Open_Store = Citizen.InvokeNative(0x04F97DE45A519419)
         PromptSetControlAction(Open_Store, 0x27D1C284)
         str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -287,7 +287,7 @@ AddEventHandler('gum_clothes:send_to_client', function(clothing_table,can_save)
         TriggerEvent("gum_character:send_data_back", Skin_Table, Clothe_Table_Backup, coords_save)
     end
     Citizen.Wait(1000)
-    ExecuteCommand("db")
+    ExecuteCommand(Config.Language[2].text)
 end)
 
 
@@ -304,7 +304,7 @@ Citizen.CreateThread(function()
                     Citizen.InvokeNative(0x2A32FAA57B937173, -1795314153, v["ClothingStore"][1], v["ClothingStore"][2], v["ClothingStore"][3] - 1.8, 0, 0, 0, 0, 0, 0, 1.5, 1.5, 0.5, 179, 166, 122, 155, 0, 0, 2, 0, 0, 0, 0)
                     optimalize = 10
                     if active == false then
-                        local item_name = CreateVarString(10, 'LITERAL_STRING', "Obchod s oblečením")
+                        local item_name = CreateVarString(10, 'LITERAL_STRING', Config.Language[3].text)
                         PromptSetActiveGroupThisFrame(buttons_prompt, item_name)
                     end
                     if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0x27D1C284) then
@@ -559,7 +559,7 @@ Citizen.CreateThread(function()
                         price = price+v
                     end
                     if active2 == false then
-                        local item_name = CreateVarString(10, 'LITERAL_STRING', "Cena : "..price.."$")
+                        local item_name = CreateVarString(10, 'LITERAL_STRING', ""..Config.Language[3].text..""..price.."$")
                         PromptSetActiveGroupThisFrame(buttons_prompt2, item_name)
                     end
                     optimalize = 10
@@ -574,7 +574,7 @@ end)
 
 function Button_Prompt2()
 	Citizen.CreateThread(function()
-		local str = 'Otočit doleva'
+		local str = Config.Language[5].text
 		RotateLPrompt = PromptRegisterBegin()
 		PromptSetControlAction(RotateLPrompt, 0x20190AB4)
 		str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -586,7 +586,7 @@ function Button_Prompt2()
 		PromptRegisterEnd(RotateLPrompt)
 	end)
 	Citizen.CreateThread(function()
-		local str = 'Otočit doprava'
+		local str = Config.Language[6].text
 		RotateRPrompt = PromptRegisterBegin()
 		PromptSetControlAction(RotateRPrompt, 0xDEB34313)
 		str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -598,7 +598,7 @@ function Button_Prompt2()
 		PromptRegisterEnd(RotateRPrompt)
 	end)
     Citizen.CreateThread(function()
-		local str = 'Dolů'
+		local str = Config.Language[7].text
 		UpPrompt = Citizen.InvokeNative(0x04F97DE45A519419)
 		PromptSetControlAction(UpPrompt, 0x05CA7C52)
 		str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -610,7 +610,7 @@ function Button_Prompt2()
 		PromptRegisterEnd(UpPrompt)
 	end)
 	Citizen.CreateThread(function()
-		local str = 'Nahoru'
+		local str = Config.Language[8].text
 		DownPrompt = Citizen.InvokeNative(0x04F97DE45A519419)
 		PromptSetControlAction(DownPrompt, 0x6319DB71)
 		str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -622,7 +622,7 @@ function Button_Prompt2()
 		PromptRegisterEnd(DownPrompt)
 	end)
     Citizen.CreateThread(function()
-        local str = 'Přiblížit'
+        local str = Config.Language[9].text
         Zoom1Prompt = PromptRegisterBegin()
         PromptSetControlAction(Zoom1Prompt, 0xE885EF16)
         str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -634,7 +634,7 @@ function Button_Prompt2()
         PromptRegisterEnd(Zoom1Prompt)
     end)
     Citizen.CreateThread(function()
-        local str = 'Oddálit'
+        local str = Config.Language[10].text
         Zoom2Prompt = PromptRegisterBegin()
         PromptSetControlAction(Zoom2Prompt, 0x2277FAE9)
         str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -1712,7 +1712,7 @@ RegisterNUICallback('save_clothing', function(data, cb)
 end)
 
 function EndCam()
-    ExecuteCommand("db")
+    ExecuteCommand(Config.Language[2].text)
     RenderScriptCams(false, true, 1000, true, false)
     DestroyCam(camera, false)
     camera = nil

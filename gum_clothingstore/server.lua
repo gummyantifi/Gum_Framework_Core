@@ -31,6 +31,6 @@ AddEventHandler( 'gum_clothes:save_clothes', function(table_cloth, full_price, n
 		exports.ghmattimysql:execute("INSERT INTO outfits ( `identifier`,`charidentifier`,`title`,`comps` ) VALUES ( @identifier,@charidentifier,@title,@comps )", Parameters)
 	else
 		TriggerClientEvent("gum_clothes:send_to_client", _source, false)
-		TriggerClientEvent("gum:TipRight", source, "You dont have money", 1000)
+		TriggerClientEvent("gum_notify:notify", _source, Config.Language[11].text, 1000)
 	end
 end)
