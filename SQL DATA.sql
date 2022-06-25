@@ -510,7 +510,5 @@ CREATE TABLE `whitelist` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1;
 SET FOREIGN_KEY_CHECKS=1;
 
-INSERT INTO `items` (`item`, `label`, `limit`, `can_remove`, `type`, `usable`, `descriptions`) VALUES ('Bread', 'Bread', '1', '1', 'item_standard', '1', 'Good bread');
-INSERT INTO `items` (`item`, `label`, `limit`, `can_remove`, `type`, `usable`, `descriptions`) VALUES ('Water', 'Water', '1', '1', 'item_standard', '1', 'Good water');
 INSERT INTO `users` (`identifier`, `group`, `warnings`, `banned`, `chars`) VALUES ('steam:', 'user', '0', '0', '1');
 
