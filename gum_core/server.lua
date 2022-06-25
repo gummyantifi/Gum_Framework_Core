@@ -20,7 +20,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 		print("^5MMMMMMMMMMds:-....:+ydMMMMh/-....-/yNMMM+::NMh:::oMM+::NMMMMMMMMMMdo/::::+hMMMMMh+-...-+dMMMs::dMMMMNs:-...:sNMMMMMMMMMM")
 		print("^2MMMMMMMMMMMMMNNNNNMMMMMMMMMMMNNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNMMMMMMMMMMMMMMMMMNNNNMMMMMMMMMMMMM")
 		print("^0")
-		exports.ghmattimysql:execute('SELECT * FROM characters' , {}, function(result2)
+		exports.oxmysql:execute('SELECT * FROM characters' , {}, function(result2)
 			if result2 ~= nil then
 				for k,v in pairs(result2) do
 					table.insert(AllCharacters, {
@@ -77,7 +77,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 				)
 			end
 		end)
-		exports.ghmattimysql:execute('SELECT * FROM users' , {}, function(result)
+		exports.oxmysql:execute('SELECT * FROM users' , {}, function(result)
 			if result ~= nil then
 				for k,v in pairs(result) do
 					LoadedUsers[v.identifier] = {
@@ -112,7 +112,7 @@ RegisterCommand("addwl", function(source, args)
 		if source == 0 then
 			local identifier_news =  "steam:"..args[1]
 			local Parameters = { ['identifier'] = identifier_news}
-			exports.ghmattimysql:execute("INSERT INTO whitelist (`identifier`) VALUES (@identifier)", Parameters)
+			exports.oxmysql:execute("INSERT INTO whitelist (`identifier`) VALUES (@identifier)", Parameters)
 			if Config.Info_print then
 				gumCore.Debug("Byl přidán WL :"..identifier_news)
 			end
@@ -124,7 +124,7 @@ RegisterCommand("addwl", function(source, args)
 				if group == "admin" then
 					local identifier_news =  "steam:"..args[1]
 					local Parameters = { ['identifier'] = identifier_news}
-					exports.ghmattimysql:execute("INSERT INTO whitelist (`identifier`) VALUES (@identifier)", Parameters)
+					exports.oxmysql:execute("INSERT INTO whitelist (`identifier`) VALUES (@identifier)", Parameters)
 
 					if Config.Info_print then
 						gumCore.Debug("Byl přidán WL - "..identifier_news)
@@ -185,7 +185,7 @@ RegisterCommand("setchar", function(source, args)
 		local char_count = args[2]
 		if args[1] ~= nil and args[2] ~= nil then
 			LoadedUsers[steam_hex].chars = char_count
-			exports.ghmattimysql:execute("UPDATE users SET `chars`=@chars WHERE identifier = @identifier", {['identifier'] = steam_hex,['chars'] = char_count},
+			exports.oxmysql:execute("UPDATE users SET `chars`=@chars WHERE identifier = @identifier", {['identifier'] = steam_hex,['chars'] = char_count},
 			function (result)
 			end)
 		else
@@ -199,7 +199,7 @@ RegisterCommand("setchar", function(source, args)
 		if group == "admin" then
 			if args[1] ~= nil and args[2] ~= nil then
 				LoadedUsers[steam_hex].chars = char_count
-				exports.ghmattimysql:execute("UPDATE users SET `chars`=@chars WHERE identifier = @identifier", {['identifier'] = steam_hex,['chars'] = char_count},
+				exports.oxmysql:execute("UPDATE users SET `chars`=@chars WHERE identifier = @identifier", {['identifier'] = steam_hex,['chars'] = char_count},
 				function (result)
 				end)
 			else
@@ -223,7 +223,7 @@ RegisterCommand("delchar", function(source, args)
 				end
 			end
 			table.remove(AllCharacters, char_for_del)
-			exports.ghmattimysql:execute("DELETE FROM characters WHERE charidentifier = @charidentifier", {["@charidentifier"] = charid}, function(result)
+			exports.oxmysql:execute("DELETE FROM characters WHERE charidentifier = @charidentifier", {["@charidentifier"] = charid}, function(result)
 				LoadedUsers[hex_for_del].setUsedCharacter = User.setUsedCharacter
 			end)
 		else
@@ -244,7 +244,7 @@ RegisterCommand("delchar", function(source, args)
 					end
 				end
 				table.remove(AllCharacters, char_for_del)
-				exports.ghmattimysql:execute("DELETE FROM characters WHERE charidentifier = @charidentifier", {["@charidentifier"] = charid}, function(result)
+				exports.oxmysql:execute("DELETE FROM characters WHERE charidentifier = @charidentifier", {["@charidentifier"] = charid}, function(result)
 					LoadedUsers[hex_for_del].setUsedCharacter = User.setUsedCharacter
 				end)
 			else
@@ -350,7 +350,7 @@ function User.setGroup(source, id, group)
 			gumCore.Debug("Identifier : "..User.identifier.." Get group : "..group.."")
 		end
 
-		exports.ghmattimysql:execute("UPDATE users SET `group`=@group WHERE identifier = @identifier", {['identifier'] = User.identifier, ['group'] = group},
+		exports.oxmysql:execute("UPDATE users SET `group`=@group WHERE identifier = @identifier", {['identifier'] = User.identifier, ['group'] = group},
 		function (result)
 		end)
 	else
@@ -369,7 +369,7 @@ AddEventHandler('gum:setGroup', function(source, group)
 			gumCore.Debug("Identifier : "..User.identifier.." Get group : "..group.."")
 		end
 
-		exports.ghmattimysql:execute("UPDATE users SET `group`=@group WHERE identifier = @identifier", {['identifier'] = User.identifier, ['group'] = group},
+		exports.oxmysql:execute("UPDATE users SET `group`=@group WHERE identifier = @identifier", {['identifier'] = User.identifier, ['group'] = group},
 		function (result)
 		end)
 	else
@@ -425,7 +425,7 @@ function Character.setJob(source, job, grade)
 			gumCore.Debug("CharIdentifier : "..CharIdentifier.." \nGet job "..job.." with grade "..grade.."")
 		end
 
-		exports.ghmattimysql:execute("UPDATE characters SET job = @job,jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['job'] = job, ['jobgrade'] = grade},
+		exports.oxmysql:execute("UPDATE characters SET job = @job,jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['job'] = job, ['jobgrade'] = grade},
 		function (result)
 		end)
 	else
@@ -460,7 +460,7 @@ AddEventHandler('gum:setJob', function(source, job, grade)
 				gumCore.Debug("CharIdentifier : "..CharIdentifier.." Get job "..job.." with grade "..grade.."")
 			end
 
-			exports.ghmattimysql:execute("UPDATE characters SET job = @job,jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['job'] = job, ['jobgrade'] = grade},
+			exports.oxmysql:execute("UPDATE characters SET job = @job,jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['job'] = job, ['jobgrade'] = grade},
 			function (result)
 			end)
 		end
@@ -480,7 +480,7 @@ AddEventHandler('gum:setJobGrade', function(source, charid, grade)
 			if tonumber(v.charIdentifier) == tonumber(charid) then
 				identifier = v.identifier
 				v.jobgrade = tonumber(grade)
-				exports.ghmattimysql:execute("UPDATE characters SET jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = identifier, ['charidentifier'] = charid, ['jobgrade'] = tonumber(grade)},
+				exports.oxmysql:execute("UPDATE characters SET jobgrade=@jobgrade WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = identifier, ['charidentifier'] = charid, ['jobgrade'] = tonumber(grade)},
 				function (result)
 				end)
 			end
@@ -506,7 +506,7 @@ AddEventHandler('gum:addMoney', function(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Money.."$, got "..much.."$ and has "..Character.money.."$")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
+				exports.oxmysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -517,7 +517,7 @@ AddEventHandler('gum:addMoney', function(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Gold.."G, got "..much.."G and has "..Character.gold.."G")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
+				exports.oxmysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -527,7 +527,7 @@ AddEventHandler('gum:addMoney', function(source, type, much)
 				if Config.Info_print then
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Rol.."R, got "..much.."R and has "..Character.rol.."R")
 				end
-				exports.ghmattimysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
+				exports.oxmysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -559,7 +559,7 @@ function Character.addCurrency(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Money.."$, got "..much.."$ and has "..Character.money.."$")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
+				exports.oxmysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -570,7 +570,7 @@ function Character.addCurrency(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Gold.."$, got "..much.."$ and has "..Character.gold.."$")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
+				exports.oxmysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -580,7 +580,7 @@ function Character.addCurrency(source, type, much)
 				if Config.Info_print then
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Rol.."$, got "..much.."$ and has "..Character.rol.."$")
 				end
-				exports.ghmattimysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
+				exports.oxmysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -610,9 +610,9 @@ if Config.Onesync == true then
 					local coords_table = {x=playerCoords.x, y=playerCoords.y, z=playerCoords.z}
 
 					local Parameters = { ['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['meta'] = Character.meta }
-					exports.ghmattimysql:execute("UPDATE characters SET meta = @meta WHERE identifier = @identifier AND charidentifier = @charidentifier", Parameters)
+					exports.oxmysql:execute("UPDATE characters SET meta = @meta WHERE identifier = @identifier AND charidentifier = @charidentifier", Parameters)
 
-					exports.ghmattimysql:execute("UPDATE characters SET coords = @coords WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['coords'] = json.encode(coords_table)},
+					exports.oxmysql:execute("UPDATE characters SET coords = @coords WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['coords'] = json.encode(coords_table)},
 					function (result)
 						if Config.Info_print then
 							gumCore.Debug("CharIdentifier : "..CharIdentifier.." Dropped with safe coordinations "..playerCoords.x..", "..playerCoords.y..", "..playerCoords.z.."")
@@ -652,7 +652,7 @@ AddEventHandler('gumCore:save_coords', function(coord_send)
 
 		if coord_send.x ~= 0 then
 			local Parameters = { ['identifier'] = u_identifier, ['charidentifier'] = u_charid, ['coords'] = json.encode({x=coord_send.x, y=coord_send.y, z=coord_send.z}) }
-			exports.ghmattimysql:execute("UPDATE characters SET coords = @coords WHERE identifier = @identifier AND charidentifier = @charidentifier", Parameters)
+			exports.oxmysql:execute("UPDATE characters SET coords = @coords WHERE identifier = @identifier AND charidentifier = @charidentifier", Parameters)
 			if Config.Info_print then
 				gumCore.Debug("CharIdentifier : "..u_charid.." coords safe : "..coord_send.x..", "..coord_send.y..", "..coord_send.z.."")
 			end
@@ -675,7 +675,7 @@ function Character.removeCurrency(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Money.."$, got "..much.."$ and has "..Character.money.."$")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
+				exports.oxmysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -686,7 +686,7 @@ function Character.removeCurrency(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Gold.."$, got "..much.."$ and has "..Character.gold.."$")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
+				exports.oxmysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -696,7 +696,7 @@ function Character.removeCurrency(source, type, much)
 				if Config.Info_print then
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Rol.."$, got "..much.."$ and has "..Character.rol.."$")
 				end
-				exports.ghmattimysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
+				exports.oxmysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -725,7 +725,7 @@ function Character.buySkin(source, name, clothetable)
 
 		Character.comp = json.encode(clothetable)
 
-		exports.ghmattimysql:execute("UPDATE characters SET compPlayer = @compPlayer WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['compPlayer'] = json.encode(clothetable)},
+		exports.oxmysql:execute("UPDATE characters SET compPlayer = @compPlayer WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['compPlayer'] = json.encode(clothetable)},
 		function (result)
 			TriggerClientEvent("gum_clothes:send_to_client", _source, clothetable, true)
 		end)
@@ -747,7 +747,7 @@ function Character.buySkinPlayer(source, skinplayer)
 
 		Character.skin = json.encode(skinplayer)
 
-		exports.ghmattimysql:execute("UPDATE characters SET skinPlayer = @skinPlayer WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['skinPlayer'] = json.encode(skinplayer)},
+		exports.oxmysql:execute("UPDATE characters SET skinPlayer = @skinPlayer WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['skinPlayer'] = json.encode(skinplayer)},
 		function (result)
 		end)
 	else
@@ -797,7 +797,7 @@ function Character.changeSkin(source, clothetable)
 
 		Character.comp = json.encode(clothetable)
 
-		exports.ghmattimysql:execute("UPDATE characters SET compPlayer = @compPlayer WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['compPlayer'] = json.encode(clothetable)},
+		exports.oxmysql:execute("UPDATE characters SET compPlayer = @compPlayer WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['compPlayer'] = json.encode(clothetable)},
 		function (result)
 		end)
 		TriggerClientEvent("gum_clothes:send_to_client", _source, clothetable, true)
@@ -822,7 +822,7 @@ AddEventHandler('gum:removeMoney', function(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Money.."$, got "..much.."$ and has "..Character.money.."$")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
+				exports.oxmysql:execute("UPDATE characters SET money = @money WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['money'] = Character.money},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -833,7 +833,7 @@ AddEventHandler('gum:removeMoney', function(source, type, much)
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Gold.."$, got "..much.."$ and has "..Character.gold.."$")
 				end
 
-				exports.ghmattimysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
+				exports.oxmysql:execute("UPDATE characters SET gold = @gold WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['gold'] = Character.gold},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -843,7 +843,7 @@ AddEventHandler('gum:removeMoney', function(source, type, much)
 				if Config.Info_print then
 					gumCore.Debug("CharIdentifier : "..CharIdentifier.." Had "..Rol.."$, got "..much.."$ and has "..Character.rol.."$")
 				end
-				exports.ghmattimysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
+				exports.oxmysql:execute("UPDATE characters SET rol = @rol WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['rol'] = Character.rol},
 				function (result)
 					TriggerEvent("gum_inventory:get_money_sec", tonumber(_source))
 				end)
@@ -870,9 +870,9 @@ function gumCore.addCharacter(source, firstname, lastname, skintable, clothetabl
 		items_start[k] = v
 	end
 	local status = '{"Hunger":100.0, "Thirst":100.0}'
-	exports.ghmattimysql:execute("INSERT INTO characters (`identifier`,`firstname`,`lastname`,`skinPlayer`,`compPlayer`,`inventory`,`coords`,`meta`,`money`) VALUES (@identifier,@firstname,@lastname,@skinPlayer,@compPlayer,@inventory,@coords,@meta,@money)", {['identifier'] = identifier,['firstname'] = firstname,['lastname'] = lastname,['skinPlayer'] = skintable,['money']=Config.StartMoney,['compPlayer'] = clothetable,['inventory']=json.encode(items_start), ['coords']=json.encode(coords_start),['meta']=status},
+	exports.oxmysql:execute("INSERT INTO characters (`identifier`,`firstname`,`lastname`,`skinPlayer`,`compPlayer`,`inventory`,`coords`,`meta`,`money`) VALUES (@identifier,@firstname,@lastname,@skinPlayer,@compPlayer,@inventory,@coords,@meta,@money)", {['identifier'] = identifier,['firstname'] = firstname,['lastname'] = lastname,['skinPlayer'] = skintable,['money']=Config.StartMoney,['compPlayer'] = clothetable,['inventory']=json.encode(items_start), ['coords']=json.encode(coords_start),['meta']=status},
 	function (result)
-		exports.ghmattimysql:execute('SELECT * FROM characters WHERE identifier=@identifier' , {['identifier']=identifier}, function(result2)
+		exports.oxmysql:execute('SELECT * FROM characters WHERE identifier=@identifier' , {['identifier']=identifier}, function(result2)
 			if result2 ~= nil then
 				for k,v in pairs(result2) do
 					if identifier == v.identifier then
@@ -948,7 +948,7 @@ local function OnPlayerConnecting(name, setKickReason, deferrals)
 	deferrals.update(string.format("Welcome on connecting too gum script server : %s. \n Checking ban account.", name))
 	Wait(2000)
 
-	exports.ghmattimysql:execute('SELECT reason,DATE_FORMAT(date,"%d.%m.%Y") AS date_convert FROM bans WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
+	exports.oxmysql:execute('SELECT reason,DATE_FORMAT(date,"%d.%m.%Y") AS date_convert FROM bans WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
 		if result[1] then
         	banned = true
 			block_reason = result[1].reason
@@ -962,7 +962,7 @@ local function OnPlayerConnecting(name, setKickReason, deferrals)
         whitelisted = true
 	else
 		deferrals.update(string.format("Welcome on connecting too gum script server : %s. \n Checking whitelist.", name))
-		exports.ghmattimysql:execute('SELECT * FROM whitelist WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
+		exports.oxmysql:execute('SELECT * FROM whitelist WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
 			if result[1] then
 				whitelisted = true
 			else
@@ -979,9 +979,9 @@ local function OnPlayerConnecting(name, setKickReason, deferrals)
 
 	if whitelisted then
 		deferrals.done()
-		exports.ghmattimysql:execute('SELECT * FROM users WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
+		exports.oxmysql:execute('SELECT * FROM users WHERE identifier = @identifier' , {['identifier'] = identifiers}, function(result)
 			if result[1] == nil then
-				exports.ghmattimysql:execute("INSERT INTO users (`identifier`) VALUES (@identifier)", {['identifier'] = identifiers})
+				exports.oxmysql:execute("INSERT INTO users (`identifier`) VALUES (@identifier)", {['identifier'] = identifiers})
 				LoadedUsers[identifiers] = {
 					identifier=identifiers,
 					group="user",

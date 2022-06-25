@@ -19,13 +19,13 @@ gum.addNewCallBack("gum_bank:get_bank", function(source, firstname,lastname,mone
 	local lastname = Character.lastname
 	local money = 0
 	local gold = 0
-	exports.ghmattimysql:execute("SELECT money,gold FROM bank_users WHERE identifier = @identifier and charidentifier = @charidentifier and name = @name", {['identifier'] = u_identifier, ['charidentifier'] = u_charid, ['name'] = city[_source]}, function(result)
+	exports.oxmysql:execute("SELECT money,gold FROM bank_users WHERE identifier = @identifier and charidentifier = @charidentifier and name = @name", {['identifier'] = u_identifier, ['charidentifier'] = u_charid, ['name'] = city[_source]}, function(result)
 		if result[1] ~= nil then
 			money = result[1].money
 			gold = result[1].gold
 		else
 			local Parameters = { ['identifier'] = u_identifier, ['charidentifier'] = u_charid, ['money'] = 0, ['name'] = city[_source] }
-			exports.ghmattimysql:execute("INSERT INTO bank_users ( `identifier`,`charidentifier`,`money`,`name` ) VALUES ( @identifier,@charidentifier,@money,@name )", Parameters)
+			exports.oxmysql:execute("INSERT INTO bank_users ( `identifier`,`charidentifier`,`money`,`name` ) VALUES ( @identifier,@charidentifier,@money,@name )", Parameters)
 		end
 	end)
 	Citizen.Wait(200)
@@ -39,7 +39,7 @@ gum.addNewCallBack("gum_bank:get_borrow", function(source, date)
 	local u_identifier = Character.identifier
 	local u_charid = Character.charIdentifier
 	local date = 0
-	exports.ghmattimysql:execute('SELECT borrow_pay FROM bank_users WHERE borrow_pay < now() - interval 1 DAY and identifier=@identifier and charidentifier=@charidentifier' , {['identifier']=u_identifier, ['charidentifier']=u_charid}, function(result)
+	exports.oxmysql:execute('SELECT borrow_pay FROM bank_users WHERE borrow_pay < now() - interval 1 DAY and identifier=@identifier and charidentifier=@charidentifier' , {['identifier']=u_identifier, ['charidentifier']=u_charid}, function(result)
 		if result[1] ~= nil then
 		 	date = os.date('Dne : %d.%m ve %H:%M', (result[1].borrow_pay/1000))
 		end
@@ -70,7 +70,7 @@ AddEventHandler( 'gum_bank:addmoney', function(citye, value, havem, haveg)
 
 		Character.removeCurrency(tonumber(_source), 0, value)
 		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You insered : "..value.."$</br>Now you have : "..tonumber(havem)+tonumber(value).."", 'bag', 2500)
-		exports.ghmattimysql:execute("UPDATE bank_users SET money=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(havem)+tonumber(value)},
+		exports.oxmysql:execute("UPDATE bank_users SET money=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(havem)+tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem)+tonumber(value), tonumber(haveg))
 		end)
@@ -93,7 +93,7 @@ AddEventHandler( 'gum_bank:takemoney', function(citye, value, havem, haveg)
 		DiscordWeb(16753920, "**Vzal z banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má peněz na účtě** : "..havem.."$\n**Vzal peněz** : "..value.."$" , argss, "")
 		Character.addCurrency(tonumber(_source), 0, tonumber(value))
 		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You taked : "..value.."$</br>Now you have : "..tonumber(havem)-tonumber(value).."", 'bag', 1500)
-		exports.ghmattimysql:execute("UPDATE bank_users SET money=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(havem)-tonumber(value)},
+		exports.oxmysql:execute("UPDATE bank_users SET money=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(havem)-tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem)-tonumber(value), tonumber(haveg))
 		end)
@@ -117,7 +117,7 @@ AddEventHandler( 'gum_bank:addgold', function(citye, value, havem, haveg)
 		DiscordWeb(16753920, "**Dal do banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má zlata na účtě** : "..haveg.."G\n**Dal zlata** : "..value.."G" , argss, "")
 		Character.removeCurrency(tonumber(_source), 1, value)
 		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You insered : "..value.." gold</br>Now you have : "..tonumber(haveg)+tonumber(value).."", 'bag', 1500)
-		exports.ghmattimysql:execute("UPDATE bank_users SET gold=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(haveg)+tonumber(value)},
+		exports.oxmysql:execute("UPDATE bank_users SET gold=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(haveg)+tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem), tonumber(haveg)+tonumber(value))
 		end)
@@ -140,7 +140,7 @@ AddEventHandler( 'gum_bank:takegold', function(citye, value, havem, haveg)
 		DiscordWeb(16753920, "**Vzal z banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má zlata na účtě** : "..haveg.."G\n**Vzal zlata** : "..value.."G" , argss, "")
 		Character.addCurrency(tonumber(_source), 1, value)
 		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You taked : "..value.." gold</br>Now you have : "..tonumber(haveg)-tonumber(value).."", 'bag', 1500)
-		exports.ghmattimysql:execute("UPDATE bank_users SET gold=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(haveg)-tonumber(value)},
+		exports.oxmysql:execute("UPDATE bank_users SET gold=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(haveg)-tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem), tonumber(haveg)-tonumber(value))
 		end)
@@ -158,7 +158,7 @@ AddEventHandler( 'gum_bank:borrow_money_now', function(borrow_value, borrow_add,
 	local u_identifier = Character.identifier
 	local u_charid = Character.charIdentifier
 	local have_borrow = false
-	exports.ghmattimysql:execute('SELECT * FROM bank_users WHERE borrow > 0 and identifier=@identifier and charidentifier=@charidentifier' , {['identifier']=u_identifier, ['charidentifier']=u_charid}, function(result)
+	exports.oxmysql:execute('SELECT * FROM bank_users WHERE borrow > 0 and identifier=@identifier and charidentifier=@charidentifier' , {['identifier']=u_identifier, ['charidentifier']=u_charid}, function(result)
 		if result[1] ~= nil then
 			have_borrow = true
 		end
@@ -169,7 +169,7 @@ AddEventHandler( 'gum_bank:borrow_money_now', function(borrow_value, borrow_add,
 		return false
 	end
 	Citizen.Wait(100)
-	exports.ghmattimysql:execute("UPDATE bank_users SET borrow=@borrow,borrow_money=@borrow_money,borrow_pay=CURRENT_TIMESTAMP() WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["borrow"]=tonumber(borrow_value)+tonumber(borrow_add), ["borrow_money"]=tonumber(borrow_calc_percent)},
+	exports.oxmysql:execute("UPDATE bank_users SET borrow=@borrow,borrow_money=@borrow_money,borrow_pay=CURRENT_TIMESTAMP() WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["borrow"]=tonumber(borrow_value)+tonumber(borrow_add), ["borrow_money"]=tonumber(borrow_calc_percent)},
 	function (result)
 		if result ~= nil then
 			DiscordWeb(16753920, "**Si půjčil** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Pujčil si** : "..borrow_value.."$" , argss, "")
@@ -187,17 +187,17 @@ AddEventHandler( 'gum_bank:remove_borrow', function()
 	local u_identifier = Character.identifier
 	local u_charid = Character.charIdentifier
 
-	exports.ghmattimysql:execute("SELECT borrow_money,borrow,name FROM bank_users WHERE identifier = @identifier and charidentifier = @charidentifier", {['identifier'] = u_identifier, ['charidentifier'] = u_charid}, function(result)
+	exports.oxmysql:execute("SELECT borrow_money,borrow,name FROM bank_users WHERE identifier = @identifier and charidentifier = @charidentifier", {['identifier'] = u_identifier, ['charidentifier'] = u_charid}, function(result)
 		if result ~= nil then
 			for k,v in pairs(result) do
 				if v.borrow_money ~= 0 then
 					Character.removeCurrency(tonumber(_source), 0, v.borrow_money)
 					if v.borrow-v.borrow_money <= 0 then
-						exports.ghmattimysql:execute("UPDATE bank_users SET borrow=@borrow,borrow_pay=NULL,borrow_money=@borrow_money WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=v.name, ["borrow"]=tonumber(0), ["borrow_money"]=tonumber(0)},
+						exports.oxmysql:execute("UPDATE bank_users SET borrow=@borrow,borrow_pay=NULL,borrow_money=@borrow_money WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=v.name, ["borrow"]=tonumber(0), ["borrow_money"]=tonumber(0)},
 						function (result)
 						end)
 					else
-						exports.ghmattimysql:execute("UPDATE bank_users SET borrow=@borrow,borrow_pay=CURRENT_TIMESTAMP() WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=v.name, ["borrow"]=tonumber(v.borrow-v.borrow_money)},
+						exports.oxmysql:execute("UPDATE bank_users SET borrow=@borrow,borrow_pay=CURRENT_TIMESTAMP() WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=v.name, ["borrow"]=tonumber(v.borrow-v.borrow_money)},
 						function (result)
 	
 						end)

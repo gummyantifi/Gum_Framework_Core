@@ -3,7 +3,7 @@
 setting.cfg example</br></br>
 
 #GUM BASE</br></br>
-ensure ghmattimysql</br>
+ensure oxmysql</br>
 ensure uiprompt</br>
 
 ensure gum_sounds</br></br>

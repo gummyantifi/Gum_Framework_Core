@@ -13,7 +13,7 @@ AddEventHandler('GetActivePlayers', function()
 end)
 
 function get_label(item, cb)
-    exports.ghmattimysql:execute("SELECT label FROM `items` WHERE `item` = @it", {['it'] = tostring(item)}, function(result)
+    exports.oxmysql:execute("SELECT label FROM `items` WHERE `item` = @it", {['it'] = tostring(item)}, function(result)
         if result[1] then
             cb(result[1].label)
         end
@@ -21,7 +21,7 @@ function get_label(item, cb)
 end
 
 function get_realitem(item, cb)
-    exports.ghmattimysql:execute("SELECT item FROM `items` WHERE `item` = @it", {['it'] = tostring(item)}, function(result)
+    exports.oxmysql:execute("SELECT item FROM `items` WHERE `item` = @it", {['it'] = tostring(item)}, function(result)
         if result[1] then
             cb(result[1].item)
         else
@@ -42,7 +42,7 @@ RegisterCommand("n", function(source, args)
     end
 end)
 -- RegisterCommand("give_all", function(source)
---     exports.ghmattimysql:execute("SELECT item FROM `items`", {}, function(result)
+--     exports.oxmysql:execute("SELECT item FROM `items`", {}, function(result)
 --         if result[1] then
 --             for k,v in pairs(result) do
 --                 if k >= 50 then
@@ -193,7 +193,7 @@ end)
 RegisterServerEvent('Check_Item_Table')
 AddEventHandler('Check_Item_Table', function()
     local _source = tonumber(source)
-    exports.ghmattimysql:execute('SELECT item,label FROM items WHERE can_remove = @can_remove' , {['can_remove'] = 1}, function(result)
+    exports.oxmysql:execute('SELECT item,label FROM items WHERE can_remove = @can_remove' , {['can_remove'] = 1}, function(result)
         TriggerClientEvent("gum_adminmenu:send_table", _source, result)
     end)
 end)
@@ -249,7 +249,7 @@ AddEventHandler("KickAllPlayers", function(target)
 
 	local identifier = GetPlayerIdentifier(tonumber(target))
 	local Parameters = { ['identifier'] = identifier, ['coords'] = json.encode(coords_table) }
-	exports.ghmattimysql:execute("UPDATE characters SET coords = @coords WHERE identifier = @identifier", Parameters)
+	exports.oxmysql:execute("UPDATE characters SET coords = @coords WHERE identifier = @identifier", Parameters)
     Citizen.Wait(1000)
 	DropPlayer(target, "\n\n Byl jsi vykopnut "..GetPlayerName(tonumber(target)).." ze serveru z důvodu údržby, . \n\n Důvod : \n Probíhá restart serveru nebo údržba. Zkus se napojit na server za chvilku a v případě delší chyby oznam Administrátorům problém s připojením\n S pozdravem RedWest Tým.")
 end)
@@ -258,7 +258,7 @@ RegisterServerEvent("BanPlayer")
 AddEventHandler("BanPlayer", function(target, banreason, datetim)
 	local identifier = GetPlayerIdentifier(target)
     local Parameters = { ['identifier'] = identifier, ['reason'] = banreason, ["date"] = datetim}
-    exports.ghmattimysql:execute("INSERT INTO bans ( `identifier`,`reason`,`date`) VALUES (@identifier,@reason,@date)", Parameters)
+    exports.oxmysql:execute("INSERT INTO bans ( `identifier`,`reason`,`date`) VALUES (@identifier,@reason,@date)", Parameters)
 	DropPlayer(target, "\n\n Byl zabanován. \n\n Důvod : \n "..banreason.." \n\n Do datu : "..datetim.."")
 
     local _source = source
@@ -268,7 +268,7 @@ end)
 
 RegisterServerEvent("gum_adminmenu:ban_list_clean")
 AddEventHandler("gum_adminmenu:ban_list_clean", function()
-    exports.ghmattimysql:execute("DELETE FROM bans WHERE date < now() - interval 1 HOUR;", {}, function()
+    exports.oxmysql:execute("DELETE FROM bans WHERE date < now() - interval 1 HOUR;", {}, function()
         print("^2[Banneds] Database: ^0Checking and Deleting olds bans!")
     end)
 end)

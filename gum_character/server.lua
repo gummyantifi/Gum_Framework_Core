@@ -13,7 +13,7 @@ AddEventHandler('gum_character:check_character', function()
 		local Character = User.getUsedCharacter
 		local identifier = GetPlayerIdentifier(tonumber(_source))
 		if Character ~= nil then
-			exports.ghmattimysql:execute('SELECT * FROM characters WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
+			exports.oxmysql:execute('SELECT * FROM characters WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
 				if result[1] ~= nil then
 					TriggerClientEvent("gum_character:check_char", _source, true)
 					TriggerClientEvent("gum_character:select_char", tonumber(_source), result, User)
@@ -43,10 +43,10 @@ AddEventHandler('gum_character:check_character2', function()
 	local User = gumCore.getUser(source)
 	local Character = User.getUsedCharacter
 	local identifier = GetPlayerIdentifier(source)
-	exports.ghmattimysql:execute('SELECT firstname FROM characters WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
+	exports.oxmysql:execute('SELECT firstname FROM characters WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
 		if result[1] ~= nil then
             TriggerClientEvent("gum_character:check_char", _source, true)
-			exports.ghmattimysql:execute('SELECT skinPlayer,compPlayer,coords,charidentifier,isdead FROM characters WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
+			exports.oxmysql:execute('SELECT skinPlayer,compPlayer,coords,charidentifier,isdead FROM characters WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
 				if result[1] ~= nil then
 					local skin_table = {}
 					local skin_table = json.decode(result[1].skinPlayer)
@@ -60,7 +60,7 @@ AddEventHandler('gum_character:check_character2', function()
 					TriggerClientEvent("gum_clothes:send_outfit", _source, skin_table, outfit_table)
 				end
 			end)
-			-- exports.ghmattimysql:execute('SELECT title,comps FROM outfits WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
+			-- exports.oxmysql:execute('SELECT title,comps FROM outfits WHERE identifier = @identifier' , {['identifier'] = identifier}, function(result)
 			-- 	if result ~= nil then
 			-- 		TriggerClientEvent("gum_clothes:save_outfits", tonumber(_source), result)
 			-- 	end
@@ -96,7 +96,7 @@ AddEventHandler( 'gum_character:dead_state', function(state)
 	end
 
 	local Parameters = { ['identifier'] = u_identifier, ['charidentifier'] = u_charid, ['isdead'] = isDead }
-	exports.ghmattimysql:execute("UPDATE characters SET isdead = @isdead WHERE identifier = @identifier AND charidentifier = @charidentifier", Parameters)
+	exports.oxmysql:execute("UPDATE characters SET isdead = @isdead WHERE identifier = @identifier AND charidentifier = @charidentifier", Parameters)
 end)
 
 function DiscordWeb(color, name, footer)

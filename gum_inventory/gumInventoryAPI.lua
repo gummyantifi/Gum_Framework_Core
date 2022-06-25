@@ -4,7 +4,7 @@ exports('gum_inventoryApi',function()
     
     self.check_itemtable = function(source)
         local global_variable = {}
-        exports.ghmattimysql:execute('SELECT * FROM items' , {}, function(result)
+        exports.oxmysql:execute('SELECT * FROM items' , {}, function(result)
             if result ~= nil then
                 global_variable = result 
             end
@@ -14,7 +14,7 @@ exports('gum_inventoryApi',function()
     end
     self.preload_itemtable = function()
         local global_variable = {}
-        exports.ghmattimysql:execute('SELECT * FROM items' , {}, function(result)
+        exports.oxmysql:execute('SELECT * FROM items' , {}, function(result)
             if result ~= nil then
                 global_variable = result 
             end
@@ -109,7 +109,7 @@ exports('gum_inventoryApi',function()
 
     self.canCarryItem = function(source, item, amount) 
         local can
-        exports.ghmattimysql:execute( "SELECT limit FROM items WHERE item=@id;", {['@id'] = item}, 
+        exports.oxmysql:execute( "SELECT limit FROM items WHERE item=@id;", {['@id'] = item}, 
         function(result) 
             if self.getItemCount(_source, item) + amount <= tonumber(result) then
                 can = true

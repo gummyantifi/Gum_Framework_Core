@@ -166,16 +166,16 @@ AddEventHandler('gumCore:registerstorage', function(source, id, size)
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
 	if id == 0 then
-		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
 			if result[1] == nil then
 				local Parameters = { ['identifier'] = identifier, ['charid'] = charid, ['size']=tonumber(size)}
-				exports.ghmattimysql:execute("INSERT INTO inventory_storage ( `identifier`,`charid`,`size`) VALUES (@identifier,@charid,@size)", Parameters)
+				exports.oxmysql:execute("INSERT INTO inventory_storage ( `identifier`,`charid`,`size`) VALUES (@identifier,@charid,@size)", Parameters)
 			end
 		end)
 	else
-		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@id' , {["id"]=id}, function(result)
 			if result[1] == nil then
-				exports.ghmattimysql:execute("INSERT inventory_storage SET identifier=@identifier, charid=@charid, size=@size", {['identifier']= id, ['charid']= 0, ['size']=tonumber(size)},
+				exports.oxmysql:execute("INSERT inventory_storage SET identifier=@identifier, charid=@charid, size=@size", {['identifier']= id, ['charid']= 0, ['size']=tonumber(size)},
 				function (result)
 				end)
 			end
@@ -187,7 +187,7 @@ RegisterServerEvent('gumCore:openstorage')
 AddEventHandler('gumCore:openstorage', function(source, id)
 	local _source = source
 	if openstorages[id] == nil and openstorages[id] ~= '0' then
-		exports.ghmattimysql:execute('SELECT items,size FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items,size FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result[1] ~= nil then
 				openstorages[id] = true
 				open_my_storages[_source] = id
@@ -223,7 +223,7 @@ AddEventHandler('gumCore:updatestorage', function(source, id, size)
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
 
-	exports.ghmattimysql:execute("UPDATE inventory_storage SET size = @size WHERE identifier = @identifier", {['identifier'] = id, ['size'] = size},
+	exports.oxmysql:execute("UPDATE inventory_storage SET size = @size WHERE identifier = @identifier", {['identifier'] = id, ['size'] = size},
 		function (result)
 		
 		gumCore.Debug("CharIdentifier : "..charid.." \nUpdated storage to "..size)
@@ -285,7 +285,7 @@ end)
 RegisterServerEvent('gum_inventory:get_storage_srv')
 AddEventHandler('gum_inventory:get_storage_srv', function(source, id)
 	local _source = source
-	exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+	exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 		if result[1] ~= nil then
 			TriggerClientEvent("gum_inventory:refresh_storage", tonumber(_source), json.decode(result[1].items), itm_table, wpn_table, id, result[1].size)
 		end
@@ -299,7 +299,7 @@ AddEventHandler('gum_inventory:transfer_item_to_storage', function(item, count, 
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
-		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
 				for k,v in pairs(result) do
 					for k2,v2 in pairs(v) do
@@ -322,7 +322,7 @@ AddEventHandler('gum_inventory:transfer_item_to_storage', function(item, count, 
 
 						if tostring(id) ~= '0' then
 							gumCore.Debug("Player with CharID : "..charid.." \nTransfer item to storage : "..id)
-							exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+							exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 							function (result)
 								TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 							end)
@@ -345,7 +345,7 @@ AddEventHandler('gum_inventory:transfer_money_to_storage', function(item, count,
 	local user_money = Character.money
 	if tostring(id) ~= '0' then
 		if user_money >= count then
-			exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+			exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 				if result ~= nil then
 					for k,v in pairs(result) do
 						for k2,v2 in pairs(v) do
@@ -368,7 +368,7 @@ AddEventHandler('gum_inventory:transfer_money_to_storage', function(item, count,
 
 							if tostring(id) ~= '0' then
 								gumCore.Debug("Player with CharID : "..charid.." \nTransfer money to storage : "..id)
-								exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+								exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 								function (result)
 									TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 								end)
@@ -396,7 +396,7 @@ AddEventHandler('gum_inventory:transfer_gold_to_storage', function(item, count, 
 	local user_money = Character.gold
 	if tostring(id) ~= '0' then
 		if user_money >= count then
-			exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+			exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 				if result ~= nil then
 					for k,v in pairs(result) do
 						for k2,v2 in pairs(v) do
@@ -419,7 +419,7 @@ AddEventHandler('gum_inventory:transfer_gold_to_storage', function(item, count, 
 
 							if tostring(id) ~= '0' then
 								gumCore.Debug("Player with CharID : "..charid.." \nTransfer gold to storage : "..id)
-								exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+								exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 								function (result)
 									TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 								end)
@@ -445,7 +445,7 @@ AddEventHandler('gum_inventory:transfer_money_from_storage', function(item, coun
 	local charid = Character.charIdentifier
 
 	if tostring(id) ~= '0' then
-		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
 				for k,v in pairs(result) do
 					for k2,v2 in pairs(v) do
@@ -467,7 +467,7 @@ AddEventHandler('gum_inventory:transfer_money_from_storage', function(item, coun
 
 						if tostring(id) ~= '0' then
 							gumCore.Debug("Player with CharID : "..charid.." \nTransfer money from storage : "..id)
-							exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+							exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 							function (result)
 								TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 							end)
@@ -489,7 +489,7 @@ AddEventHandler('gum_inventory:transfer_gold_from_storage', function(item, count
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
-		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
 				for k,v in pairs(result) do
 					for k2,v2 in pairs(v) do
@@ -511,7 +511,7 @@ AddEventHandler('gum_inventory:transfer_gold_from_storage', function(item, count
 
 						if tostring(id) ~= '0' then
 							gumCore.Debug("Player with ID : ".._source.." \nTrasnfer gold from storage : "..id)
-							exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+							exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 							function (result)
 								TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 							end)
@@ -533,7 +533,7 @@ AddEventHandler('gum_inventory:transfer_item_from_storage', function(item, count
 	local Character = User.getUsedCharacter
 	local charid = Character.charIdentifier
 	if tostring(id) ~= '0' then
-		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
 				TriggerEvent("gumCore:canCarryItem", tonumber(_source), item, tonumber(count), function(canCarry2)
 					if canCarry2 then
@@ -556,7 +556,7 @@ AddEventHandler('gum_inventory:transfer_item_from_storage', function(item, count
 								Inventory.addItem(tonumber(_source), item, tonumber(count))
 								if tostring(id) ~= '0' then
 									gumCore.Debug("Player with CharID : "..charid.." \nTrasnfer item from storage : "..id)
-									exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+									exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 									function (result)
 										TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 									end)
@@ -583,7 +583,7 @@ AddEventHandler('gum_inventory:transfer_weapon_to_storage', function(id_item, it
 	local charid = Character.charIdentifier
 	Inventory.subWeapon(tonumber(_source), id_item)
 	if tostring(id) ~= '0' then
-		exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+		exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 			if result ~= nil then
 				for k,v in pairs(result) do
 					for k2,v2 in pairs(v) do
@@ -592,7 +592,7 @@ AddEventHandler('gum_inventory:transfer_weapon_to_storage', function(id_item, it
 						table.insert(new_table[tonumber(_source)], {item=id_item, name=item})
 						if tostring(id) ~= '0' then
 							gumCore.Debug("Player with ID : "..charid.." \nTransfer weapon to storage : "..id)
-							exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+							exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 							function (result)
 								TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 							end)
@@ -615,7 +615,7 @@ AddEventHandler('gum_inventory:transfer_weapon_from_storage', function(item, id)
 		TriggerEvent("gumCore:canCarryWeapons", tonumber(_source), 1, function(canCarry)
 			if canCarry then
 				Inventory.giveWeapon(tonumber(_source), tonumber(item), 0)
-				exports.ghmattimysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
+				exports.oxmysql:execute('SELECT items FROM inventory_storage WHERE identifier=@identifier' , {["identifier"]=id}, function(result)
 					if result ~= nil then
 						for k,v in pairs(result) do
 							for k2,v2 in pairs(v) do
@@ -628,7 +628,7 @@ AddEventHandler('gum_inventory:transfer_weapon_from_storage', function(item, id)
 								end
 								if tostring(id) ~= '0' then
 									gumCore.Debug("Player with ID : ".._source.." \nTransfer weapon from storage : "..id)
-									exports.ghmattimysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
+									exports.oxmysql:execute("UPDATE inventory_storage SET items = @items WHERE identifier = @identifier", {['identifier'] = id, ['items'] = json.encode(new_table[tonumber(_source)])},
 									function (result)
 										TriggerEvent("gum_inventory:get_storage_srv", tonumber(_source), id)
 									end)
@@ -660,7 +660,7 @@ AddEventHandler('gum_inventory:get_items', function()
 		local Character = User.getUsedCharacter
 		local identifier = Character.identifier
 		local charid = Character.charIdentifier
-		exports.ghmattimysql:execute('SELECT inventory FROM characters WHERE identifier=@identifier and charidentifier=@charidentifier' , {["identifier"]=identifier,["charidentifier"]=charid}, function(result)
+		exports.oxmysql:execute('SELECT inventory FROM characters WHERE identifier=@identifier and charidentifier=@charidentifier' , {["identifier"]=identifier,["charidentifier"]=charid}, function(result)
 			if result ~= nil then
 				itm_table = Inventory.check_itemtable()
 				wpn_table = Inventory.check_weapontable()
@@ -677,7 +677,7 @@ AddEventHandler('gum_inventory:get_items', function()
 						end
 					end
 				end
-				exports.ghmattimysql:execute('SELECT id,identifier,name,ammo,used,comps,dirtlevel,conditionlevel FROM loadout WHERE charidentifier = @charidentifier AND identifier = @identifier' , {['charidentifier'] = charid, ['identifier'] = identifier}, function(result)
+				exports.oxmysql:execute('SELECT id,identifier,name,ammo,used,comps,dirtlevel,conditionlevel FROM loadout WHERE charidentifier = @charidentifier AND identifier = @identifier' , {['charidentifier'] = charid, ['identifier'] = identifier}, function(result)
 					if result[1] ~= nil then
 						weapon_table[tonumber(_source)]  = {}
 						for k,v in pairs(result) do
@@ -726,7 +726,7 @@ AddEventHandler('gum_inventory:get_items_sec', function(source)
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
 
-	exports.ghmattimysql:execute('SELECT inventory FROM characters WHERE identifier=@identifier and charidentifier=@charidentifier' , {["identifier"]=identifier,["charidentifier"]=charid}, function(result)
+	exports.oxmysql:execute('SELECT inventory FROM characters WHERE identifier=@identifier and charidentifier=@charidentifier' , {["identifier"]=identifier,["charidentifier"]=charid}, function(result)
 		if result ~= nil then
 			for k,v in pairs(result) do
 				for k2,v2 in pairs(v) do
@@ -741,7 +741,7 @@ AddEventHandler('gum_inventory:get_items_sec', function(source)
 					end
 				end
 			end
-			exports.ghmattimysql:execute('SELECT id,identifier,name,ammo,used,comps,dirtlevel,conditionlevel FROM loadout WHERE charidentifier = @charidentifier AND identifier = @identifier' , {['charidentifier'] = charid, ['identifier'] = identifier}, function(result2)
+			exports.oxmysql:execute('SELECT id,identifier,name,ammo,used,comps,dirtlevel,conditionlevel FROM loadout WHERE charidentifier = @charidentifier AND identifier = @identifier' , {['charidentifier'] = charid, ['identifier'] = identifier}, function(result2)
 				if result2[1] ~= nil then
 					weapon_table[tonumber(_source)] = {}
 					for k,v in pairs(result2) do
@@ -812,7 +812,7 @@ AddEventHandler('gumCore:addItem', function(source, name, count, player_backup)
 			inv_table[tonumber(_source)][name] = math.floor(tonumber(count))
 		end
 	end
-	exports.ghmattimysql:execute("UPDATE characters SET inventory = @inventory WHERE identifier = @identifier and charidentifier = @charidentifier", {['identifier'] = identifier, ['charidentifier']=CharIdentifier, ['inventory'] = json.encode(inv_table[tonumber(_source)])},
+	exports.oxmysql:execute("UPDATE characters SET inventory = @inventory WHERE identifier = @identifier and charidentifier = @charidentifier", {['identifier'] = identifier, ['charidentifier']=CharIdentifier, ['inventory'] = json.encode(inv_table[tonumber(_source)])},
 	function (result)
 		inventory_table_sended[tonumber(_source)] = {}
 		for k,v in pairs(itm_table) do
@@ -847,7 +847,7 @@ AddEventHandler('gum_inventory:send_state_weapon', function(wepid, state)
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
 
-	exports.ghmattimysql:execute("UPDATE loadout SET used = @used WHERE identifier = @identifier and charidentifier = @charidentifier and id = @id", {['identifier'] = identifier, ['charidentifier'] = charid, ['id'] = tonumber(wepid), ['used'] = tonumber(state)},
+	exports.oxmysql:execute("UPDATE loadout SET used = @used WHERE identifier = @identifier and charidentifier = @charidentifier and id = @id", {['identifier'] = identifier, ['charidentifier'] = charid, ['id'] = tonumber(wepid), ['used'] = tonumber(state)},
 	function (result)
 		TriggerEvent("gum_inventory:get_items_sec", tonumber(_source))
 	end)
@@ -967,7 +967,7 @@ AddEventHandler('gumCore:subItem', function(source, name, count)
 	else
 		inv_table[tonumber(_source)][name] = inv_table[tonumber(_source)][name]-tonumber(count)
 	end
-	exports.ghmattimysql:execute("UPDATE characters SET inventory = @inventory WHERE identifier = @identifier and charidentifier=@charidentifier", {['identifier'] = identifier,["charidentifier"]=charid, ['inventory'] = json.encode(inv_table[tonumber(_source)])},
+	exports.oxmysql:execute("UPDATE characters SET inventory = @inventory WHERE identifier = @identifier and charidentifier=@charidentifier", {['identifier'] = identifier,["charidentifier"]=charid, ['inventory'] = json.encode(inv_table[tonumber(_source)])},
 	function (result)
 		inventory_table_sended[tonumber(_source)] = {}
 		for k,v in pairs(itm_table) do
@@ -989,7 +989,7 @@ AddEventHandler('gumCore:registerWeapon', function(target, name, ammo, comps)
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
 
-	exports.ghmattimysql:execute("INSERT loadout SET identifier=@identifier,  charidentifier=@charidentifier,  name=@name,  ammo=@ammo,  comps=@comps", {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['ammo'] = json.encode(ammo), ['comps']='{}'},
+	exports.oxmysql:execute("INSERT loadout SET identifier=@identifier,  charidentifier=@charidentifier,  name=@name,  ammo=@ammo,  comps=@comps", {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['ammo'] = json.encode(ammo), ['comps']='{}'},
 	function (result)
 		TriggerEvent("gum_inventory:get_items_sec", tonumber(target))
 	end)
@@ -1008,9 +1008,9 @@ AddEventHandler('gum_inventory:upload_drops', function(dropped_items)
 	local send_table = {}
 	local print_id = 0
 
-	exports.ghmattimysql:execute("INSERT drops SET drop_list=@drop_list", {['drop_list']= json.encode(dropped_items)},
+	exports.oxmysql:execute("INSERT drops SET drop_list=@drop_list", {['drop_list']= json.encode(dropped_items)},
 	function (result)
-		exports.ghmattimysql:execute('SELECT * FROM drops' , {}, function(result)
+		exports.oxmysql:execute('SELECT * FROM drops' , {}, function(result)
 			if result[1] ~= nil then
 				for k,v in pairs(result) do
 					for k2,v2 in pairs(v) do
@@ -1034,7 +1034,7 @@ AddEventHandler('gum_inventory:check_drops', function(source)
 	local try_table = {}
 	local send_table = {}
 	local print_id = 0
-	exports.ghmattimysql:execute('SELECT * FROM drops' , {}, function(result)
+	exports.oxmysql:execute('SELECT * FROM drops' , {}, function(result)
 		if result[1] ~= nil then
 			for k,v in pairs(result) do
 				for k2,v2 in pairs(v) do
@@ -1063,7 +1063,7 @@ AddEventHandler('gum_inventory:check_drops_1', function()
 	local try_table = {}
 	local send_table = {}
 	local print_id = 0
-	exports.ghmattimysql:execute('SELECT * FROM drops' , {}, function(result)
+	exports.oxmysql:execute('SELECT * FROM drops' , {}, function(result)
 		if result[1] ~= nil then
 			for k,v in pairs(result) do
 				for k2,v2 in pairs(v) do
@@ -1088,7 +1088,7 @@ RegisterServerEvent('gum_inventory:drop_update')
 AddEventHandler('gum_inventory:drop_update', function(id, playerlist)
 	local _source = source
 
-	exports.ghmattimysql:execute("DELETE FROM `drops` WHERE `id` = "..id.."", {},
+	exports.oxmysql:execute("DELETE FROM `drops` WHERE `id` = "..id.."", {},
 	function (result)
 		for k,v in pairs(playerlist) do
 			TriggerEvent("gum_inventory:check_drops", tonumber(v.id))
@@ -1103,7 +1103,7 @@ AddEventHandler('gumCore:giveWeapon', function(source, weaponid, target)
 	local Character = User.getUsedCharacter
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
-	exports.ghmattimysql:execute('SELECT id,identifier,name,ammo,used,comps,dirtlevel,conditionlevel FROM loadout WHERE charidentifier = @charidentifier AND identifier = @identifier' , {['charidentifier'] = charid, ['identifier'] = identifier}, function(result)
+	exports.oxmysql:execute('SELECT id,identifier,name,ammo,used,comps,dirtlevel,conditionlevel FROM loadout WHERE charidentifier = @charidentifier AND identifier = @identifier' , {['charidentifier'] = charid, ['identifier'] = identifier}, function(result)
 		if result[1] ~= nil then
 			for k,v in pairs(result) do
 				in_inventory_weapons[tonumber(_source)] = k
@@ -1125,21 +1125,21 @@ AddEventHandler('gumCore:giveWeapon', function(source, weaponid, target)
 					end
 					in_inventory_weapons[tonumber(target)] = tonumber(in_inventory_weapons[tonumber(target)])+1
 
-					exports.ghmattimysql:execute("UPDATE loadout SET identifier=@identifier_t, charidentifier=@charidentifier_t WHERE id = @id", {['identifier_t'] = identifier_t, ['charidentifier_t'] = charid_t, ['id'] = weaponid},
+					exports.oxmysql:execute("UPDATE loadout SET identifier=@identifier_t, charidentifier=@charidentifier_t WHERE id = @id", {['identifier_t'] = identifier_t, ['charidentifier_t'] = charid_t, ['id'] = weaponid},
 					function (result)
 						TriggerEvent("gum_inventory:get_items_sec", tonumber(_source))
 						Citizen.Wait(200)
 						TriggerEvent("gum_inventory:get_items_sec", tonumber(target))
 					end)
 				else
-					exports.ghmattimysql:execute("UPDATE loadout SET identifier=@identifier, charidentifier=@charid WHERE id = @id", {['identifier'] = identifier, ['charid'] = charid, ['id'] = weaponid},
+					exports.oxmysql:execute("UPDATE loadout SET identifier=@identifier, charidentifier=@charid WHERE id = @id", {['identifier'] = identifier, ['charid'] = charid, ['id'] = weaponid},
 					function (result)
 						TriggerEvent("gum_inventory:get_items_sec", tonumber(_source))
 					end)
 				end
 			end
 		else
-			exports.ghmattimysql:execute("UPDATE loadout SET identifier=@identifier, charidentifier=@charid WHERE id = @id", {['identifier'] = identifier, ['charid'] = charid, ['id'] = weaponid},
+			exports.oxmysql:execute("UPDATE loadout SET identifier=@identifier, charidentifier=@charid WHERE id = @id", {['identifier'] = identifier, ['charid'] = charid, ['id'] = weaponid},
 			function (result)
 				TriggerEvent("gum_inventory:get_items_sec", tonumber(_source))
 			end)
@@ -1165,7 +1165,7 @@ AddEventHandler('gumCore:giveWeapon_dropped', function(target, id_weapon)
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
 
-	exports.ghmattimysql:execute("UPDATE loadout SET identifier=@identifier, charidentifier=@charidentifier WHERE id = @id", {['identifier'] = identifier, ['charidentifier'] = charid, ['id'] = id_weapon},
+	exports.oxmysql:execute("UPDATE loadout SET identifier=@identifier, charidentifier=@charidentifier WHERE id = @id", {['identifier'] = identifier, ['charidentifier'] = charid, ['id'] = id_weapon},
 	function (result)
 		TriggerEvent("gum_inventory:get_items_sec", tonumber(target))
 	end)
@@ -1180,10 +1180,10 @@ AddEventHandler('gumCore:subWeapon', function(source, weaponid)
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
 
-	exports.ghmattimysql:execute('SELECT name FROM loadout WHERE id=@id' , {["id"]=weaponid}, function(result)
+	exports.oxmysql:execute('SELECT name FROM loadout WHERE id=@id' , {["id"]=weaponid}, function(result)
 		if result ~= nil then
 			TriggerClientEvent("gum_inventory:remove_wepo", tonumber(_source), result[1].name)
-			exports.ghmattimysql:execute("UPDATE loadout SET identifier='', charidentifier=0, used=0 WHERE id = @id", {["@id"] = weaponid},
+			exports.oxmysql:execute("UPDATE loadout SET identifier='', charidentifier=0, used=0 WHERE id = @id", {["@id"] = weaponid},
 				function (result)
 				TriggerEvent("gum_inventory:get_items_sec", tonumber(_source))
 			end)
@@ -1201,10 +1201,10 @@ AddEventHandler('gum_inventory:save_ammo', function(name, new_ammo_table, condit
 
 		if tonumber(condition_level) <= 0.99 then
 			local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
-			exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+			exports.oxmysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 		else
 			local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
-			exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+			exports.oxmysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 		end
 	end
 end)
@@ -1217,16 +1217,16 @@ AddEventHandler('gum_inventory:save_p_ammo', function(name, name2, new_ammo_tabl
 
 	if tonumber(condition_level) <= 0.99 then
 		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
-		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+		exports.oxmysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 		Citizen.Wait(1000)
 		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name2, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
-		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+		exports.oxmysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 	else
 		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(condition_level), ['conditionlevel'] = tonumber(condition_level), ['ammo'] = json.encode(new_ammo_table) }
-		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+		exports.oxmysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 		Citizen.Wait(1000)
 		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name2, ['dirtlevel'] = tonumber(0.995), ['conditionlevel'] = tonumber(0.995), ['ammo'] = json.encode(new_ammo_table) }
-		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+		exports.oxmysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 	end
 end)
 RegisterServerEvent('gum_inventory:save_cleaning')
@@ -1236,7 +1236,7 @@ AddEventHandler('gum_inventory:save_cleaning', function(name, cleaning)
 	local identifier = Character.identifier
 	local charid = Character.charIdentifier
 	local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(cleaning), ['conditionlevel'] = tonumber(cleaning) }
-	exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+	exports.oxmysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 end)
 
 RegisterServerEvent('gum_inventory:only_ammo')
@@ -1247,5 +1247,5 @@ AddEventHandler('gum_inventory:only_ammo', function(name, new_ammo_table)
 	local charid = Character.charIdentifier
 
 	local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['ammo'] = json.encode(new_ammo_table) }
-	exports.ghmattimysql:execute("UPDATE loadout SET ammo=@ammo WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+	exports.oxmysql:execute("UPDATE loadout SET ammo=@ammo WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 end)
