@@ -24,7 +24,7 @@ CREATE TABLE `bank_users` (
   `borrow` double DEFAULT 0,
   `borrow_pay` datetime DEFAULT NULL,
   `borrow_money` double DEFAULT 0
-) ENGINE=InnoDB DEFAULT;
+) ENGINE=InnoDB;
 
 
 
