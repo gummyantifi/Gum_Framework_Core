@@ -114,7 +114,7 @@ RegisterCommand("addwl", function(source, args)
 			local Parameters = { ['identifier'] = identifier_news}
 			exports.ghmattimysql:execute("INSERT INTO whitelist (`identifier`) VALUES (@identifier)", Parameters)
 			if Config.Info_print then
-				gumCore.Debug("Byl přidán WL :"..identifier_news)
+				gumCore.Debug("Added on Whitelist : "..identifier_news)
 			end
 		else
 			if args ~= nil then
@@ -127,14 +127,14 @@ RegisterCommand("addwl", function(source, args)
 					exports.ghmattimysql:execute("INSERT INTO whitelist (`identifier`) VALUES (@identifier)", Parameters)
 
 					if Config.Info_print then
-						gumCore.Debug("Byl přidán WL - "..identifier_news)
+						gumCore.Debug("Added on Whitelist : "..identifier_news)
 					end
 				else return false
 				end
 			end
 		end
 	else
-		gumCore.Error("Nebyl zadaný hex")
+		gumCore.Error("No selected hex")
 	end
 end)
 
@@ -996,7 +996,7 @@ local function OnPlayerConnecting(name, setKickReason, deferrals)
 			end
 		end)
     else
-		deferrals.done("\n\n Nejsi na Whitelistu serveru RedWest RP.\n Pro přijetí na whitelist musíš splnit následující kroky. \n\n 1) Připojit se na discord : https://discord.com/invite/4ZZFgqtF8J \n 2) Vyplnit formulář.\n 3) Počkat na schválení \n 4) Zažádat si o pohovor. \n\n Přejeme hodně štěstí k formuláři \n S pozdravem tvůj RedWest Tým!")
+		deferrals.done("\n\n You are not on whitelist.\n For access you must make this : . \n\n 1) Connect to discord : https://discord.com/invite/4ZZFgqtF8J \n 2) Fill form.\n 3) Wait for access \n 4) Call with admin. \n\n Good luck \n And have a nice day GF Team!")
     end
 end
 
