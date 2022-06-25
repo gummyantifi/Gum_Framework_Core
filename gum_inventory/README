@@ -1,0 +1,35 @@
+[B] = Open inventory </br>
+[E] / Double mouse click = Use item </br>
+
+
+Storage managment
+
+Storage_ID = Can be Number or words
+Capacity = How bigger storage must be
+
+
+Client side storage managment : 
+
+TriggerServerEvent("gumCore:registerstorage", GetPlayerServerId(PlayerId()), STORAGE_ID, CAPACITY)
+
+
+!! Update capacity in storage
+TriggerServerEvent("gumCore:updatestorage", GetPlayerServerId(PlayerId()), STORAGE_ID, CAPACITY)
+
+
+!! Open storage
+TriggerServerEvent("gumCore:openstorage", GetPlayerServerId(PlayerId()), STORAGE_ID)
+
+
+
+Server side storage managment : 
+!! Create new storage
+    Inventory.createstorage(source, STORAGE_ID, CAPACITY)
+ 
+ !! Update capacity in storage
+   Inventory.updatestorage(source, STORAGE_ID, CAPACITY)
+ 
+ !! Open storage
+   Inventory.openstorage(source, STORAGE_ID)
+    
+    
