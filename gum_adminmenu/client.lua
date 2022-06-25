@@ -810,5 +810,5 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 		end
 	end)
 end)
-
+--
   
