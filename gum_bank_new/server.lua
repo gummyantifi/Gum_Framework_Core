@@ -41,7 +41,7 @@ gum.addNewCallBack("gum_bank:get_borrow", function(source, date)
 	local date = 0
 	exports.ghmattimysql:execute('SELECT borrow_pay FROM bank_users WHERE borrow_pay < now() - interval 1 DAY and identifier=@identifier and charidentifier=@charidentifier' , {['identifier']=u_identifier, ['charidentifier']=u_charid}, function(result)
 		if result[1] ~= nil then
-		 	date = os.date('Dne : %d.%m ve %H:%M', (result[1].borrow_pay/1000))
+		 	date = os.date(''..Config.Language[6].text..' : %d.%m ve %H:%M', (result[1].borrow_pay/1000))
 		end
 	end)
 	Citizen.Wait(100)
@@ -66,16 +66,18 @@ AddEventHandler( 'gum_bank:addmoney', function(citye, value, havem, haveg)
 	local u_charid = Character.charIdentifier
 	local user_money = Character.money
 	if tonumber(user_money) >= tonumber(value) and tonumber(value) > 0 then
-		DiscordWeb(16753920, "**Dal do banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má peněz na účtě** : "..havem.."$\n**Dal peněz** : "..value.."$" , argss, "")
+		if Config.WebhookEnable == true then
+			DiscordWeb(16753920, "**Dal do banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má peněz na účtě** : "..havem.."$\n**Dal peněz** : "..value.."$" , argss, "")
+		end
 
 		Character.removeCurrency(tonumber(_source), 0, value)
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You insered : "..value.."$</br>Now you have : "..tonumber(havem)+tonumber(value).."", 'bag', 2500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, ""..Config.Language[9].text.." "..value.."$</br>"..Config.Language[13].text..""..tonumber(havem)+tonumber(value).."", 'bag', 2500)
 		exports.ghmattimysql:execute("UPDATE bank_users SET money=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(havem)+tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem)+tonumber(value), tonumber(haveg))
 		end)
 	else
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You dont have this money", 'bag', 2500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, Config.Language[7].text, 'bag', 2500)
 	end
 end)
 
@@ -90,15 +92,17 @@ AddEventHandler( 'gum_bank:takemoney', function(citye, value, havem, haveg)
 	local u_identifier = Character.identifier
 	local u_charid = Character.charIdentifier
 	if tonumber(havem) >= tonumber(value) and tonumber(value) > 0 then
-		DiscordWeb(16753920, "**Vzal z banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má peněz na účtě** : "..havem.."$\n**Vzal peněz** : "..value.."$" , argss, "")
+		if Config.WebhookEnable == true then
+			DiscordWeb(16753920, "**Vzal z banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má peněz na účtě** : "..havem.."$\n**Vzal peněz** : "..value.."$" , argss, "")
+		end
 		Character.addCurrency(tonumber(_source), 0, tonumber(value))
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You taked : "..value.."$</br>Now you have : "..tonumber(havem)-tonumber(value).."", 'bag', 1500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, ""..Config.Language[10].text..""..value.."$</br>"..Config.Language[13].text..""..tonumber(havem)-tonumber(value).."", 'bag', 1500)
 		exports.ghmattimysql:execute("UPDATE bank_users SET money=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(havem)-tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem)-tonumber(value), tonumber(haveg))
 		end)
 	else
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You dont have this money", 'bag', 2500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, Config.Language[7].text, 'bag', 2500)
 	end
 end)
 
@@ -114,15 +118,17 @@ AddEventHandler( 'gum_bank:addgold', function(citye, value, havem, haveg)
 	local u_charid = Character.charIdentifier
 	local user_gold = Character.gold
 	if tonumber(user_gold) >= tonumber(value) and tonumber(value) > 0 then
-		DiscordWeb(16753920, "**Dal do banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má zlata na účtě** : "..haveg.."G\n**Dal zlata** : "..value.."G" , argss, "")
+		if Config.WebhookEnable == true then
+			DiscordWeb(16753920, "**Dal do banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má zlata na účtě** : "..haveg.."G\n**Dal zlata** : "..value.."G" , argss, "")
+		end
 		Character.removeCurrency(tonumber(_source), 1, value)
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You insered : "..value.." gold</br>Now you have : "..tonumber(haveg)+tonumber(value).."", 'bag', 1500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, ""..Config.Language[9].text..""..value.." "..Config.Language[10].text.."</br>"..Config.Language[13].text..""..tonumber(haveg)+tonumber(value).."", 'bag', 1500)
 		exports.ghmattimysql:execute("UPDATE bank_users SET gold=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(haveg)+tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem), tonumber(haveg)+tonumber(value))
 		end)
 	else
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You dont have this money", 'bag', 2500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, Config.Language[8].text, 'bag', 2500)
 	end
 end)
 
@@ -137,15 +143,17 @@ AddEventHandler( 'gum_bank:takegold', function(citye, value, havem, haveg)
 	local u_identifier = Character.identifier
 	local u_charid = Character.charIdentifier
 	if tonumber(haveg) >= tonumber(value) and tonumber(value) > 0 then
-		DiscordWeb(16753920, "**Vzal z banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má zlata na účtě** : "..haveg.."G\n**Vzal zlata** : "..value.."G" , argss, "")
+		if Config.WebhookEnable == true then
+			DiscordWeb(16753920, "**Vzal z banky** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Má zlata na účtě** : "..haveg.."G\n**Vzal zlata** : "..value.."G" , argss, "")
+		end
 		Character.addCurrency(tonumber(_source), 1, value)
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You taked : "..value.." gold</br>Now you have : "..tonumber(haveg)-tonumber(value).."", 'bag', 1500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, ""..Config.Language[10].text..""..value.." "..Config.Language[10].text.."</br>"..Config.Language[13].text..""..tonumber(haveg)-tonumber(value).."", 'bag', 1500)
 		exports.ghmattimysql:execute("UPDATE bank_users SET gold=@value WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["value"]=tonumber(haveg)-tonumber(value)},
 		function (result)
 			TriggerClientEvent("gum_bank:update", tonumber(_source), citye, firstname, lastname, tonumber(havem), tonumber(haveg)-tonumber(value))
 		end)
 	else
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You dont have this money", 'bag', 2500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, "You dont have this money", 'bag', 2500)
 	end
 end)
 
@@ -165,16 +173,18 @@ AddEventHandler( 'gum_bank:borrow_money_now', function(borrow_value, borrow_add,
 	end)
 	Citizen.Wait(100)
 	if have_borrow == true then
-		TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You have 1 borrow. You cant more. You can after you pay all money", 'bag', 4500)
+		TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, ""..Config.Language[14].text.."", 'bag', 4500)
 		return false
 	end
 	Citizen.Wait(100)
 	exports.ghmattimysql:execute("UPDATE bank_users SET borrow=@borrow,borrow_money=@borrow_money,borrow_pay=CURRENT_TIMESTAMP() WHERE name=@name AND identifier=@u_identifier AND charidentifier=@u_charid", {["u_identifier"]=u_identifier, ["u_charid"]=u_charid, ["name"]=citye, ["borrow"]=tonumber(borrow_value)+tonumber(borrow_add), ["borrow_money"]=tonumber(borrow_calc_percent)},
 	function (result)
 		if result ~= nil then
-			DiscordWeb(16753920, "**Si půjčil** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Pujčil si** : "..borrow_value.."$" , argss, "")
+			if Config.WebhookEnable == true then
+				DiscordWeb(16753920, "**Si půjčil** \n **Steam hex** : "..u_identifier.."\n **Steam name** : "..GetPlayerName(tonumber(_source)).." \n **Pujčil si** : "..borrow_value.."$" , argss, "")
+			end
 			Character.addCurrency(tonumber(_source), 0, tonumber(borrow_value))
-			TriggerClientEvent("gum_notify:notify", tonumber(_source), "Bank", "You borrowed : "..borrow_value+borrow_add.."$</br>Now you every day get down "..borrow_calc_percent.."$", 'bag', 4500)
+			TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, ""..Config.Language[15].text..""..borrow_value+borrow_add.."$</br>"..Config.Language[16].text..""..borrow_calc_percent.."$", 'bag', 4500)
 		end
 	end)
 end)
@@ -211,6 +221,6 @@ end)
 
 function DiscordWeb(color, name, footer)
     local embed = {{["color"] = color,["title"] = "",["description"] = "".. name .."",["footer"] = {["text"] = footer,},}}
-    PerformHttpRequest('https://discord.com/api/webhooks/942744865115099156/VFi6PEM9bMSu033HQ4k9kFXjbjxm6APHtEspBUjazSALGt0Q6Cx-YzZo3N-hDMMorZUN', function(err, text, headers) end, 'POST', json.encode({username = "Bank log", embeds = embed}), { ['Content-Type'] = 'application/json' })
+    PerformHttpRequest(Config.WebhookLink, function(err, text, headers) end, 'POST', json.encode({username = "Bank log", embeds = embed}), { ['Content-Type'] = 'application/json' })
 end
 
