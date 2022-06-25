@@ -18,3 +18,9 @@ Config.StartItems = {
     Bread = 5,
     Clean_Water_Bottle = 5,
 }
+
+--Pressence setup
+Config.DiscordID = 880082083295420478
+Config.DiscordPText = 'GUM FRAMEWORK'
+Config.DiscordSText = 'Good server? !'
+Config.DiscordButton = "https://discord.com/invite/4ZZFgqtF8J"
