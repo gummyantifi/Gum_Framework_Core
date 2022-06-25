@@ -33,3 +33,5 @@ files {
     'html/ar_arrow.png',
     'html/button.png',
 }
+
+export 'getMaleFromLang'

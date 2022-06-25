@@ -204,6 +204,10 @@ AddEventHandler('gum_character:selected_char', function()
     is_loaded_character = true
 end)
 
+function getMaleFromLang()
+	return Config.Language[175].text
+end
+
 RegisterNetEvent('gum_character:send_data_back')
 AddEventHandler('gum_character:send_data_back', function(skin_table_receive, outfit_table_receive, coord_table_receive, isdeaded, update, new_char)
     Skin_Table = skin_table_receive
@@ -260,9 +264,11 @@ RegisterCommand('db', function()
         end
     end
 end)
+
 RegisterCommand('dbs', function()
     Data_Character_Load(nil, true)
 end)
+
 function Make_Data(gender)
     if gender == Config.Language[175].text then
         Skin_Table["sex"] = "mp_male"
@@ -929,6 +935,27 @@ Citizen.CreateThread(function()
         Citizen.Wait(opt)
     end
 end)
+
+RegisterNUICallback('alert_to_notify', function(data, cb)
+    if data.type == "name" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss add name", 'character', 1000)
+    elseif data.type == "nation" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit nation", 'character', 1000)
+    elseif data.type == "bodyTexture" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit body texture", 'character', 1000)
+    elseif data.type == "legsTexture" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit legs texture", 'character', 1000)
+    elseif data.type == "bodyType" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit body type", 'character', 1000)
+    elseif data.type == "waist" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit waist", 'character', 1000)
+    elseif data.type == "eyes" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit eyes", 'character', 1000)
+    elseif data.type == "headTexture" then
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit head texture", 'character', 1000)
+    end
+end)
+
 RegisterNUICallback('up_key', function(data, cb)
     if z_position <= 240.0 then
         z_position = z_position+0.05

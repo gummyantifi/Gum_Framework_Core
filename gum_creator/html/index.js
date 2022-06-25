@@ -1,4 +1,3 @@
-
 var slider0 = document.getElementById("EYES");
 var slider1 = document.getElementById("0x3C0F");
 var slider2 = document.getElementById("0xC3B2");
@@ -119,7 +118,22 @@ var slider123 = document.getElementById("LOADOUT");
 var slider124 = document.getElementById("TEETHS");
 
 
-slider0.oninput = function() {send_change(this.value, this.id)}
+var nationSelected = false
+var bodyTextureSelected = false
+var legsTextureSelected = false
+var bodyTypeSelected = false
+var waistSelected = false
+var eyesSelected = false
+var headTextureSelected = false
+
+slider0.oninput = function()  {send_change(this.value, this.id); eyesSelected = true; }
+slider40.oninput = function() {send_change(this.value, this.id); nationSelected = true; }
+slider41.oninput = function() {send_change(this.value, this.id); headTextureSelected = true; }
+slider42.oninput = function() {send_change(this.value, this.id); bodyTextureSelected = true; }
+slider43.oninput = function() {send_change(this.value, this.id); legsTextureSelected = true; }
+slider44.oninput = function() {send_change(this.value, this.id); bodyTypeSelected = true;}
+slider45.oninput = function() {send_change(this.value, this.id); waistSelected = true; }
+
 slider1.oninput = function() {send_change(this.value, this.id)}
 slider2.oninput = function() {send_change(this.value, this.id)}
 slider3.oninput = function() {send_change(this.value, this.id)}
@@ -158,12 +172,6 @@ slider36.oninput = function() {send_change(this.value, this.id)}
 slider37.oninput = function() {send_change(this.value, this.id)}
 slider38.oninput = function() {send_change(this.value, this.id)}
 slider39.oninput = function() {send_change(this.value, this.id)}
-slider40.oninput = function() {send_change(this.value, this.id)}
-slider41.oninput = function() {send_change(this.value, this.id)}
-slider42.oninput = function() {send_change(this.value, this.id)}
-slider43.oninput = function() {send_change(this.value, this.id)}
-slider44.oninput = function() {send_change(this.value, this.id)}
-slider45.oninput = function() {send_change(this.value, this.id)}
 slider46.oninput = function() {send_change(this.value, this.id)}
 slider47.oninput = function() {send_change(this.value, this.id)}
 slider48.oninput = function() {send_change(this.value, this.id)}
@@ -329,11 +337,26 @@ $(document).keydown(function(e) {
 function save_character() {
     var firstname = document.getElementById("firstname").value;
     var lastname = document.getElementById("lastname").value;
-    $.post('http://gum_creator/save_character', JSON.stringify({ firstname:firstname, lastname:lastname}));
+    if (firstname === "" && lastname === "") {
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"name"}));    
+    } else if (nationSelected == false) {            
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"nation"}));
+    } else if (bodyTextureSelected === false) {
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"bodyTexture"}));
+    } else if (legsTextureSelected === false) {
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"legsTexture"}));
+    } else if (bodyTypeSelected === false) {
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"bodyType"}));
+    } else if (waistSelected === false) {
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"waist"}));
+    } else if (eyesSelected === false) {
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"eyes"}));
+    } else if (headTextureSelected == false) {
+        $.post('http://gum_character/alert_to_notify', JSON.stringify({ type:"headTexture"}));
+    } else {
+        $.post('http://gum_creator/save_character', JSON.stringify({ firstname:firstname, lastname:lastname}));
+    }
 }
-
-
-
 
 function validate(id) {
     var check = document.getElementById(id);
