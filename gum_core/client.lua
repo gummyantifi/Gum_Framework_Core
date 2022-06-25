@@ -20,12 +20,12 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
             else
                 timer = 2*60000
             end 
-            SetDiscordAppId(880082083295420478)
+            SetDiscordAppId(Config.DiscordID)
 			SetDiscordRichPresenceAsset('biglogo')
-			SetDiscordRichPresenceAssetText('DEV RedWest Roleplay')
+			SetDiscordRichPresenceAssetText(Config.DiscordP)
 			SetDiscordRichPresenceAssetSmall('smalllogo')
-			SetDiscordRichPresenceAssetSmallText('Česko-Slovenský Roleplay')
-			SetDiscordRichPresenceAction(0, "Discord", "https://discord.com/invite/4ZZFgqtF8J") -- (OPTIONAL)
+			SetDiscordRichPresenceAssetSmallText(Config.DiscordSText)
+			SetDiscordRichPresenceAction(0, "Discord", Config.DiscordButton) -- (OPTIONAL)
 
 			--local playerCount = #GetActivePlayers()
 			local playerName = GetPlayerName(PlayerId())
@@ -48,6 +48,7 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
         end
     end)
 end)
+
 CreateThread(function()
     TriggerEvent('chat:addSuggestion', '/addwl', 'Add player on whitelist | Example usage : /addwl 110000100b0182c', {})
     TriggerEvent('chat:addSuggestion', '/setjob', 'Set player job | Example usage : /setjob [TARGET] [JOB] [GRADE]', {})
