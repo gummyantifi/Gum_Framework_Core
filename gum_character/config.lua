@@ -17,20 +17,20 @@ Config.RespawnCoords = {
         [9] = {x=1335.76, y=-7025.03, z=53.60},--Guarma
         [10] = {x=366.85, y=1464.64, z=179.61},--Fort Wallace
 }
---
+
 Config.Language = {
-    [1] = {text = "Tvoření postavy",},
-    [167] = {text = "Změnit postavu",},
-    [168] = {text = "Vybrat postavu",},
-    [169] = {text = "Otočit doleva",},
-    [170] = {text = "Otočit doprava",},
-    [171] = {text = "Dolů",},
-    [172] = {text = "Nahoru",},
-    [173] = {text = "Přiblížit +",},
-    [174] = {text = "Oddálit -",},
+    [1] = {text = "Char creator",},
+    [167] = {text = "Switch char",},
+    [168] = {text = "Select char",},
+    [169] = {text = "Left",},
+    [170] = {text = "Right",},
+    [171] = {text = "Down",},
+    [172] = {text = "Up",},
+    [173] = {text = "Zoom +",},
+    [174] = {text = "Zoom -",},
     [175] = {text = "Male",},
     [176] = {text = "Female",},--
-    [177] = {text = "Výběr si postavu",},
+    [177] = {text = "Select char",},
     [183] = {text = "Nemáš zvolené pohlaví",},
     [184] = {text = "Nemáš zvolenou barvu očí",},
     [185] = {text = "Nemáš zvolené body type",},
@@ -42,6 +42,8 @@ Config.Language = {
     [191] = {text = "You switch character wait 10 second.",},
     [192] = {text = "You cant make character, becouse you have max limit."}
 }
+
+--- DONT TOUCH HERE
 
 Config.DefaultChar = {
 	["Male"] = {
