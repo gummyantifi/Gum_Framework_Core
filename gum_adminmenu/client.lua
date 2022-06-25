@@ -35,61 +35,60 @@ AddEventHandler('GetActivePlayers:CB', function(count)
     playerCount = count
 end)
 
-RegisterNetEvent("gum:SelectedCharacter")
-AddEventHandler("gum:SelectedCharacter", function(charid)
-	CreateThread(function()
-		TriggerEvent('chat:addSuggestion', '/db', 'Znovu načte rychle vaši postavu.', {})
-		TriggerEvent('chat:addSuggestion', '/dbs', 'Znovu načte pomalu vaši postavu.', {})
-		TriggerEvent('chat:addSuggestion', '/try', 'Náhodná reakce na /do  -> Ano / Ne.', {})
-		TriggerEvent('chat:addSuggestion', '/me', 'Slouží k nahrazení vykonávané interakce.', {})
-		TriggerEvent('chat:addSuggestion', '/do', 'Slouží k doplnění informací v RP.', {})
-		TriggerEvent('chat:addSuggestion', '/doc', 'Slouží k doplnění informací k časování 1/10,2/10 atd.', {})
-		TriggerEvent('chat:addSuggestion', '/stav', 'Do stavu můžeš napsat například zranění, či jiné.', {})
-		TriggerEvent('chat:addSuggestion', '/stav_stat', 'Zapne nebo vypne tvůj stav.', {})
-		TriggerEvent('chat:addSuggestion', '/rev', 'Oživí hráče nebo tebe.', {})
-		TriggerEvent('chat:addSuggestion', '/twp', 'Teleportuješ svou postavu na označené místo na mapě.', {})
-		TriggerEvent('chat:addSuggestion', '/twb', 'Teleportuješ se zpět na původní místo.', {})
-		TriggerEvent('chat:addSuggestion', '/n', 'Zapne/Vypne No-Clip.', {})
-		TriggerEvent('chat:addSuggestion', '/admin', 'Otevře administrační menu.', {})
-		TriggerEvent('chat:addSuggestion', '/p_info', 'Vypíše do [F8] steam hex, ip, steam jméno.', {})
-		TriggerEvent('chat:addSuggestion', '/klobouk', 'Sundá nebo nasadí tvou pokrývku hlavy.', {})
-		TriggerEvent('chat:addSuggestion', '/bryle', 'Sundá nebo nasadí tvou brýle.', {})
-		TriggerEvent('chat:addSuggestion', '/maska', 'Sundá nebo nasadí tvou masku.', {})
-		TriggerEvent('chat:addSuggestion', '/satek', 'Sundá nebo nasadí tvůj šátek.', {})
-		TriggerEvent('chat:addSuggestion', '/kravata', 'Sundá nebo nasadí tvou kravatu.', {})
-		TriggerEvent('chat:addSuggestion', '/kosile', 'Sundá nebo nasadí tvou košili.', {})
-		TriggerEvent('chat:addSuggestion', '/ksandy', 'Sundá nebo nasadí tvé kšandy.', {})
-		TriggerEvent('chat:addSuggestion', '/vesta', 'Sundá nebo nasadí tvou vestu.', {})
-		TriggerEvent('chat:addSuggestion', '/kabat', 'Sundá nebo nasadí tvůj kabat.', {})
-		TriggerEvent('chat:addSuggestion', '/poncho', 'Sundá nebo nasadí tvé pončo.', {})
-		TriggerEvent('chat:addSuggestion', '/plast', 'Sundá nebo nasadí tvůj plášť.', {})
-		TriggerEvent('chat:addSuggestion', '/prsteny', 'Sundá nebo nasadí tvé rukavice.', {})
-		TriggerEvent('chat:addSuggestion', '/naramek', 'Sundá nebo nasadí tvůj náramek.', {})
-		TriggerEvent('chat:addSuggestion', '/opasek', 'Sundá nebo nasadí tvůj opasek.', {})
-		TriggerEvent('chat:addSuggestion', '/prezka', 'Sundá nebo nasadí tvou přezku.', {})
-		TriggerEvent('chat:addSuggestion', '/kalhoty', 'Sundá nebo nasadí tvé kalhoty.', {})
-		TriggerEvent('chat:addSuggestion', '/sukne', 'Sundá nebo nasadí tvou sukni.', {})
-		TriggerEvent('chat:addSuggestion', '/chaps', 'Sundá nebo nasadí tvé prsteny.', {})
-		TriggerEvent('chat:addSuggestion', '/boty', 'Sundá nebo nasadí tvé chapsy.', {})
-		TriggerEvent('chat:addSuggestion', '/ostruhy', 'Sundá nebo nasadí tvé boty.', {})
-		TriggerEvent('chat:addSuggestion', '/kamase', 'Sundá nebo nasadí tvé kamaše.', {})
-		TriggerEvent('chat:addSuggestion', '/natepniky', 'Sundá nebo nasadí tvé nátepníky.', {})
-		TriggerEvent('chat:addSuggestion', '/pasy', 'Sundá nebo nasadí tvé muníční pásy.', {})
-		TriggerEvent('chat:addSuggestion', '/doplnky', 'Sundá nebo nasadí tvé doplňky.', {})
-		TriggerEvent('chat:addSuggestion', '/brasny', 'Sundá nebo nasadí tvou brašnu.', {})
-		TriggerEvent('chat:addSuggestion', '/pdoplnek', 'Sundá nebo nasadí tvé příslušenství na opasek.', {})
-		TriggerEvent('chat:addSuggestion', '/svleknout', 'Svlékneš se do naha', {})
-		TriggerEvent('chat:addSuggestion', '/obleknout', 'Oblékneš si všechno oblečení.', {})
-		TriggerEvent('chat:addSuggestion', '/kunpije', 'Kůň se napije z vody. [Musíš být dál od koně a level 3]', {})
-		TriggerEvent('chat:addSuggestion', '/kunodpocivat', 'Kůň začne odpočívat. [Musíš být dál od koně a level 2]', {})
-		TriggerEvent('chat:addSuggestion', '/kunspi', 'Kůň začne spát. [Musíš být dál od koně a level 2]', {})
-		TriggerEvent('chat:addSuggestion', '/kunhratky', 'Kůň si začne hrát. [Musíš být dál od koně a mít level 4]', {})
-		TriggerEvent('chat:addSuggestion', '/posta', 'Otevře administraci tvého poštovního holuba', {})
-		TriggerEvent('chat:addSuggestion', '/bandana', 'Nasadí nebo sundá bandanu. (Musíš ji mít vybavenou)', {})
-		TriggerEvent('chat:addSuggestion', '/rukavy', 'Vyhrne rukávy od košile nebo vrátí zpět.', {})
-		TriggerEvent('chat:addSuggestion', '/dh', 'Vypne subtext na vagónech (Dobré vypnout v případě zda lezeš či slézáš z vagónu)', {})
-	end)
+
+CreateThread(function()
+	TriggerEvent('chat:addSuggestion', '/db', 'Znovu načte rychle vaši postavu.', {})
+	TriggerEvent('chat:addSuggestion', '/dbs', 'Znovu načte pomalu vaši postavu.', {})
+	TriggerEvent('chat:addSuggestion', '/try', 'Náhodná reakce na /do  -> Ano / Ne.', {})
+	TriggerEvent('chat:addSuggestion', '/me', 'Slouží k nahrazení vykonávané interakce.', {})
+	TriggerEvent('chat:addSuggestion', '/do', 'Slouží k doplnění informací v RP.', {})
+	TriggerEvent('chat:addSuggestion', '/doc', 'Slouží k doplnění informací k časování 1/10,2/10 atd.', {})
+	TriggerEvent('chat:addSuggestion', '/stav', 'Do stavu můžeš napsat například zranění, či jiné.', {})
+	TriggerEvent('chat:addSuggestion', '/stav_stat', 'Zapne nebo vypne tvůj stav.', {})
+	TriggerEvent('chat:addSuggestion', '/rev', 'Oživí hráče nebo tebe.', {})
+	TriggerEvent('chat:addSuggestion', '/twp', 'Teleportuješ svou postavu na označené místo na mapě.', {})
+	TriggerEvent('chat:addSuggestion', '/twb', 'Teleportuješ se zpět na původní místo.', {})
+	TriggerEvent('chat:addSuggestion', '/n', 'Zapne/Vypne No-Clip.', {})
+	TriggerEvent('chat:addSuggestion', '/admin', 'Otevře administrační menu.', {})
+	TriggerEvent('chat:addSuggestion', '/p_info', 'Vypíše do [F8] steam hex, ip, steam jméno.', {})
+	TriggerEvent('chat:addSuggestion', '/klobouk', 'Sundá nebo nasadí tvou pokrývku hlavy.', {})
+	TriggerEvent('chat:addSuggestion', '/bryle', 'Sundá nebo nasadí tvou brýle.', {})
+	TriggerEvent('chat:addSuggestion', '/maska', 'Sundá nebo nasadí tvou masku.', {})
+	TriggerEvent('chat:addSuggestion', '/satek', 'Sundá nebo nasadí tvůj šátek.', {})
+	TriggerEvent('chat:addSuggestion', '/kravata', 'Sundá nebo nasadí tvou kravatu.', {})
+	TriggerEvent('chat:addSuggestion', '/kosile', 'Sundá nebo nasadí tvou košili.', {})
+	TriggerEvent('chat:addSuggestion', '/ksandy', 'Sundá nebo nasadí tvé kšandy.', {})
+	TriggerEvent('chat:addSuggestion', '/vesta', 'Sundá nebo nasadí tvou vestu.', {})
+	TriggerEvent('chat:addSuggestion', '/kabat', 'Sundá nebo nasadí tvůj kabat.', {})
+	TriggerEvent('chat:addSuggestion', '/poncho', 'Sundá nebo nasadí tvé pončo.', {})
+	TriggerEvent('chat:addSuggestion', '/plast', 'Sundá nebo nasadí tvůj plášť.', {})
+	TriggerEvent('chat:addSuggestion', '/prsteny', 'Sundá nebo nasadí tvé rukavice.', {})
+	TriggerEvent('chat:addSuggestion', '/naramek', 'Sundá nebo nasadí tvůj náramek.', {})
+	TriggerEvent('chat:addSuggestion', '/opasek', 'Sundá nebo nasadí tvůj opasek.', {})
+	TriggerEvent('chat:addSuggestion', '/prezka', 'Sundá nebo nasadí tvou přezku.', {})
+	TriggerEvent('chat:addSuggestion', '/kalhoty', 'Sundá nebo nasadí tvé kalhoty.', {})
+	TriggerEvent('chat:addSuggestion', '/sukne', 'Sundá nebo nasadí tvou sukni.', {})
+	TriggerEvent('chat:addSuggestion', '/chaps', 'Sundá nebo nasadí tvé prsteny.', {})
+	TriggerEvent('chat:addSuggestion', '/boty', 'Sundá nebo nasadí tvé chapsy.', {})
+	TriggerEvent('chat:addSuggestion', '/ostruhy', 'Sundá nebo nasadí tvé boty.', {})
+	TriggerEvent('chat:addSuggestion', '/kamase', 'Sundá nebo nasadí tvé kamaše.', {})
+	TriggerEvent('chat:addSuggestion', '/natepniky', 'Sundá nebo nasadí tvé nátepníky.', {})
+	TriggerEvent('chat:addSuggestion', '/pasy', 'Sundá nebo nasadí tvé muníční pásy.', {})
+	TriggerEvent('chat:addSuggestion', '/doplnky', 'Sundá nebo nasadí tvé doplňky.', {})
+	TriggerEvent('chat:addSuggestion', '/brasny', 'Sundá nebo nasadí tvou brašnu.', {})
+	TriggerEvent('chat:addSuggestion', '/pdoplnek', 'Sundá nebo nasadí tvé příslušenství na opasek.', {})
+	TriggerEvent('chat:addSuggestion', '/svleknout', 'Svlékneš se do naha', {})
+	TriggerEvent('chat:addSuggestion', '/obleknout', 'Oblékneš si všechno oblečení.', {})
+	TriggerEvent('chat:addSuggestion', '/kunpije', 'Kůň se napije z vody. [Musíš být dál od koně a level 3]', {})
+	TriggerEvent('chat:addSuggestion', '/kunodpocivat', 'Kůň začne odpočívat. [Musíš být dál od koně a level 2]', {})
+	TriggerEvent('chat:addSuggestion', '/kunspi', 'Kůň začne spát. [Musíš být dál od koně a level 2]', {})
+	TriggerEvent('chat:addSuggestion', '/kunhratky', 'Kůň si začne hrát. [Musíš být dál od koně a mít level 4]', {})
+	TriggerEvent('chat:addSuggestion', '/posta', 'Otevře administraci tvého poštovního holuba', {})
+	TriggerEvent('chat:addSuggestion', '/bandana', 'Nasadí nebo sundá bandanu. (Musíš ji mít vybavenou)', {})
+	TriggerEvent('chat:addSuggestion', '/rukavy', 'Vyhrne rukávy od košile nebo vrátí zpět.', {})
+	TriggerEvent('chat:addSuggestion', '/dh', 'Vypne subtext na vagónech (Dobré vypnout v případě zda lezeš či slézáš z vagónu)', {})
 end)
+
 local check_char = false
 local check_login = false
 
@@ -124,13 +123,13 @@ end)
 function Open_Admin_Menu()
 	MenuData.CloseAll()
 	local elements = {
-		{label = "Osobní", value = 'admin_list' , desc = "Panel s osobním použitím"},
-		{label = "Seznam hráčů", value = 'player_list' , desc = "Seznam hráčů s administrativou"},
-		{label = "Seznam itemů", value = 'item_list' , desc = "Veškeré předměty"},
+		{label = ""..Config.Language[3].text.."", value = 'admin_list' , desc = ""..Config.Language[4].text..""},
+		{label = ""..Config.Language[5].text.."", value = 'player_list' , desc = ""..Config.Language[6].text..""},
+		{label = ""..Config.Language[7].text.."", value = 'item_list' , desc = ""},
 	}
    MenuData.Open('default', GetCurrentResourceName(), 'gum_adminmenu',
 	{
-		title    = 'Admin menu',
+		title    = ''..Config.Language[8].text..'',
 		subtext    = 'Hlavní nabídka',
 		align    = 'top-left',
 		elements = elements,
@@ -158,12 +157,12 @@ function Open_Item_List()
 	MenuData.CloseAll()
 	local elements = {}
 	for k,v in pairs(table_for_now) do
-		table.insert(elements,{label = "<b>"..v["label"].."</b>", value = ""..v["item"].."", desc = "Po stiknutí obdržíš item"})
+		table.insert(elements,{label = "<b>"..v["label"].."</b>", value = ""..v["item"].."", desc = ""..Config.Language[9].text..""})
 	end
    	MenuData.Open('default', GetCurrentResourceName(), 'gum_camping',
 	{
-		title    = 'Seznam věcí',
-		subtext    = 'Stisknutím, dostaneš item',
+		title    = ''..Config.Language[7].text..'',
+		subtext    = '',
 		align    = 'top-left',
 		elements = elements,
 	},
@@ -182,15 +181,15 @@ end
 function Open_Admin_List()
 	MenuData.CloseAll()
 	local elements = {
-		{label = "No Clip", value = 'no_clip' , desc = "Příkaz /n "},
-		{label = "Port na označené místo", value = 'go_to_wayp' , desc = "Příkaz /tpw"},
-		{label = "Port zpět", value = 'go_to_back' , desc = "Příkaz /tpb"},
-		{label = "Serverové oznámení", value = 'talk_to_server' , desc = "Příkaz /an TEXT"},
+		{label = ""..Config.Language[10].text.."", value = 'no_clip' , desc = ""..Config.Language[13].text..""},
+		{label = ""..Config.Language[11].text.."", value = 'go_to_wayp' , desc = ""..Config.Language[14].text..""},
+		{label = ""..Config.Language[12].text.."", value = 'go_to_back' , desc = ""..Config.Language[15].text..""},
+		{label = ""..Config.Language[1].text.."", value = 'talk_to_server' , desc = ""..Config.Language[16].text..""},
 	}
    MenuData.Open('default', GetCurrentResourceName(), 'gum_adminmenu',
 	{
-		title    = 'Admin',
-		subtext    = 'Hlavní nabídka',
+		title    = ''..Config.Language[3].text..'',
+		subtext    = '',
 		align    = 'top-left',
 		elements = elements,
 	},
@@ -223,8 +222,8 @@ function Open_Player_List()
 
    MenuData.Open('default', GetCurrentResourceName(), 'gum_adminmenu',
 	{
-		title    = 'Seznam hráčů',
-		subtext    = 'Aktivní hráči na serveru',
+		title    = ''..Config.Language[5].text..'',
+		subtext    = '',
 		align    = 'top-left',
 		elements = elements,
 	},
@@ -246,16 +245,16 @@ end
 function Open_Player_Menu(v, v2)
 	MenuData.CloseAll()
 	local elements = {
-		{label = "Vyhodit hráče", value = 'kick_player' , desc = "Hráč se po zmražení nemůže hýbat."},
-		{label = "Zablokovat hráče", value = 'ban_player' , desc = "Hráč se po zmražení nemůže hýbat."},
-		{label = "Zmrazit hráče", value = 'freeze_player' , desc = "Hráč se po zmražení nemůže hýbat."},
-		{label = "Oživit hráče", value = 'revive_player' , desc = "Mrtvý hráč bude oživen"},
-		{label = "Jít na hráče", value = 'go_to_player' , desc = "Teleportuješ se na hráče"},
-		{label = "Hodit k sobě", value = 'bring_player' , desc = "Teleportuješ hráče k sobě"},
-		{label = "Sledovat hráče", value = 'spect_player' , desc = "Zneviditelníš se a budeš sledovat hráče"},
-		{label = "Vyhodit ze serveru", value = 'kick_player' , desc = "Vyhodíš hráče ze serveru"},
-		{label = "Darovat věc", value = 'give_item' , desc = "Po zvolení zadáš ID a Počet."},
-		{label = "Darovat peníze", value = 'give_money' , desc = "Po zvolení zadáš počet a hráč obdrží $"},
+		{label = ""..Config.Language[17].text.."", value = 'kick_player' , desc = ""},
+		{label = ""..Config.Language[18].text.."", value = 'ban_player' , desc = ""},
+		{label = ""..Config.Language[19].text.."", value = 'freeze_player' , desc = ""},
+		{label = ""..Config.Language[20].text.."", value = 'revive_player' , desc = ""},
+		{label = ""..Config.Language[21].text.."", value = 'go_to_player' , desc = ""},
+		{label = ""..Config.Language[22].text.."", value = 'bring_player' , desc = ""},
+		{label = ""..Config.Language[23].text.."", value = 'spect_player' , desc = ""},
+		{label = ""..Config.Language[24].text.."", value = 'kick_player' , desc = ""},
+		{label = ""..Config.Language[25].text.."", value = 'give_item' , desc = ""},
+		{label = ""..Config.Language[26].text.."", value = 'give_money' , desc = ""},
 	}
    MenuData.Open('default', GetCurrentResourceName(), 'gum_adminmenu',
 	{
@@ -291,7 +290,7 @@ function Open_Player_Menu(v, v2)
 			end
 		end
 		if(data.current.value == 'kick_player') then
-			TriggerEvent("guminputs:getInput", "Potvrdit", "Důvod blokace :", function(cb)
+			TriggerEvent("guminputs:getInput", ""..Config.Language[27].text.."", ""..Config.Language[28].text.." :", function(cb)
 				local kick_reason = tostring(cb)
 				if kick_reason ~= nil and kick_reason ~= 'close' then
 					TriggerServerEvent("KickPlayer", v, kick_reason)
@@ -299,11 +298,11 @@ function Open_Player_Menu(v, v2)
 			end)
 		end
 		if(data.current.value == 'ban_player') then
-			TriggerEvent("guminputs:getInput", "Potvrdit", "Důvod blokace :", function(cb)
+			TriggerEvent("guminputs:getInput", ""..Config.Language[27].text.."", ""..Config.Language[29].text.."", function(cb)
 				local ban_reason = tostring(cb)
 				if ban_reason ~= nil and ban_reason ~= 'close' then
 					Citizen.Wait(1000)
-					TriggerEvent("guminputs:getInput", "Potvrdit", "Formát datu : 2021-08-16 10:00:00", function(cb)
+					TriggerEvent("guminputs:getInput", ""..Config.Language[27].text.."", ""..Config.Language[1300].text.."", function(cb)
 						local date_ban = tostring(cb)
 						if date_ban ~= nil and date_ban ~= 'close' then
 							TriggerServerEvent("BanPlayer", v, ban_reason, date_ban)
@@ -314,11 +313,11 @@ function Open_Player_Menu(v, v2)
 			end)
 		end
 		if(data.current.value == 'give_item') then
-			TriggerEvent("guminputs:getInput", "Potvrdit", "ID Itemu", function(cb)
+			TriggerEvent("guminputs:getInput", ""..Config.Language[27].text.."", ""..Config.Language[31].text.."", function(cb)
 				local name_item = tostring(cb)
 				if name_item ~= nil and name_item ~= 'close' then
 					Citizen.Wait(500)
-					TriggerEvent("guminputs:getInput", "Potvrdit", "Počet itemů", function(cb)
+					TriggerEvent("guminputs:getInput", ""..Config.Language[27].text.."", ""..Config.Language[32].text.."", function(cb)
 						local count_item = tonumber(cb)
 						if count_item ~= nil and count_item ~= 0 and count_item >= 0 and count_item ~= 'close' then
 							TriggerServerEvent("GiveItem", v, name_item, count_item)
@@ -331,7 +330,7 @@ function Open_Player_Menu(v, v2)
 			end)
 		end
 		if(data.current.value == 'give_money') then
-			TriggerEvent("guminputs:getInput", "Potvrdit", "Částka", function(cb)
+			TriggerEvent("guminputs:getInput", ""..Config.Language[27].text.."", ""..Config.Language[33].text.."", function(cb)
 				local count_money = tonumber(cb)
 				if count_money ~= nil and count_money ~= 0 and count_money >= 0 and count_money ~= 'close' then
 					TriggerServerEvent("GiveMoney", v, tonumber(string.format("%.2f", count_money)))
@@ -366,7 +365,7 @@ function Return()
 	SetEntityCoords(PlayerPedId(), lastlocation)
 end
 function Announce()
-	TriggerEvent("guminputs:getInput", "Potvrdit", "Zpráva", function(input)
+	TriggerEvent("guminputs:getInput", ""..Config.Language[27].text.."", ""..Config.Language[34].text.."", function(input)
 		local message = tostring(input)
 		if message ~= 'close' then
 			TriggerServerEvent("Announce", message)
@@ -384,7 +383,6 @@ function TeleToWaypoint()
 	lastlocation = pCoords
 	local WP = GetWaypointCoords()
 	if (WP.x == 0 and WP.y == 0) then
-			TriggerEvent("gum:TipRight", "You didn't set a waypoint", 3000)
 	else
 		local height = 1
 		for height = 1, 1000 do
@@ -515,11 +513,8 @@ function CancelCamera()
 	spectating = false
 	Citizen.Wait(100)
 	SetEntityCoords(PlayerPedId(), lastlocation.x, lastlocation.y, lastlocation.z)
-	print("ENTITY VISIBL")
 	SetEntityVisible(PlayerPedId(), true)
-	print("ENTITY DAMAGE OK")
 	SetEntityInvincible(PlayerPedId(), false)
-	print("ENTITY UNFREEZE")
 	FreezeEntityPosition(PlayerPedId(), false)
 end
 
@@ -556,8 +551,8 @@ AddEventHandler("Teleport", function(x, y, z)
 	SetEntityCoords(PlayerPedId(), x, y, z, false, false, false, false)
 end)
 
-RegisterNetEvent("syn:noclip")
-AddEventHandler("syn:noclip", function()
+RegisterNetEvent("atomic:noclip")
+AddEventHandler("atomic:noclip", function()
 	NoClip()
 end)
 function NoClip()
@@ -742,12 +737,12 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 
 				if RelativeMode then
 					-- Print the coordinates, heading and controls on screen
-					DrawText(string.format('Souřadnice:\nX: %.2f\nY: %.2f\nZ: %.2f\nHeading: %.0f', x, y, z, h), 0.01, 0.3, false)
+					DrawText(string.format(''..Config.Language[37].text..':\nX: %.2f\nY: %.2f\nZ: %.2f\nHeading: %.0f', x, y, z, h), 0.01, 0.3, false)
 
 					if FollowCam then
-						DrawText('W/S - Pohyb, Spacebar/Shift - Nahoru/Dolů, Page Up/Page Down/Mouse Wheel - Změna rychlosti, Q - Absolutní mod, H - Vypnout směr kamery, , R - Ukázat/Skrýt se', 0.5, 0.95, true)
+						DrawText(''..Config.Language[36].text..'', 0.5, 0.95, true)
 					else
-						DrawText('W/S - Pohyb, Spacebar/Shift - Nahoru/Dolů, Page Up/Page Down/Mouse Wheel - Změna rychlosti, Q - Absolutní mód, H - Zapnout směr kamery, , R - Ukázat/Skrýt se', 0.5, 0.95, true)
+						DrawText(''..Config.Language[35].text..'', 0.5, 0.95, true)
 					end
 
 					-- Calculate the change in x and y based on the speed and heading.
@@ -783,8 +778,8 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 					end
 				else
 					-- Print the coordinates and controls on screen
-					DrawText(string.format('Souřadnice:\nX: %.2f\nY: %.2f\nZ: %.2f', x, y, z), 0.01, 0.3, false)
-					DrawText('W/S - Pohyb, Spacebar/Shift - Nahoru/Dolů, Page Up/Page Down/Mouse Wheel - Změna rychlosti, Q - Relativní mód, R - Ukázat/Skrýt se', 0.5, 0.95, true)
+					DrawText(string.format(''..Config.Language[37].text..':\nX: %.2f\nY: %.2f\nZ: %.2f', x, y, z), 0.01, 0.3, false)
+					DrawText(''..Config.Language[38].text..'', 0.5, 0.95, true)
 
 					h = 0.0
 

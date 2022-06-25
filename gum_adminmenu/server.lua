@@ -36,24 +36,11 @@ RegisterCommand("n", function(source, args)
         local Character = User.getUsedCharacter
         local group = User.group
         if group == "admin" then
-            TriggerClientEvent('syn:noclip',source)
+            TriggerClientEvent('atomic:noclip',source)
         else return false
         end
     end
 end)
--- RegisterCommand("give_all", function(source)
---     exports.ghmattimysql:execute("SELECT item FROM `items`", {}, function(result)
---         if result[1] then
---             for k,v in pairs(result) do
---                 if k >= 50 then
---                     gumInv.addItem(tonumber(source), v.item, 1)
---                     Citizen.Wait(500)
---                 end
---             end
---         end
---     end)
--- end)
-
 
 RegisterCommand("an", function(source, args)
     if args ~= nil then
@@ -62,9 +49,11 @@ RegisterCommand("an", function(source, args)
         local group = User.group
         local message =  args[1]
         if group == "admin" then
-            TriggerClientEvent('gum_adminmenu:ShowTopNotification', -1, "Serverové oznámení", message, 15000)
+            TriggerClientEvent('gum_adminmenu:ShowTopNotification', -1, Config.Langugage[1].text, message, 15000)
             local identifier_admin = GetPlayerIdentifier(source)
-            DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(source)).." \n **Steam hex** : "..identifier_admin.."\n ***Serverové oznámení** \n  "..message.." " , argss, "Přihlášení")
+            if Config.WebHookEnable then
+                DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(source)).." \n **Steam hex** : "..identifier_admin.."\n ***Serverové oznámení** \n  "..message.." " , argss, "Přihlášení")
+            end
         else return false
         end
     end
@@ -81,8 +70,10 @@ RegisterCommand("tpc", function(source, args)
         if group == "admin" then
             if x ~= nil and y ~= nil and z ~= nil then
                 TriggerClientEvent("tptocoords", source, x,y,z)
-                local identifier_admin = GetPlayerIdentifier(source)
-                DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(source)).." \n **Steam hex** : "..identifier_admin.."\n **Teleport na souřadnice** : \n  "..x.." "..y.." "..z.." " , argss, "Přihlášení")
+                if Config.WebHookEnable then
+                    local identifier_admin = GetPlayerIdentifier(source)
+                    DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(source)).." \n **Steam hex** : "..identifier_admin.."\n **Teleport na souřadnice** : \n  "..x.." "..y.." "..z.." " , argss, "Přihlášení")
+                end
             end
         else return false
         end
@@ -106,11 +97,15 @@ RegisterCommand("rev", function(source, args)
                 local name_admin = GetPlayerName(tonumber(_source))
                 local name_target = GetPlayerName(tonumber(id))
                 TriggerClientEvent('gum_character:revive_player', id, 1)
-                DiscordWeb(16753920, "**Steam jméno** : "..name_admin.." \n **Steam hex** : "..identifier_admin.."\n Oživil hráče \n **Steam jméno** : "..name_target.." \n **Steam hex** :"..identifier_target.."\n " , argss, "Přihlášení")
+                if Config.WebHookEnable then
+                    DiscordWeb(16753920, "**Steam jméno** : "..name_admin.." \n **Steam hex** : "..identifier_admin.."\n Oživil hráče \n **Steam jméno** : "..name_target.." \n **Steam hex** :"..identifier_target.."\n " , argss, "Přihlášení")
+                end
             else
                 local identifier_admin = GetPlayerIdentifier(tonumber(_source))
                 local name_admin = GetPlayerName(tonumber(_source))
-                DiscordWeb(16753920, "**Steam jméno** : "..name_admin.." \n **Steam hex** : "..identifier_admin.."\n Se oživil" , argss, "Přihlášení")
+                if Config.WebHookEnable then
+                    DiscordWeb(16753920, "**Steam jméno** : "..name_admin.." \n **Steam hex** : "..identifier_admin.."\n Se oživil" , argss, "Přihlášení")
+                end
                 TriggerClientEvent('gum_character:revive_player', source, 1)
             end
         else return false
@@ -280,7 +275,7 @@ end)
 
 RegisterServerEvent("Announce")
 AddEventHandler("Announce", function(message)
-    TriggerClientEvent('gum_adminmenu:ShowTopNotification', -1, "Serverové oznámení", message, 4000)
+    TriggerClientEvent('gum_adminmenu:ShowTopNotification', -1, Config.Langugage[1].text, message, 4000)
 end)
 
 RegisterServerEvent("RevivePlayer")
@@ -295,7 +290,9 @@ AddEventHandler("GiveMoney", function(target, money)
 
     local _source = source
     local identifier_admin = GetPlayerIdentifier(source)
-    DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(_source)).." \n **Steam hex** : "..identifier_admin.."\n Daroval sobě "..money.."$" , args, "Přihlášení")
+    if Config.WebHookEnable then
+        DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(_source)).." \n **Steam hex** : "..identifier_admin.."\n Daroval sobě "..money.."$" , args, "Přihlášení")
+    end
 end)
 
 RegisterServerEvent("GiveItem")
@@ -307,9 +304,9 @@ AddEventHandler("GiveItem", function(target, name, count)
             get_label(name, function(label)
                 if canCarry2 then
                     gumInv.addItem(target, name, count)
-                    TriggerClientEvent("gum_notify:notify", tonumber(source), "Inventář", "Daroval jsi si :"..name.."x "..count, name, 2500)
+                    TriggerClientEvent("gum_notify:notify", tonumber(source), Config.Langugage[2].text, "Daroval jsi si :"..name.."x "..count, name, 2500)
                 else
-                    TriggerClientEvent("gum_notify:notify", tonumber(source), "Inventář", "Nemáš místo ", name, 2500)
+                    TriggerClientEvent("gum_notify:notify", tonumber(source), Config.Langugage[2].text, "Nemáš místo ", name, 2500)
                 end
             end)
         end)
@@ -318,15 +315,18 @@ AddEventHandler("GiveItem", function(target, name, count)
     local _source = source
 	local identifier_admin = GetPlayerIdentifier(source)
 	local identifier_other = GetPlayerIdentifier(target)
-    DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(_source)).." \n **Steam hex** : "..identifier_admin.."\n Daroval  "..count.."x "..name.." hráči \n **Steam jméno** : "..GetPlayerName(tonumber(target)).." \n **Steam hex** : "..identifier_other.."" , args, "Přihlášení")
-
+    if Config.WebHookEnable then
+        DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(_source)).." \n **Steam hex** : "..identifier_admin.."\n Daroval  "..count.."x "..name.." hráči \n **Steam jméno** : "..GetPlayerName(tonumber(target)).." \n **Steam hex** : "..identifier_other.."" , args, "Přihlášení")
+    end
 end)
 
 RegisterServerEvent("GiveItemMenu")
 AddEventHandler("GiveItemMenu", function(name, count)
     local _source = source
 	local identifier = GetPlayerIdentifier(source)
-    DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(_source)).." \n **Steam hex** : "..identifier.."\n Si daroval 1x "..name.." " , args, "Přihlášení")
+    if Config.WebHookEnable then
+        DiscordWeb(16753920, "**Steam jméno** : "..GetPlayerName(tonumber(_source)).." \n **Steam hex** : "..identifier.."\n Si daroval 1x "..name.." " , args, "Přihlášení")
+    end
     gumInv.addItem(tonumber(_source), name, 1)
 end)
 
@@ -342,6 +342,6 @@ function DiscordWeb(color, name, footer)
             },
         }
     }
-    PerformHttpRequest('https://discord.com/api/webhooks/885089462080655380/FqCLl6k3-YJtFfwaThGiEEIvjm-jX04S95kZthZIiUQp54fEcb9ZGk2gvPGReNvazbdc', function(err, text, headers) end, 'POST', json.encode({username = "RedwestRP", embeds = embed}), { ['Content-Type'] = 'application/json' })
+    PerformHttpRequest(Config.WebhookURL, function(err, text, headers) end, 'POST', json.encode({username = "RedwestRP", embeds = embed}), { ['Content-Type'] = 'application/json' })
 end
 
