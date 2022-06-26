@@ -19,7 +19,8 @@ end
 function getTemp()
 	return temperature
 end
-
+RegisterNetEvent("gum:SelectedCharacter")
+AddEventHandler("gum:SelectedCharacter", function(charid)
 Citizen.CreateThread(function()
     TriggerEvent('gum:ExecuteServerCallBack','gum_metabolism:getStatus', function(hunger, thirst) 
         if hunger ~= nil and thirst ~= nil then
@@ -87,7 +88,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(Config.CheckMetaTime*1000)
     end
 end)
-
+end)
 
 RegisterNetEvent("gum_metabolism:eatIt")
 AddEventHandler("gum_metabolism:eatIt", function(itemData)
