@@ -25,4 +25,5 @@ ensure gum_bank_new</br>
 ensure gum_barberstore</br>
 ensure gum_clothingstore</br>
 ensure gum_notify</br>
+ensure gum_metabolism</br>
 ensure gum_status2</br>
