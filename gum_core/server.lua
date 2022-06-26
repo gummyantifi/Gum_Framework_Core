@@ -438,11 +438,17 @@ function Character.setMeta(source, meta_table)
 	if _source ~= nil and meta_table ~= nil then
 		local User = gumCore.getUser(tonumber(_source))
 		local Character = User.getUsedCharacter
+		local Identifier = Character.identifier
+		local CharIdentifier = Character.charIdentifier
 		Character.meta = json.encode(meta_table)
+		exports.ghmattimysql:execute("UPDATE characters SET meta=@meta WHERE identifier = @identifier AND charidentifier = @charidentifier", {['identifier'] = Identifier, ['charidentifier'] = CharIdentifier, ['meta'] = Character.meta},
+		function (result)
+		end)
 	else
 		gumCore.Error("Someting is wrong, check function\nCharacter.setMeta(source, meta_table)\nArgs : Target, Table")
 	end
 end
+
 
 
 RegisterServerEvent('gum:setJob')
