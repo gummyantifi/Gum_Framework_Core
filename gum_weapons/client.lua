@@ -69,7 +69,7 @@ AddEventHandler("gum_weapons:load_components", function(component)
   if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then
     weapon_type = "LONGARM"
   elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then
-    weapon_type = "LONGARM"
+    weapon_type = "SHOTGUN"
   elseif GetHashKey('GROUP_HEAVY') == GetWeapontypeGroup(wepHash) then
     weapon_type = "LONGARM"
   elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then
@@ -443,7 +443,7 @@ Citizen.CreateThread(function()
               if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then
                 weapon_type = "LONGARM"
               elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then
-                weapon_type = "LONGARM"
+                weapon_type = "SHOTGUN"
               elseif GetHashKey('GROUP_HEAVY') == GetWeapontypeGroup(wepHash) then
                 weapon_type = "LONGARM"
               elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then
