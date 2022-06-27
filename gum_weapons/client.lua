@@ -223,7 +223,7 @@ RegisterNUICallback('ammo_price_weapons', function(data, cb)
 			for l,m in pairs(v.ammo) do 
         for j,d in pairs(m) do
             if j == data.ammo_name then
-              global_buy_ammo = d.item
+              global_buy_ammo = d.itemId
               SendNUIMessage({type = "price_for_ammo",status = true, amm_name = j, price = d.price})
               if string.match(j,"Revolver") then
                 createobjectammo(move_coords_x, move_coords_y, move_coords_z, GetHashKey('s_inv_highvlcty_revammo01x'))
@@ -271,11 +271,11 @@ RegisterNUICallback('buy_weapon', function(data, cb)
     if k == currentshop then 
       for l,m in pairs(v.ammo) do 
         for j,d in pairs(m) do
-          if d.item == global_buy_ammo then
+          if d.itemId == global_buy_ammo then
             TriggerEvent("guminputs:getInput", ""..Config.Language[9].text.."", ""..Config.Language[10].text.."", function(cb)
               local count_number = tonumber(cb)
               if count_number ~= 'Close' and count_number ~= 'close' and count_number >= 1 then
-                TriggerServerEvent("gum_weapons:buyammo", d.item,d.price,count_number)
+                TriggerServerEvent("gum_weapons:buyammo", d.itemId,d.price,count_number)
               end
               close_store()
               return false
@@ -1191,15 +1191,6 @@ RegisterNUICallback('set_camera', function(data, cb)
   end
 end)
 
-
-function whenKeyJustPressed(key)
-    if Citizen.InvokeNative(0x580417101DDB492F, 0, key) then
-        return true
-    else
-        return false
-    end
-end
-
 RegisterNetEvent("gum_weapons:getgun")
 AddEventHandler("gum_weapons:getgun", function(key,guncheck,qt,item,guncheck2,playeritem)
   local max_count_check = false
@@ -1211,10 +1202,10 @@ AddEventHandler("gum_weapons:getgun", function(key,guncheck,qt,item,guncheck2,pl
 	if (guncheck2 ~= 0 and Citizen.InvokeNative(guncheck2, wephash)) or Citizen.InvokeNative(guncheck, wephash) or guncheck == 0 then
       for k,v in pairs(Config.ammo) do
         for l,m in pairs(v) do
-            if m.key == key then
-              ammo_type = m.key
-              ammo_set = m.maxammo
-              if currentammo+qt <= m.maxammo then
+            if m.weaponNameHash == key then
+              ammo_type = m.weaponNameHash
+              ammo_set = m.maxAmmo
+              if currentammo+qt <= m.maxAmmo then
                 max_count_check = true
               end
           end
@@ -1234,10 +1225,6 @@ AddEventHandler("gum_weapons:getgun", function(key,guncheck,qt,item,guncheck2,pl
     end
 end)
 
-RegisterNetEvent("gum_weapons:givebackbox")
-AddEventHandler("gum_weapons:givebackbox", function(item)
-	TriggerServerEvent("gum_weapons:givebackbox",item)
-end)
 
 function LoadModel(model)
 	if not IsModelInCdimage(model) then
