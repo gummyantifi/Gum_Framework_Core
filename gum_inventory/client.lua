@@ -494,13 +494,13 @@ AddEventHandler('gum_inventory:reload_weap', function()
 			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
 				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
 					if weapon_first_used ~= false and weapon_second_used == false then
-						LoadWeaponChar(v.name)
+						LoadWeaponChar(v.name, false)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
 					end
 					if weapon_first_used == false and weapon_second_used == false then
-						LoadWeaponChar(v.name)
+						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
@@ -545,18 +545,20 @@ function equip_weapon_login()
 	local login_continue = false
 	RemoveAllWeapons()
 	Citizen.Wait(500)
+	addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A);
+	addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01);
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
 			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
 				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
 					if weapon_first_used ~= false and weapon_second_used == false then
-						LoadWeaponChar(v.name)
+						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
 					end
 					if weapon_first_used == false and weapon_second_used == false then
-						LoadWeaponChar(v.name)
+						LoadWeaponChar(v.name, false)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
@@ -602,13 +604,13 @@ function equip_weapon_login()
 			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
 				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
 					if weapon_first_used ~= false and weapon_second_used == false then
-						LoadWeaponChar(v.name)
+						LoadWeaponChar(v.name, false)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
 					end
 					if weapon_first_used == false and weapon_second_used == false then
-						LoadWeaponChar(v.name)
+						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
@@ -806,7 +808,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 				if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
 					if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) or Citizen.InvokeNative(0xC75386174ECE95D5, GetHashKey(v.name)) then
 						if weapon_first_used == false then
-							LoadWeaponChar(v.name)
+							LoadWeaponChar(v.name, false)
 							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 							SetDirtToWeapon(v.id, v.conditionlevel)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
@@ -814,7 +816,7 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 							weapon_first_used = v.name
 							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[12].text.."", 'bag', 1000)
 						elseif weapon_second_used == false then
-							LoadWeaponChar(v.name)
+							LoadWeaponChar(v.name, true)
 							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 							SetDirtToWeapon(v.id, v.conditionlevel)
 							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
@@ -865,10 +867,18 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 end)
 
 
-function LoadWeaponChar(name)
+function LoadWeaponChar(name, dual)
 	while wep_load ~= GetHashKey(name) do
 		_, wep_load = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)
-		Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(name), 0, false, true, true, 1.0)
+		if dual == false then
+			givePlayerWeapon(name, 2);
+		end
+		if dual == true then
+			givePlayerWeapon(name, 3);
+		end
+		if dual == nil then
+			Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), GetHashKey(name), 0, false, true, true, 1.0)
+		end
 		SetCurrentPedWeapon(PlayerPedId(),GetHashKey(name), true)
 		Citizen.Wait(300)
 	end
@@ -1738,4 +1748,252 @@ function DrawText3D(x, y, z, text)
 		--DrawSprite("generic_textures", "hud_menu_4a", _x, _y+0.0125,0.015+ factor, 0.03, 0.1, 35, 35, 35, 190, 0)
 		--DrawSprite("feeds", "toast_bg", _x, _y+0.0125,0.015+ factor, 0.03, 0.1, 100, 1, 1, 190, 0)
 	end
+end
+
+function getGuidFromItemId(inventoryId, itemData, category, slotId) 
+    local outItem = DataView.ArrayBuffer(8 * 13)
+ 
+    if not itemData then
+        itemData = 0
+    end
+ 
+    local success = Citizen.InvokeNative("0x886DFD3E185C8A89", inventoryId, itemData, category, slotId, outItem:Buffer()) --InventoryGetGuidFromItemid
+    if success then
+        return outItem:Buffer() --Seems to not return anythign diff. May need to pull from native above
+    else
+        return nil
+    end
+end
+ 
+function addWardrobeInventoryItem(itemName, slotHash)
+    local itemHash = GetHashKey(itemName)
+    local addReason = GetHashKey("ADD_REASON_DEFAULT")
+    local inventoryId = 1
+ 
+    local isValid = Citizen.InvokeNative("0x6D5D51B188333FD1", itemHash, 0) --ItemdatabaseIsKeyValid
+    if not isValid then
+        return false
+    end
+ 
+    local characterItem = getGuidFromItemId(inventoryId, nil, GetHashKey("CHARACTER"), 0xA1212100)
+    if not characterItem then
+        return false
+    end
+ 
+    local wardrobeItem = getGuidFromItemId(inventoryId, characterItem, GetHashKey("WARDROBE"), 0x3DABBFA7)
+    if not wardrobeItem then
+        return false 
+    end
+ 
+    local itemData = DataView.ArrayBuffer(8 * 13)
+ 
+    local isAdded = Citizen.InvokeNative("0xCB5D11F9508A928D", inventoryId, itemData:Buffer(), wardrobeItem, itemHash, slotHash, 1, addReason);
+    if not isAdded then 
+        return false
+    end
+ 
+    local equipped = Citizen.InvokeNative("0x734311E2852760D0", inventoryId, itemData:Buffer(), true);
+    return equipped;
+end
+ 
+function givePlayerWeapon(weaponName, attachPoint)
+    local addReason = GetHashKey("ADD_REASON_DEFAULT");
+    local weaponHash = GetHashKey(weaponName);
+ 
+    Citizen.InvokeNative("0x72D4CB5DB927009C", weaponHash, 0, true);
+ 
+    Wait(1000)
+    Citizen.InvokeNative("0x5E3BDDBCB83F3D84", PlayerPedId(), weaponHash, 1, true, false, attachPoint, true, 0.0, 0.0, addReason, true, 0.0, false);
+end
+
+--[[
+    Default, and assumed, LUAI_MAXSHORTLEN is 40. To create a non internalized
+    string always force the buffer to be greater than that value.
+--]]
+local _strblob = string.blob or function(length)
+    return string.rep("\0", math.max(40 + 1, length))
+end
+
+--[[
+    API:
+        DataView::{Get | Set}Int8
+        DataView::{Get | Set}Uint8
+        DataView::{Get | Set}Int16
+        DataView::{Get | Set}Uint16
+        DataView::{Get | Set}Int32
+        DataView::{Get | Set}Uint32
+        DataView::{Get | Set}Int64
+        DataView::{Get | Set}Uint64
+        DataView::{Get | Set}LuaInt
+        DataView::{Get | Set}UluaInt
+        DataView::{Get | Set}LuaNum
+        DataView::{Get | Set}Float32
+        DataView::{Get | Set}Float64
+        DataView::{Get | Set}String
+            Parameters:
+                Get: self, offset, endian (optional)
+                Set: self, offset, value, endian (optional)
+        DataView::{GetFixed | SetFixed}::Int
+        DataView::{GetFixed | SetFixed}::Uint
+        DataView::{GetFixed | SetFixed}::String
+            Parameters:
+                Get: offset, typelen, endian (optional)
+                Set: offset, typelen, value, endian (optional)
+    NOTES:
+        (1) Endianness changed from JS API, defaults to little endian.
+        (2) {Get|Set|Next} offsets are zero-based.
+    EXAMPLES:
+        local view = DataView.ArrayBuffer(512)
+        if Citizen.InvokeNative(0x79923CD21BECE14E, 1, view:Buffer(), Citizen.ReturnResultAnyway()) then
+            local dlc = {
+                validCheck = view:GetInt64(0),
+                weaponHash = view:GetInt32(8),
+                val3 = view:GetInt64(16),
+                weaponCost = view:GetInt64(24),
+                ammoCost = view:GetInt64(32),
+                ammoType = view:GetInt64(40),
+                defaultClipSize = view:GetInt64(48),
+                nameLabel = view:GetFixedString(56, 64),
+                descLabel = view:GetFixedString(120, 64),
+                simpleDesc = view:GetFixedString(184, 64),
+                upperCaseName = view:GetFixedString(248, 64),
+            }
+        end
+--]]
+DataView = {
+    EndBig = ">",
+    EndLittle = "<",
+    Types = {
+        Int8 = { code = "i1", size = 1 },
+        Uint8 = { code = "I1", size = 1 },
+        Int16 = { code = "i2", size = 2 },
+        Uint16 = { code = "I2", size = 2 },
+        Int32 = { code = "i4", size = 4 },
+        Uint32 = { code = "I4", size = 4 },
+        Int64 = { code = "i8", size = 8 },
+        Uint64 = { code = "I8", size = 8 },
+
+        LuaInt = { code = "j", size = 8 }, -- a lua_Integer
+        UluaInt = { code = "J", size = 8 }, -- a lua_Unsigned
+        LuaNum = { code = "n", size = 8}, -- a lua_Number
+        Float32 = { code = "f", size = 4 }, -- a float (native size)
+        Float64 = { code = "d", size = 8 }, -- a double (native size)
+        String = { code = "z", size = -1, }, -- zero terminated string
+    },
+
+    FixedTypes = {
+        String = { code = "c", size = -1, }, -- a fixed-sized string with n bytes
+        Int = { code = "i", size = -1, }, -- a signed int with n bytes
+        Uint = { code = "I", size = -1, }, -- an unsigned int with n bytes
+    },
+}
+DataView.__index = DataView
+
+--[[ Is a dataview type at a specific offset still within buffer length --]]
+local function _ib(o, l, t) return ((t.size < 0 and true) or (o + (t.size - 1) <= l)) end
+local function _ef(big) return (big and DataView.EndBig) or DataView.EndLittle end
+
+--[[ Helper function for setting fixed datatypes within a buffer --]]
+local SetFixed = nil
+
+--[[ Create an ArrayBuffer with a size in bytes --]]
+function DataView.ArrayBuffer(length)
+    return setmetatable({
+        offset = 1, length = length, blob = _strblob(length)
+    }, DataView)
+end
+
+--[[ Wrap a non-internalized string --]]
+function DataView.Wrap(blob)
+    return setmetatable({
+        offset = 1, blob = blob, length = blob:len(),
+    }, DataView)
+end
+
+function DataView:Buffer() return self.blob end
+function DataView:ByteLength() return self.length end
+function DataView:ByteOffset() return self.offset end
+function DataView:SubView(offset)
+    return setmetatable({
+        offset = offset, blob = self.blob, length = self.length,
+    }, DataView)
+end
+
+--[[ Create the API by using DataView.Types. --]]
+for label,datatype in pairs(DataView.Types) do
+    DataView["Get" .. label] = function(self, offset, endian)
+        local o = self.offset + offset
+        if _ib(o, self.length, datatype) then
+            local v,_ = string.unpack(_ef(endian) .. datatype.code, self.blob, o)
+            return v
+        end
+        return nil -- Out of bounds
+    end
+
+    DataView["Set" .. label] = function(self, offset, value, endian)
+        local o = self.offset + offset
+        if _ib(o, self.length, datatype) then
+            return SetFixed(self, o, value, _ef(endian) .. datatype.code)
+        end
+        return self -- Out of bounds
+    end
+
+    -- Ensure cache is correct.
+    if datatype.size >= 0 and string.packsize(datatype.code) ~= datatype.size then
+        local msg = "Pack size of %s (%d) does not match cached length: (%d)"
+        error(msg:format(label, string.packsize(fmt[#fmt]), datatype.size))
+        return nil
+    end
+end
+
+for label,datatype in pairs(DataView.FixedTypes) do
+    DataView["GetFixed" .. label] = function(self, offset, typelen, endian)
+        local o = self.offset + offset
+        if o + (typelen - 1) <= self.length then
+            local code = _ef(endian) .. "c" .. tostring(typelen)
+            local v,_ = string.unpack(code, self.blob, o)
+            return v
+        end
+        return nil -- Out of bounds
+    end
+
+    DataView["SetFixed" .. label] = function(self, offset, typelen, value, endian)
+        local o = self.offset + offset
+        if o + (typelen - 1) <= self.length then
+            local code = _ef(endian) .. "c" .. tostring(typelen)
+            return SetFixed(self, o, value, code)
+        end
+        return self
+    end
+end
+
+--[[ Helper function for setting fixed datatypes within a buffer --]]
+SetFixed = function(self, offset, value, code)
+    local fmt = { }
+    local values = { }
+
+    -- All bytes prior to the offset
+    if self.offset < offset then
+        local size = offset - self.offset
+        fmt[#fmt + 1] = "c" .. tostring(size)
+        values[#values + 1] = self.blob:sub(self.offset, size)
+    end
+
+    fmt[#fmt + 1] = code
+    values[#values + 1] = value
+
+    -- All bytes after the value (offset + size) to the end of the buffer
+    -- growing the buffer if needed.
+    local ps = string.packsize(fmt[#fmt])
+    if (offset + ps) <= self.length then
+        local newoff = offset + ps
+        local size = self.length - newoff + 1
+
+        fmt[#fmt + 1] = "c" .. tostring(size)
+        values[#values + 1] = self.blob:sub(newoff, self.length)
+    end
+
+    self.blob = string.pack(table.concat(fmt, ""), table.unpack(values))
+    self.length = self.blob:len()
+    return self
 end
