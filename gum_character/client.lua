@@ -938,21 +938,21 @@ end)
 
 RegisterNUICallback('alert_to_notify', function(data, cb)
     if data.type == "name" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss add name", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[193].text, 'character', 1000)
     elseif data.type == "nation" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit nation", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[194].text, 'character', 1000)
     elseif data.type == "bodyTexture" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit body texture", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[195].text, 'character', 1000)
     elseif data.type == "legsTexture" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit legs texture", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[196].text, 'character', 1000)
     elseif data.type == "bodyType" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit body type", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[197].text, 'character', 1000)
     elseif data.type == "waist" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit waist", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[198].text, 'character', 1000)
     elseif data.type == "eyes" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit eyes", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[199].text, 'character', 1000)
     elseif data.type == "headTexture" then
-        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, "You miss edit head texture", 'character', 1000)
+        exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, Config.Language[200].text, 'character', 1000)
     end
 end)
 

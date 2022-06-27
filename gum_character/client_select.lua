@@ -24,20 +24,6 @@ RegisterCommand('character', function()
     SetEntityCoords(PlayerPedId(), 1407.5758056640625, -1139.779541015625, 75.34298706054688)
 end)
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.InvokeNative(0x4CC5F2FC1332577F, GetHashKey("HUD_CTX_INFINITE_AMMO"))
-        Citizen.InvokeNative(0x4CC5F2FC1332577F, GetHashKey("HUD_CTX_SHARP_SHOOTER_EVENT"))
-        Citizen.InvokeNative(0x4CC5F2FC1332577F ,GetHashKey("HUD_CTX_RESTING_BY_FIRE"))
-        Citizen.InvokeNative(0x4CC5F2FC1332577F ,GetHashKey("HUD_CTX_INFO_CARD"))
-        Citizen.InvokeNative(0x4CC5F2FC1332577F ,GetHashKey("HUD_CTX_GOLD_CURRENCY_CHANGE"))
-
-        Citizen.InvokeNative(0xD4EE21B7CC7FD350, false)
-        Citizen.InvokeNative(0x50C803A4CD5932C5, false)
-        Citizen.Wait(500)
-    end
-end)
-
 RegisterNetEvent('gum_character:del_old')
 AddEventHandler('gum_character:del_old', function(table, tableuser)
     DeletePed(character_1)

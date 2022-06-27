@@ -40,7 +40,16 @@ Config.Language = {
     [189] = {text = "You dont have selected firstname or lastname",},
     [190] = {text = "Character selection",},
     [191] = {text = "You switch character wait 10 second.",},
-    [192] = {text = "You cant make character, becouse you have max limit."}
+    [192] = {text = "You cant make character, becouse you have max limit."},
+
+    [193] = {text = "You miss add name"},
+    [194] = {text = "You miss edit nation"},
+    [195] = {text = "You miss edit body texture"},
+    [196] = {text = "You miss edit legs texture"},
+    [197] = {text = "You miss edit body type"},
+    [198] = {text = "You miss edit waist"},
+    [199] = {text = "You miss edit eyes"},
+    [200] = {text = "You miss edit head texture"},
 }
 
 --- DONT TOUCH HERE
