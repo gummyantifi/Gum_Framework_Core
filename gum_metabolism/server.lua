@@ -14,7 +14,7 @@ for a,b in pairs(Config.Metabolism) do
     Inventory.RegisterUsableItem(b.idItem, function(data)
         if blockSpamItems[data.source] == nil then
             blockSpamItems[data.source] = true
-            -- Inventory.subItem(data.source, b.idItem, 1)
+            Inventory.subItem(data.source, b.idItem, 1)
             TriggerClientEvent("gum_metabolism:eatIt", data.source, b)
             local User = gumCore.getUser(data.source)
             local Character = User.getUsedCharacter
