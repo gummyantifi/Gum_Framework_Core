@@ -30,6 +30,7 @@ ensure gum_status2</br>
 
 
 <h2>Credits : </h2>
+<b>Admin menu functions</br> Atomic </br>
 <b>Inv,Core API files</b> : Artzalez</br>
 <b>uiprompt</b> : Kibook</br>
 <b>Test,Report,Bugs</b> : Chico,iiRedDev</br>
