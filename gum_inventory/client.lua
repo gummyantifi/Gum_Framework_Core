@@ -1803,7 +1803,7 @@ function givePlayerWeapon(weaponName, attachPoint)
     Citizen.InvokeNative("0x72D4CB5DB927009C", weaponHash, 0, true);
  
     Wait(1000)
-    Citizen.InvokeNative("0x5E3BDDBCB83F3D84", PlayerPedId(), weaponHash, 1, true, false, attachPoint, true, 0.0, 0.0, addReason, true, 0.0, false);
+    Citizen.InvokeNative("0x5E3BDDBCB83F3D84", PlayerPedId(), weaponHash, 0, true, false, attachPoint, true, 0.0, 0.0, addReason, true, 0.0, false);
 end
 
 --[[
