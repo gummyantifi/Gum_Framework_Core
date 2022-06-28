@@ -12,6 +12,10 @@ RECORDSW = {
         item = "WEAPON_MELEE_KNIFE_JAWBONE",
         label = "JawBone Knife"
     },
+	    {
+        item = "WEAPON_MELEE_MACHETE",
+        label = "Machete"
+    },
     {
         item = "WEAPON_MELEE_CLEAVER",
         label = "Melee cleaver"
@@ -199,6 +203,10 @@ RECORDSW = {
     {
         item = "WEAPON_MELEE_KNIFE_HORROR",
         label = "Scissors"
+    },
+    {
+        item = "WEAPON_MELEE_HAMMER",
+        label = "Hammer"
     },
     {
         item = "WEAPON_SHOTGUN_DOUBLEBARREL_EXOTIC",

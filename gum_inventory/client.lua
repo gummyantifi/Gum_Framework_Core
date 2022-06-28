@@ -1,5 +1,5 @@
 local eWeaponAttachPoint ={WEAPON_ATTACH_POINT_INVALID = -1,	WEAPON_ATTACH_POINT_HAND_PRIMARY = 0,    WEAPON_ATTACH_POINT_PISTOL_R = 2,    WEAPON_ATTACH_POINT_PISTOL_L = 3,    WEAPON_ATTACH_POINT_KNIFE = 4,    WEAPON_ATTACH_POINT_LASSO = 5,    WEAPON_ATTACH_POINT_THROWER = 6,    WEAPON_ATTACH_POINT_BOW = 7,    WEAPON_ATTACH_POINT_BOW_ALTERNATE = 8,    WEAPON_ATTACH_POINT_RIFLE = 9,    WEAPON_ATTACH_POINT_RIFLE_ALTERNATE = 10,    WEAPON_ATTACH_POINT_LANTERN = 11,    WEAPON_ATTACH_POINT_TEMP_LANTERN = 12,    WEAPON_ATTACH_POINT_MELEE = 13,    WEAPON_ATTACH_POINT_HIP = 14,    WEAPON_ATTACH_POINT_BOOT = 15,    WEAPON_ATTACH_POINT_BACK = 16,    WEAPON_ATTACH_POINT_FRONT = 17,    WEAPON_ATTACH_POINT_SHOULDERSLING = 18,    WEAPON_ATTACH_POINT_LEFTBREAST = 19,    WEAPON_ATTACH_POINT_RIGHTBREAST = 20,    WEAPON_ATTACH_POINT_LEFTARMPIT = 21,    WEAPON_ATTACH_POINT_RIGHTARMPIT = 22,    WEAPON_ATTACH_POINT_LEFTARMPIT_RIFLE = 23,    WEAPON_ATTACH_POINT_LEFTARMPIT_BOW = 25,    WEAPON_ATTACH_POINT_RIGHT_HAND_EXTRA = 26,    WEAPON_ATTACH_POINT_LEFT_HAND_EXTRA = 27,    WEAPON_ATTACH_POINT_RIGHT_HAND_AUX = 28,};
-local ammo_list = {	{0x38854A3B,"AMMO_ARROW"}, {0x38854A3B, "AMMO_REPEATER_SPLIT_POINT"}, {0x38854A3B,"AMMO_BOLAS"}, {0x5B6ABDF8,"AMMO_ARROW_DYNAMITE"},	{0xD19E0045,"AMMO_ARROW_FIRE"},	{0xD62A5A6C,"AMMO_ARROW_POISON"},	{0x3250353B,"AMMO_ARROW_IMPROVED"},	{0x9BD3BBB,"AMMO_ARROW_SMALL_GAME"},	{0xBB8A699D,"AMMO_DYNAMITE"},	{0xDC91634B,"AMMO_DYNAMITE_VOLATILE"},	{0x6AB063DE,"AMMO_MOLOTOV"},	{0xF8FB3AC1,"AMMO_MOLOTOV_VOLATILE"},	{0x80766738,"AMMO_PISTOL"},	{0xF1A91F32,"AMMO_PISTOL_EXPRESS"},	{0x331B008B,"AMMO_PISTOL_EXPRESS_EXPLOSIVE"},	{0x46F7AA64,"AMMO_PISTOL_HIGH_VELOCITY"},	{0xAD60BB5F,"AMMO_PISTOL_SPLIT_POINT"},	{0x5E490BAA,"AMMO_REPEATER"},	{0x197A9C10,"AMMO_REPEATER_EXPRESS"},	{0x2390F9C2,"AMMO_REPEATER_EXPRESS_EXPLOSIVE"},	{0x4FFBFA8C,"AMMO_REPEATER_HIGH_VELOCITY"},	{0x4CE87556,"AMMO_REVOLVER"},	{0x3C932F5C,"AMMO_REVOLVER_EXPRESS"},	{0xAFD00F7F,"AMMO_REVOLVER_EXPRESS_EXPLOSIVE"},	{0x129C46F,"AMMO_REVOLVER_HIGH_VELOCITY"},	{0x9C6310D4,"AMMO_REVOLVER_SPLIT_POINT"},	{0xBAFF5180,"AMMO_RIFLE"},	{0x2CE404A4,"AMMO_RIFLE_EXPRESS"},	{0x9116173,"AMMO_RIFLE_EXPRESS_EXPLOSIVE"},	{0xF76DC763,"AMMO_RIFLE_HIGH_VELOCITY"},	{0xC1711828,"AMMO_RIFLE_SPLIT_POINT"},	{0xB7DB96B8,"AMMO_RIFLE_VARMINT"},	{0x58B272F9,"AMMO_SHOTGUN"},	{0xC71EE56D,"AMMO_SHOTGUN_BUCKSHOT_INCENDIARY"},	{0x3450D03C,"AMMO_SHOTGUN_SLUG"},	{0x4BB641AD,"AMMO_SHOTGUN_EXPRESS_EXPLOSIVE"},	{0xCFE15715,"AMMO_THROWING_KNIVES"},	{0xB846FB5B,"AMMO_THROWING_KNIVES_IMPROVED"},	{0x9AE0598E,"AMMO_THROWING_KNIVES_POISON"},	{0xB09A8B19,"AMMO_TOMAHAWK"},	{0x7B87DF4F,"AMMO_TOMAHAWK_HOMING"},	{0x4F384312,"AMMO_TOMAHAWK_IMPROVED"}};
+local ammo_list = {{0x38854A3B,"AMMO_MOONSHINEJUG"},{0x38854A3B,"AMMO_MOONSHINEJUG_MP"},{0x38854A3B,"AMMO_POISONBOTTLE"},{0x38854A3B,"AMMO_HATCHET"},{0x38854A3B,"AMMO_HATCHET_ANCIENT"},{0x38854A3B,"AMMO_HATCHET_CLEAVER"},{0x38854A3B,"AMMO_HATCHET_DOUBLE_BIT"},{0x38854A3B,"AMMO_HATCHET_DOUBLE_BIT_RUSTED"},{0x38854A3B,"AMMO_HATCHET_DOUBLE_BIT_RUSTED"},{0x38854A3B,"AMMO_HATCHET_HEWING"},{0x38854A3B,"AMMO_HATCHET_HUNTER"},{0x38854A3B,"AMMO_HATCHET_HUNTER_RUSTED"},{0x38854A3B,"AMMO_HATCHET_VIKING"},	{0x38854A3B,"AMMO_ARROW"},	{0x38854A3B,"AMMO_22"},	{0x38854A3B,"AMMO_22_TRANQUILIZER"}, {0x38854A3B, "AMMO_REPEATER_SPLIT_POINT"}, {0x38854A3B,"AMMO_BOLAS"}, {0x5B6ABDF8,"AMMO_ARROW_DYNAMITE"},	{0xD19E0045,"AMMO_ARROW_FIRE"},	{0xD62A5A6C,"AMMO_ARROW_POISON"},	{0x3250353B,"AMMO_ARROW_IMPROVED"},	{0x9BD3BBB,"AMMO_ARROW_SMALL_GAME"},	{0xBB8A699D,"AMMO_DYNAMITE"},	{0xDC91634B,"AMMO_DYNAMITE_VOLATILE"},	{0x6AB063DE,"AMMO_MOLOTOV"},	{0xF8FB3AC1,"AMMO_MOLOTOV_VOLATILE"},	{0x80766738,"AMMO_PISTOL"},	{0xF1A91F32,"AMMO_PISTOL_EXPRESS"},	{0x331B008B,"AMMO_PISTOL_EXPRESS_EXPLOSIVE"},	{0x46F7AA64,"AMMO_PISTOL_HIGH_VELOCITY"},	{0xAD60BB5F,"AMMO_PISTOL_SPLIT_POINT"},	{0x5E490BAA,"AMMO_REPEATER"},	{0x197A9C10,"AMMO_REPEATER_EXPRESS"},	{0x2390F9C2,"AMMO_REPEATER_EXPRESS_EXPLOSIVE"},	{0x4FFBFA8C,"AMMO_REPEATER_HIGH_VELOCITY"},	{0x4CE87556,"AMMO_REVOLVER"},	{0x3C932F5C,"AMMO_REVOLVER_EXPRESS"},	{0xAFD00F7F,"AMMO_REVOLVER_EXPRESS_EXPLOSIVE"},	{0x129C46F,"AMMO_REVOLVER_HIGH_VELOCITY"},	{0x9C6310D4,"AMMO_REVOLVER_SPLIT_POINT"},	{0xBAFF5180,"AMMO_RIFLE"},	{0x2CE404A4,"AMMO_RIFLE_EXPRESS"},	{0x9116173,"AMMO_RIFLE_EXPRESS_EXPLOSIVE"},	{0xF76DC763,"AMMO_RIFLE_HIGH_VELOCITY"},	{0xC1711828,"AMMO_RIFLE_SPLIT_POINT"},	{0xB7DB96B8,"AMMO_RIFLE_VARMINT"},	{0x58B272F9,"AMMO_SHOTGUN"},	{0xC71EE56D,"AMMO_SHOTGUN_BUCKSHOT_INCENDIARY"},	{0x3450D03C,"AMMO_SHOTGUN_SLUG"},	{0x4BB641AD,"AMMO_SHOTGUN_EXPRESS_EXPLOSIVE"},	{0xCFE15715,"AMMO_THROWING_KNIVES"},	{0xB846FB5B,"AMMO_THROWING_KNIVES_IMPROVED"},	{0x9AE0598E,"AMMO_THROWING_KNIVES_POISON"},	{0xB09A8B19,"AMMO_TOMAHAWK"},	{0x7B87DF4F,"AMMO_TOMAHAWK_HOMING"},	{0x4F384312,"AMMO_TOMAHAWK_IMPROVED"}};
 local inventory_table = {}
 local weapon_table = {}
 local weapon_first_used = false
@@ -24,12 +24,13 @@ local equip_spam = false
 local speed = 0
 local count_in_inventory = 0.0
 local can_save = false
+local attackUpdate = false
 local slot1 = ""
 local slot2 = ""
 local slot3 = ""
 local slot4 = ""
 local slot5 = ""
-
+local canSaveAmmo = false
 function Button_Prompt()
 	Citizen.CreateThread(function()
 		local str = Config.Language[0].text
@@ -321,104 +322,6 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 		Citizen.Wait(3000)
 		equip_weapon_login()
 		Button_Prompt()
-	end)
-	Citizen.CreateThread(function()
-		while true do
-			Citizen.Wait(2000)
-			if can_save == true and logged_true == true then
-				local _, wepHash = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)
-				local ammo_type_weapon = ""
-				local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-				local sended = false
-				for k,v in pairs (new_ammo_table) do
-					new_ammo_table[k] = nil
-				end
-				Citizen.Wait(0)
-				for k,v in pairs(ammo_list) do
-					if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "RIFLE"
-					elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "RIFLE"				
-					elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "THROWWABLE"				end
-					if ammo_type_weapon ~= "" then
-						if ammo_type_weapon ~= "THROWWABLE" then
-							if string.match(v[2], ammo_type_weapon)  then
-								for key,value in pairs(weapon_table) do
-									if v[2] == "AMMO_RIFLE_VARMINT" then
-										if value.used == 1 and wepHash == GetHashKey(value.name) and GetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22")) ~= 0 then
-											SetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22"), GetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22")))
-											new_ammo_table["AMMO_22"] = GetPedAmmoByType(PlayerPedId(), GetHashKey("AMMO_22"))
-										end
-									else
-										if value.used == 1 and wepHash == GetHashKey(value.name) and GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])) ~= 0 then
-											SetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]), GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])))
-											new_ammo_table[v[2]] = GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]))
-										end
-									end
-								end
-							end
-						end
-						if ammo_type_weapon == "THROWWABLE" then
-							for key,value in pairs(weapon_table) do
-								if value.used == 1 and wepHash == GetHashKey(value.name) then
-									if GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])) ~= 0 then
-										if GetHashKey(v[2]) == GetPedAmmoTypeFromWeapon(PlayerPedId(), wepHash) then
-											SetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]), GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2])))
-											new_ammo_table[v[2]] = GetPedAmmoByType(PlayerPedId(), GetHashKey(v[2]))
-											throwabble_id = v[2]
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-				for k,v in pairs(ammo_list) do
-					if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash) then						ammo_type_weapon = "RIFLE"
-					elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "RIFLE"	
-					elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash) then					ammo_type_weapon = "THROWWABLE"				end
-					if ammo_type_weapon ~= "" then
-						for key,value in pairs(weapon_table) do
-							if value.used == 1 then
-								if ammo_type_weapon ~= "THROWWABLE" then
-									if (weaponEntityIndex ~= 0 and wepHash == GetHashKey(value.name)) then
-										if not sended then
-											sended = true
-											if condition_level[value.id] ~= nil then
-												if condition_level[value.id]+0.0001 <= 1.0 then
-													condition_level[value.id] = condition_level[value.id]+0.0001
-												end
-												local weaponEntityIndex = GetCurrentPedWeaponEntityIndex(PlayerPedId())
-												Citizen.InvokeNative(0xA7A57E89E965D839, weaponEntityIndex, tonumber(condition_level[value.id]))
-												Citizen.InvokeNative(0x812CE61DEBCAB948, weaponEntityIndex, tonumber(condition_level[value.id]), 0)
-												TriggerServerEvent("gum_inventory:save_ammo", value.name, new_ammo_table, condition_level[value.id])
-											end
-										end
-									end
-								end
-								if ammo_type_weapon == "THROWWABLE" then
-									if GetHashKey(value.name) == wepHash then
-										if not sended then
-											sended = true
-											if new_ammo_table[throwabble_id] ~= backup_save_throw and is_last_ammo == false then
-												backup_save_throw = new_ammo_table[throwabble_id]
-												TriggerServerEvent("gum_inventory:save_ammo", value.name, new_ammo_table, 0.0)
-											end
-										end
-									end
-								end
-								if ammo_type_weapon == "BOW" then
-									if GetHashKey(value.name) == wepHash  then
-										if not sended then
-											sended = true
-											TriggerServerEvent("gum_inventory:save_ammo", value.name, new_ammo_table, 0.0)
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		end
 	end)
 end)
 
@@ -1151,19 +1054,13 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		for key,value in pairs(weapon_table) do
-			if value.used == 1 then
-				local _, wepHash = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)
-				if GetHashKey(value.name) == wepHash then
-					if string.find(value.name, "THROWN")  then
-						if GetAmmoInPedWeapon(PlayerPedId(),wepHash) == 1 then
-							is_last_ammo = true
-							if Citizen.InvokeNative(0x305C8DCD79DA8B0F, 0, 0x07CE1E61) then
-								new_ammo_table = {}
-								TriggerServerEvent("gum_inventory:save_ammo", value.name, new_ammo_table, 0.0)
-							end
-						end
-					end
+		if Citizen.InvokeNative(0x50F940259D3841E6, 0, 0x07CE1E61) then
+			local _, wepHash = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)		
+			if wepHash ~= -1569615261 then
+				local arg2 = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), wepHash)
+				if arg2 ~= false then
+					Citizen.Wait(500)
+					saveAmmo()
 				end
 			end
 		end
@@ -1171,6 +1068,120 @@ Citizen.CreateThread(function()
 	end
 end)
 
+function saveAmmo()
+	local _1, wepHash1 = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)		
+	local _2, wepHash2 = GetCurrentPedWeapon(PlayerPedId(), true, 1, true)
+	Citizen.Wait(200)
+	local bothWeapon = false
+	local weaponTableAmmo1 = {}
+	local weaponTableAmmo2 = {}
+	local conditionLevelByWep1 = 0
+	local conditionLevelByWep2 = 0
+	if wepHash1 ~= -1569615261 then
+		bothWeapon = true
+	end
+	if wepHash2 == -1569615261 then
+		bothWeapon = false
+	end
+	if wepHash1 ~= -1569615261 then
+		local ammoTypeFirst = nil
+		local ammoTableFirst = {}
+		for a,b in pairs(ammo_list) do
+			if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash1) then						ammoTypeFirst = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash1) then						ammoTypeFirst = "RIFLE"
+			elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "RIFLE"				
+			elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "THROWING"				end
+			if ammoTypeFirst ~= nil then
+				if wepHash1 == 1151374672 then
+					ammoTypeFirst = "BOLA"
+				end
+				if wepHash1 == -570967010 then
+					ammoTypeFirst = "22"
+				end
+				if string.match(b[2], ammoTypeFirst)  then
+					for c,d in pairs(weapon_table) do
+						if wepHash1 == GetHashKey(d.name) then
+							conditionLevelByWep1 = d.id
+							for e,f in pairs(json.decode(d.ammo)) do
+								if GetPedAmmoByType(PlayerPedId(), GetHashKey(e)) == 0 then
+									ammoTableFirst[e] = nil
+								else
+									ammoTableFirst[e] = GetPedAmmoByType(PlayerPedId(), GetHashKey(e))
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+		weaponTableAmmo1 = ammoTableFirst
+	end
+	Citizen.Wait(200)
+	if wepHash2 ~= -1569615261 then
+		local ammoTypeSecond = nil
+		local ammoTableSecond = {}
+		for a,b in pairs(ammo_list) do
+			if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash2) then						ammoTypeSecond = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash2) then						ammoTypeSecond = "RIFLE"
+			elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "RIFLE"				
+			elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "THROWING"				end
+			if ammoTypeSecond ~= nil then
+				if string.match(b[2], ammoTypeSecond) then
+					for c,d in pairs(weapon_table) do
+						if wepHash2 == GetHashKey(d.name) then
+							conditionLevelByWep2 = d.id
+							for e,f in pairs(json.decode(d.ammo)) do
+								if GetPedAmmoByType(PlayerPedId(), GetHashKey(e)) == 0 then
+									ammoTableSecond[e] = nil
+								else
+									ammoTableSecond[e] = GetPedAmmoByType(PlayerPedId(), GetHashKey(e))
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+		weaponTableAmmo2 = ammoTableSecond
+	end
+	if wepHash1 ~= -1569615261 then
+		if bothWeapon == true then
+			if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_second_used)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_second_used)) then
+				if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
+					condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
+				end
+				TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
+			else
+				if condition_level[conditionLevelByWep2]+0.0002 <= 1.0 then
+					condition_level[conditionLevelByWep2] = condition_level[conditionLevelByWep2]+0.0002
+				end
+				if condition_level[conditionLevelByWep2]+0.0002 <= 1.0 then
+					condition_level[conditionLevelByWep2] = condition_level[conditionLevelByWep2]+0.0002
+				end
+				TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1], conditionLevelByWep2, weaponTableAmmo2, condition_level[conditionLevelByWep2])
+			end
+		else
+			if wepHash1 ~= -1569615261 and not Citizen.InvokeNative(0x792E3EF76C911959, wepHash1) then
+				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_second_used)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_second_used)) then
+					if Citizen.InvokeNative(0xD955FEE4B87AFA07, wepHash1) then
+						if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
+							condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
+						end
+						TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
+					else
+						if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
+							condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
+						end
+						TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
+					end
+				else
+					if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
+						condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
+					end
+					TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
+				end
+			end
+		end
+	end
+end
 Citizen.CreateThread(function()
 	local player_prompt
 	local player_prompt2

@@ -83,22 +83,6 @@ exports('gum_inventoryApi',function()
         return bull
     end
     
-    self.getWeaponComponents = function(source,weaponId)
-        local comp
-        TriggerEvent("gumCore:getWeaponComponents",source,function(components)
-            comp = components
-        end,weaponId) 
-        return comp
-    end
-
-    self.getUserWeapons = function(source)
-        local weapList
-        TriggerEvent("gumCore:getUserWeapons",source,function(weapons)
-            weap = weapons
-        end)
-        return weapList
-    end
-
     self.canCarryItems = function(source, amount)
         local can
         TriggerEvent("gumCore:canCarryItems",source, amount,function(data)
@@ -106,28 +90,7 @@ exports('gum_inventoryApi',function()
         end)
         return can
     end
-
-    self.canCarryItem = function(source, item, amount) 
-        local can
-        exports.ghmattimysql:execute( "SELECT limit FROM items WHERE item=@id;", {['@id'] = item}, 
-        function(result) 
-            if self.getItemCount(_source, item) + amount <= tonumber(result) then
-                can = true
-            else
-                can = false
-            end
-        end)
-        return can
-    end
-
-    self.getUserWeapon = function(source,weaponId)
-        local weap
-        TriggerEvent("gumCore:getUserWeapon",source,function(weapon)
-            weap = weapon
-        end,weaponId)
-        return weap
-    end
-        
+    
     self.RegisterUsableItem = function(itemName,cb)
         TriggerEvent("gumCore:registerUsableItem",itemName,cb)
     end
