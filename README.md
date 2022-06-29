@@ -11,11 +11,9 @@ setting.cfg example</br></br>
 ensure ghmattimysql</br>
 ensure uiprompt</br>
 
-ensure gum_sounds</br></br>
 ensure gum_core</br>
 ensure gum_inputs</br>
 ensure gum_menu</br>
-ensure gum_sounds</br>
 </br></br>
 ensure gum_inventory</br>
 ensure gum_character</br>
