@@ -102,7 +102,7 @@ Config.weaponShops = {
                 --["Mexican Cattleman"] = {hashname = "WEAPON_REVOLVER_CATTLEMAN_MEXICAN",        price = 70.0,},
             },
             ["Throwable"] = {
-                --["Tomahawk"] = {hashname = "WEAPON_THROWN_TOMAHAWK",                    price = 10,0},
+                ["Tomahawk"] = {hashname = "WEAPON_THROWN_TOMAHAWK",                    price = 10,0},
                 ["Knives"] = {hashname = "WEAPON_THROWN_THROWING_KNIVES",               price = 8,0},
                 ["Bolas"] = {hashname = "weapon_thrown_bolas",                          price = 4,0},
             },
@@ -907,28 +907,28 @@ Guarma = {
 Config.ammo = {
     ["Repeater"] = {
         ["Repeater Ammo Normal"] = {
-            weaponNameHash = "AMMO_REPEATER",
+            ammoNameHash = "AMMO_REPEATER",
             itemId = "ammorepeaternormal",
             maxAmmo = 30, 
             firstGun = 0xDDB2578E95EF7138,
             boxCount = 30,
         },
         ["Repeater Ammo Express"] = {
-            weaponNameHash = "AMMO_REPEATER_EXPRESS", 
+            ammoNameHash = "AMMO_REPEATER_EXPRESS", 
             itemId = "ammorepeaterexpress",
             maxAmmo = 30, 
             firstGun = 0xDDB2578E95EF7138,
             boxCount = 30,
         },
         ["Repeater Ammo Velocity"] = {
-            weaponNameHash = "AMMO_REPEATER_HIGH_VELOCITY", 
+            ammoNameHash = "AMMO_REPEATER_HIGH_VELOCITY", 
             itemId = "ammorepeatervelocity",
             maxAmmo = 30, 
             firstGun = 0xDDB2578E95EF7138,
             boxCount = 30,   
         },
         ["Repeater Ammo Splitpoint"] = {
-            weaponNameHash = "AMMO_REPEATER_SPLIT_POINT", 
+            ammoNameHash = "AMMO_REPEATER_SPLIT_POINT", 
             itemId = "ammorepeatersplitpoint",
             maxAmmo = 30,
             firstGun = 0xDDB2578E95EF7138,
@@ -938,28 +938,28 @@ Config.ammo = {
 
     ["Revolver"] = {
         ["Revolver Ammo Normal"] = {
-            weaponNameHash = "AMMO_REVOLVER",
+            ammoNameHash = "AMMO_REVOLVER",
             itemId = "ammorevolvernormal",
             maxAmmo = 21,
             firstGun = 0xC212F1D05A8232BB ,
             boxCount = 21,
         },
         ["Revolver Ammo Express"] = {
-            weaponNameHash = "AMMO_REVOLVER_EXPRESS", 
+            ammoNameHash = "AMMO_REVOLVER_EXPRESS", 
             itemId = "ammorevolverexpress",
             maxAmmo = 21,
             firstGun = 0xC212F1D05A8232BB ,
             boxCount = 21,
         },
         ["Revolver Ammo Velocity"] = {
-            weaponNameHash = "AMMO_REVOLVER_HIGH_VELOCITY", 
+            ammoNameHash = "AMMO_REVOLVER_HIGH_VELOCITY", 
             itemId = "ammorevolvervelocity",
             maxAmmo = 21,
             firstGun = 0xC212F1D05A8232BB ,
             boxCount = 21, 
         },
         ["Revolver Ammo Splitpoint"] = {
-            weaponNameHash = "AMMO_REVOLVER_SPLIT_POINT", 
+            ammoNameHash = "AMMO_REVOLVER_SPLIT_POINT", 
             itemId = "ammorevolversplitpoint",
             maxAmmo = 21,
             firstGun = 0xC212F1D05A8232BB ,
@@ -969,7 +969,7 @@ Config.ammo = {
     },
     ["Rifle"] = {
         ["Rifle Ammo Normal"] = {
-            weaponNameHash = "AMMO_RIFLE",
+            ammoNameHash = "AMMO_RIFLE",
             itemId = "ammoriflenormal",
             maxAmmo = 10,
             firstGun = 0x0A82317B7EBFC420 ,
@@ -977,7 +977,7 @@ Config.ammo = {
             boxCount = 10,
         },
         ["Elephant Rifle Ammo"] = {
-            weaponNameHash = "AMMO_RIFLE_ELEPHANT",
+            ammoNameHash = "AMMO_RIFLE_ELEPHANT",
             itemId = "ammoelephant",
             maxAmmo = 10,
             firstGun = 0x0A82317B7EBFC420 ,
@@ -985,7 +985,7 @@ Config.ammo = {
             boxCount = 10,
         },
         ["Rifle Ammo Express"] = {
-            weaponNameHash = "AMMO_RIFLE_EXPRESS", 
+            ammoNameHash = "AMMO_RIFLE_EXPRESS", 
             itemId = "ammorifleexpress",
             maxAmmo = 10,
             firstGun = 0x0A82317B7EBFC420 ,
@@ -993,7 +993,7 @@ Config.ammo = {
             boxCount = 10,
         },
         ["Rifle Ammo Velocity"] = {
-            weaponNameHash = "AMMO_RIFLE_HIGH_VELOCITY", 
+            ammoNameHash = "AMMO_RIFLE_HIGH_VELOCITY", 
             itemId = "ammoriflevelocity",
             maxAmmo = 10,
             firstGun = 0x0A82317B7EBFC420 ,
@@ -1001,7 +1001,7 @@ Config.ammo = {
             boxCount = 10,
         },
         ["Rifle Ammo Splitpoint"] = {
-            weaponNameHash = "AMMO_RIFLE_SPLIT_POINT", 
+            ammoNameHash = "AMMO_RIFLE_SPLIT_POINT", 
             itemId = "ammoriflesplitpoint",
             maxAmmo = 10,
             firstGun = 0x0A82317B7EBFC420 ,
@@ -1012,14 +1012,14 @@ Config.ammo = {
     },
     ["Shotgun"] = {
         ["Shotgun Ammo Normal"] = {
-            weaponNameHash = "AMMO_SHOTGUN", 
+            ammoNameHash = "AMMO_SHOTGUN", 
             itemId = "ammoshotgunnormal",
             maxAmmo = 24,
             firstGun = 0xC75386174ECE95D5  ,
             boxCount = 24,
         },
         ["Shotgun Ammo Slug"] = {
-            weaponNameHash = "AMMO_SHOTGUN_SLUG", 
+            ammoNameHash = "AMMO_SHOTGUN_SLUG", 
             itemId = "ammoshotgunslug",
             maxAmmo = 24,
             firstGun = 0xC75386174ECE95D5  ,
@@ -1028,28 +1028,28 @@ Config.ammo = {
     },
     ["Pistol"] = {
         ["Pistol Ammo Normal"] = {
-            weaponNameHash = "AMMO_PISTOL",
+            ammoNameHash = "AMMO_PISTOL",
             itemId = "ammopistolnormal",
             maxAmmo = 28,
             firstGun = 0xDDC64F5E31EEDAB6  ,
             boxCount = 28,
         },
         ["Pistol Ammo Express"] = {
-            weaponNameHash = "AMMO_PISTOL_EXPRESS", 
+            ammoNameHash = "AMMO_PISTOL_EXPRESS", 
             itemId = "ammopistolexpress",
             maxAmmo = 28,
             firstGun = 0xDDC64F5E31EEDAB6  ,
             boxCount = 28,   
         },
         ["Pistol Ammo Velocity"] = {
-            weaponNameHash = "AMMO_PISTOL_HIGH_VELOCITY", 
+            ammoNameHash = "AMMO_PISTOL_HIGH_VELOCITY", 
             itemId = "ammopistolvelocity",
             maxAmmo = 28,
             firstGun = 0xDDC64F5E31EEDAB6  ,
             boxCount = 28,
         },
         ["Pistol Ammo Splitpoint"] = {
-            weaponNameHash = "AMMO_PISTOL_SPLIT_POINT", 
+            ammoNameHash = "AMMO_PISTOL_SPLIT_POINT", 
             itemId = "ammopistolsplitpoint",
             maxAmmo = 28,
             firstGun = 0xDDC64F5E31EEDAB6  ,
@@ -1059,7 +1059,7 @@ Config.ammo = {
     },
     ["Arrow"] = {
         ["Arrow Normal"] = {
-            weaponNameHash = "AMMO_ARROW",  
+            ammoNameHash = "AMMO_ARROW",  
             itemId = "ammoarrmownormal",
             weaponItem = {"WEAPON_BOW", "weapon_bow_improved"},
             maxAmmo = 15, 
@@ -1067,7 +1067,7 @@ Config.ammo = {
             boxCount = 15,
         },
         ["Arrow Fire"] = {
-            weaponNameHash = "AMMO_ARROW_FIRE", 
+            ammoNameHash = "AMMO_ARROW_FIRE", 
             itemId = "ammoarrowfire",
             weaponItem = {"WEAPON_BOW", "weapon_bow_improved"},
             maxAmmo = 15,
@@ -1075,7 +1075,7 @@ Config.ammo = {
             boxCount = 15,
         },
         ["Arrow Improved"] = {
-            weaponNameHash = "AMMO_ARROW_IMPROVED", 
+            ammoNameHash = "AMMO_ARROW_IMPROVED", 
             itemId = "ammoarrowimproved",
             weaponItem = {"WEAPON_BOW", "weapon_bow_improved"},
             maxAmmo = 10,
@@ -1083,7 +1083,7 @@ Config.ammo = {
             boxCount = 10,
         },
         ["Arrow Small Game"] = {
-            weaponNameHash = "AMMO_ARROW_SMALL_GAME", 
+            ammoNameHash = "AMMO_ARROW_SMALL_GAME", 
             itemId = "ammoarrowsmallgame",
             weaponItem = {"WEAPON_BOW", "weapon_bow_improved"},
             maxAmmo = 15,
@@ -1091,7 +1091,7 @@ Config.ammo = {
             boxCount = 15,
         },
         ["Arrow Poison"] = {
-            weaponNameHash = "AMMO_ARROW_POISON", 
+            ammoNameHash = "AMMO_ARROW_POISON", 
             itemId = "ammoarrowpoison",
             weaponItem = {"WEAPON_BOW", "weapon_bow_improved"},
             maxAmmo = 15,
@@ -1102,14 +1102,14 @@ Config.ammo = {
     },
     ["Varmint Ammo"] = {
         ["Varmint ammo"] = {
-            weaponNameHash = "AMMO_22",  
+            ammoNameHash = "AMMO_22",  
             itemId = "ammovarmint",
             maxAmmo = 30, 
             firstGun = 0x0A82317B7EBFC420 , 
             boxCount = 30,
         },
         ["Varmint Tranquilizer Ammo"] = {
-            weaponNameHash = "AMMO_22_TRANQUILIZER",  
+            ammoNameHash = "AMMO_22_TRANQUILIZER",  
             itemId = "ammovarminttranq",
             maxAmmo = 30, 
             firstGun = 0x0A82317B7EBFC420 , 
@@ -1118,16 +1118,24 @@ Config.ammo = {
 
     },
     ["Throwing"] = {
-        ["Knives ammo"] = {
-            weaponNameHash = "AMMO_THROWING_KNIVES",  
-            itemId = "ammoknives",
-            weaponItem = {"WEAPON_THROWN_THROWING_KNIVES"},
-            maxAmmo = 5, 
-            firstGun = 0  , 
-            boxCount = 5,
-        },
+      ["Knives ammo"] = {
+        ammoNameHash = "AMMO_THROWING_KNIVES",  
+        itemId = "ammoknives",
+        weaponItem = {"WEAPON_THROWN_THROWING_KNIVES"},
+        maxAmmo = 5, 
+        firstGun = 0, 
+        boxCount = 5,
+      },
+      ["Knives ammo poisoned"] = {
+        ammoNameHash = "AMMO_THROWING_KNIVES_POISON",  
+        itemId = "ammoknivespoisoned",
+        weaponItem = {"WEAPON_THROWN_THROWING_KNIVES"},
+        maxAmmo = 5, 
+        firstGun = 0, 
+        boxCount = 5,
+      },
         ["Tomahawk Ammo"] = {
-            weaponNameHash = "AMMO_TOMAHAWK",  
+            ammoNameHash = "AMMO_TOMAHAWK",  
             itemId = "ammotomahawk",
             weaponItem = {"WEAPON_THROWN_TOMAHAWK"},
             maxAmmo = 5, 
@@ -1135,31 +1143,39 @@ Config.ammo = {
             boxCount = 5,
         },
         ["Poison Bottle Ammo"] = {
-            weaponNameHash = "AMMO_POISONBOTTLE",  
+            ammoNameHash = "AMMO_POISONBOTTLE",  
             itemId = "ammopoisonbottle",
             weaponItem = {"weapon_thrown_poisonbottle"},
             maxAmmo = 5, 
             firstGun = 0  , 
             boxCount = 5,
         },
-		["Cleaver Ammo"] = {
-            weaponNameHash = "AMMO_HATCHET_CLEAVER",  
+		  ["Cleaver Ammo"] = {
+            ammoNameHash = "AMMO_HATCHET_CLEAVER",  
             itemId = "ammohatchetcleaver",
             weaponItem = {"WEAPON_MELEE_CLEAVER"},
             maxAmmo = 5, 
             firstGun = 0  , 
             boxCount = 5,
         },
-		["Hunter Hatchet Ammo"] = {
-            weaponNameHash = "AMMO_HATCHET_HUNTER",  
-            itemId = "ammohunterhatchet",
-            weaponItem = {"WEAPON_MELEE_HATCHET_HUNTER"},
-            maxAmmo = 5, 
-            firstGun = 0  , 
-            boxCount = 5,
-        },
+        ["Hunter Hatchet Ammo"] = {
+          ammoNameHash = "AMMO_HATCHET_HUNTER",  
+          itemId = "ammohunterhatchet",
+          weaponItem = {"WEAPON_MELEE_HATCHET_HUNTER"},
+          maxAmmo = 5, 
+          firstGun = 0, 
+          boxCount = 5,
+      },
+      ["Hatchet Ammo"] = {
+        ammoNameHash = "AMMO_HATCHET",  
+        itemId = "ammohunterhatchet",
+        weaponItem = {"WEAPON_MELEE_HATCHET"},
+        maxAmmo = 5, 
+        firstGun = 0, 
+        boxCount = 5,
+      },
         ["Bolla Ammo"] = {
-            weaponNameHash = "AMMO_BOLAS",  
+            ammoNameHash = "AMMO_BOLAS",  
             itemId = "ammobolla",
             weaponItem = {"weapon_thrown_bolas"},
             maxAmmo = 5, 
@@ -1167,7 +1183,7 @@ Config.ammo = {
             boxCount = 5,
         },
         ["Dynamite Ammo"] = {
-            weaponNameHash = "AMMO_DYNAMITE",  
+            ammoNameHash = "AMMO_DYNAMITE",  
             itemId = "ammodynamite",
             weaponItem = {"weapon_thrown_dynamite"},
             maxAmmo = 5, 
@@ -1175,7 +1191,7 @@ Config.ammo = {
             boxCount = 5,
         },
         ["Volatile Dynamite Ammo"] = {
-            weaponNameHash = "AMMO_DYNAMITE_VOLATILE",  
+            ammoNameHash = "AMMO_DYNAMITE_VOLATILE",  
             itemId = "ammovoldynamite",
             weaponItem = {"weapon_thrown_dynamite"},
             maxAmmo = 5, 
@@ -1183,7 +1199,7 @@ Config.ammo = {
             boxCount = 5,
         },
         ["Molotov Ammo"] = {
-            weaponNameHash = "AMMO_MOLOTOV",  
+            ammoNameHash = "AMMO_MOLOTOV",  
             itemId = "ammomolotov",
             weaponItem = {"weapon_thrown_molotov"},
             maxAmmo = 5, 
@@ -1191,7 +1207,7 @@ Config.ammo = {
             boxCount = 5,
         },
         ["Volatile Molotov Ammo"] = {
-            weaponNameHash = "AMMO_MOLOTOV_VOLATILE",  
+            ammoNameHash = "AMMO_MOLOTOV_VOLATILE",  
             itemId = "ammovolmolotov",
             weaponItem = {"weapon_thrown_molotov"},
             maxAmmo = 5, 

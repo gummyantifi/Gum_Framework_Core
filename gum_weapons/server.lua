@@ -24,7 +24,7 @@ AddEventHandler("gum_weapons:save_comps", function(table_comps, weapId, priceCom
                         exports.ghmattimysql:execute("UPDATE loadout SET comps=@comps WHERE id=@id", Parameters)
                         Character.removeCurrency(tonumber(_source), 0, priceComps)
                         TriggerClientEvent("gum_weapons:load_components", tonumber(_source), table_comps)
-                        TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[3].text..""..price.."$", 'rifle', 2000)
+                        TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[3].text..""..priceComps.."$", 'rifle', 2000)
                     end
                 end
             end
@@ -60,7 +60,7 @@ for a,b in pairs(Config.ammo) do
             gumInv.subItem(data.source, d.itemId, 1)
             local secondGun,weaponItem = 0,0
             if d.secondGun ~= nil then secondGun = d.secondGun end if d.weaponItem ~= nil then weaponItem = d.weaponItem end
-            TriggerClientEvent('gum_weapons:getgun', data.source, d.weaponNameHash, d.firstGun, d.boxCount, d.itemId, secondGun, weaponItem)
+            TriggerClientEvent('gum_weapons:getgun', data.source, d.ammoNameHash, d.firstGun, d.boxCount, d.itemId, secondGun, weaponItem)
         end)
     end
 end
@@ -92,7 +92,7 @@ AddEventHandler("gum_weapons:addammo", function(wephash,boxCount,ammoType,weapon
             end
             for k,v in pairs(Config.ammo) do
                 for l,m in pairs(v) do
-                    if m.weaponNameHash == ammoType then 
+                    if m.ammoNameHash == ammoType then 
                         max = m.maxAmmo
                     end
                 end
@@ -132,7 +132,7 @@ AddEventHandler("gum_weapons:givebackbox", function(_source, item)
 end)
 
 RegisterServerEvent("gum_weapons:buy_weapon")
-AddEventHandler("gum_weapons:buy_weapon", function(weaponId,priceWeapon,modelName)
+AddEventHandler("gum_weapons:buy_weapon", function(weaponId,priceWeapon,modelName,itThrowable, idThrowable, countThrowable)
     local _source = source
     local User = gumCore.getUser(tonumber(_source))
     local Character = User.getUsedCharacter
@@ -140,9 +140,16 @@ AddEventHandler("gum_weapons:buy_weapon", function(weaponId,priceWeapon,modelNam
     TriggerEvent("gumCore:canCarryWeapons", tonumber(_source), 1, function(canCarry)
         if canCarry then
             if tonumber(money-priceWeapon) >= 0 then
-                Character.removeCurrency(tonumber(_source),0, priceWeapon)
-                gumInv.createWeapon(tonumber(_source), weaponId,  {["nothing"] = 0}, {})
-                TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[4].text.." "..modelName.."", 'rifle', 2000)
+                if itThrowable then
+                    Character.removeCurrency(tonumber(_source),0, priceWeapon)
+                    print(itThrowable, idThrowable, countThrowable)
+                    gumInv.createWeapon(tonumber(_source), weaponId,  {[idThrowable] = countThrowable}, {})
+                    TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[4].text.." "..modelName.."", 'rifle', 2000)
+                else
+                    Character.removeCurrency(tonumber(_source),0, priceWeapon)
+                    gumInv.createWeapon(tonumber(_source), weaponId,  {["nothing"] = 0}, {})
+                    TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[4].text.." "..modelName.."", 'rifle', 2000)
+                end
             else
                 TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[2].text.."", 'rifle', 2000)
             end

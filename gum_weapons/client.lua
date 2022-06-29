@@ -10,8 +10,6 @@ local comps = {}
 local sum = 0
 local wepobject
 local createdobject = false
-local h
-local roll
 local pricing = {}
 local cal = false
 local inshop = false
@@ -293,7 +291,25 @@ RegisterNUICallback('buy_ammo', function(data, cb)
 			for l,m in pairs(v.weapons) do 
         for j,d in pairs(m) do
             if d.hashname == global_buy_weapon then
-              TriggerServerEvent("gum_weapons:buy_weapon", d.hashname,d.price,j)
+              local throwable = false
+              local idThrowable = nil
+              local countThrowable = 0
+              if Citizen.InvokeNative(0x30E7C16B12DA8211, GetHashKey(d.hashname)) then
+                throwable = true
+              end
+
+              for k,v in pairs(Config.ammo) do
+                for l,m in pairs(v) do
+                  if m.weaponItem ~= nil then
+                     if m.weaponItem[1] == d.hashname then
+                        idThrowable = m.ammoNameHash
+                        countThrowable = m.maxAmmo
+                      end
+                    end
+                end
+              end
+
+               TriggerServerEvent("gum_weapons:buy_weapon", d.hashname,d.price,j,throwable, idThrowable,countThrowable)
           end
         end
       end
