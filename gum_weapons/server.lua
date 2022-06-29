@@ -126,9 +126,10 @@ AddEventHandler("gum_weapons:addammo", function(wephash,boxCount,ammoType,weapon
 end)
 
 RegisterServerEvent("gum_weapons:givebackbox")
-AddEventHandler("gum_weapons:givebackbox", function(_source, item)
+AddEventHandler("gum_weapons:givebackbox", function(source, item)
     local _source = source
     gumInv.addItem(_source, item, 1)
+    TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[16].text.."", 'rifle', 2000)
 end)
 
 RegisterServerEvent("gum_weapons:buy_weapon")

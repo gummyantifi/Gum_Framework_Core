@@ -15,7 +15,8 @@ Config.Language = {
   [12] = {text="Open customization"},  
   [13] = {text="Someone is much close."},
   [14] = {text="scope"},--Command for put down scope (only for buyed scopes)
-  [15] = {text="You buy ammo for : "}
+  [15] = {text="You buy ammo for : "},
+  [16] = {text="Your weapon is full, you get back box : "}
 }
 
 Config.priceTable = {
