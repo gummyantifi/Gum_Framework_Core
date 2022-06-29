@@ -31,6 +31,7 @@ local slot3 = ""
 local slot4 = ""
 local slot5 = ""
 local canSaveAmmo = false
+
 function Button_Prompt()
 	Citizen.CreateThread(function()
 		local str = Config.Language[0].text
@@ -311,9 +312,15 @@ end)
 -- RegisterCommand("locker_create", function(source, args, rawCommand)
 -- 	TriggerServerEvent("gumCore:registerstorage", GetPlayerServerId(PlayerId()), args[1], args[2])
 -- end)
-
-RegisterNetEvent("gum:SelectedCharacter")
-AddEventHandler("gum:SelectedCharacter", function(charid)
+local backupAmmo = 0
+local ammoThrow = {}
+local backupAmmoThrow = {}
+local ignorMeForLoadThrow = false
+local ignorMeForLoadNormal = false
+local ammoNormal = {}
+local backupAmmoNormal = {}
+-- RegisterNetEvent("gum:SelectedCharacter")
+-- AddEventHandler("gum:SelectedCharacter", function(charid)
 	Citizen.CreateThread(function()
 		Citizen.Wait(100)
 		TriggerServerEvent("gum_inventory:get_items")
@@ -323,9 +330,423 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 		equip_weapon_login()
 		Button_Prompt()
 	end)
-end)
+	Citizen.CreateThread(function()
+		while true do
+			if can_save then
+				saveThrowAmmo()
+				saveWeaponAmmo()
+			end
+			Citizen.Wait(5000)
+		end
+	end)
+--end)
 
 
+function saveWeaponAmmo()
+	local saveWhat = {}
+	local saveItNow = false
+	local _1, rightHand = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)--Pravá
+	local _2, leftHand = GetCurrentPedWeapon(PlayerPedId(), true, 1, true)--Levá
+	local _3, rightHolster = GetCurrentPedWeapon(PlayerPedId(), true, 2, true)--Pravá
+	local _4, leftHolster = GetCurrentPedWeapon(PlayerPedId(), true, 3, true)--Levá
+	local weaponCounter = 0
+	local firstWeapon = 0
+	local secondWeapon = 0
+	local haveDualSame = false
+	if rightHand ~= -1569615261 and rightHand ~= 0 then
+		weaponCounter = weaponCounter+1
+		firstWeapon = rightHand
+	end
+	if leftHand ~= -1569615261 and rightHand ~= 0 then
+		weaponCounter = weaponCounter+1
+		secondWeapon = leftHand
+	end
+	if rightHolster ~= -1569615261 and rightHand ~= 0 then
+		weaponCounter = weaponCounter+1
+		firstWeapon = rightHolster
+	end
+	if leftHolster ~= -1569615261 and rightHand ~= 0 then
+		weaponCounter = weaponCounter+1
+		secondWeapon = leftHolster
+	end
+	if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_second_used)) then
+		haveDualSame = true
+	end
+	if Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_second_used)) then
+		haveDualSame = true
+	end
+	for a,b in pairs(ammo_list) do
+		if string.match(b[2], "revolver") or string.match(b[2], "REVOLVER") then
+			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
+				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
+				if ignorMeForLoadNormal == true then
+					saveItNow = true
+					saveWhat[1] = "revolver"
+				end
+			end
+		elseif string.match(b[2], "pistol") or string.match(b[2], "PISTOL") then
+			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
+				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
+				if ignorMeForLoadNormal == true then
+					saveItNow = true
+					saveWhat[2] = "pistol"
+				end
+			end
+		elseif string.match(b[2], "repeater") or string.match(b[2], "REPEATER") then
+			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
+				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
+				if ignorMeForLoadNormal == true then
+					saveItNow = true
+					saveWhat[1] = "repeater"
+				end
+			end
+		elseif string.match(b[2], "shotgun") or string.match(b[2], "SHOTGUN") then
+			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
+				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
+				if ignorMeForLoadNormal == true then
+					saveItNow = true
+					saveWhat[1] = "shotgun"
+				end
+			end
+		elseif string.match(b[2], "rifle") or string.match(b[2], "RIFLE") then
+			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
+				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
+				if ignorMeForLoadNormal == true then
+					saveItNow = true
+					saveWhat[1] = "rifle"
+				end
+			end
+		elseif string.match(b[2], "arrow") or string.match(b[2], "ARROW") then
+			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
+				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
+				if ignorMeForLoadNormal == true then
+					saveItNow = true
+					saveWhat[1] = "arrow"
+				end
+			end
+		end
+	end
+	if saveItNow == true and saveWhat ~= nil then
+		if saveWhat[1] =="revolver" then
+			local saveTableFilter = {}
+			local weaponId = 0
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "revolver") or string.match(a, "REVOLVER") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			if weaponCounter == 2 and haveDualSame ~= false then
+				for k,v in pairs(weapon_table) do
+					if v.used == 1 then
+						if string.match(v.name, "revolver") or string.match(v.name, "REVOLVER") then
+							if GetHashKey(weapon_first_used) == GetHashKey(v.name)  then
+								weaponId = v.id
+							end
+						end
+					end
+				end
+				Citizen.Wait(0)
+				if condition_level[weaponId]+0.0002 <= 1.0 then
+					condition_level[weaponId] = condition_level[weaponId]+0.0002
+				end
+				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+			else
+				for k,v in pairs(weapon_table) do
+					if v.used == 1 then
+						if string.match(v.name, "revolver") or string.match(v.name, "REVOLVER") then
+							if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
+								weaponId = v.id
+							end
+						end
+					end
+				end
+				Citizen.Wait(0)
+				if condition_level[weaponId]+0.0002 <= 1.0 then
+					condition_level[weaponId] = condition_level[weaponId]+0.0002
+				end
+				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+			end
+		end
+		if saveWhat[2] == "pistol" then
+			local weaponId2 = 0
+			local saveTableFilter2 = {}
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "pistol") or string.match(a, "PISTOL") then
+					saveTableFilter2[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			if weaponCounter == 2 and haveDualSame ~= false then
+				for k,v in pairs(weapon_table) do
+					if v.used == 1 then
+						if string.match(v.name, "pistol") or string.match(v.name, "PISTOL") then
+							if GetHashKey(weapon_first_used) == GetHashKey(v.name) then
+								weaponId2 = v.id
+							end
+						end
+					end
+				end
+				Citizen.Wait(0)
+				if condition_level[weaponId2]+0.0002 <= 1.0 then
+					condition_level[weaponId2] = condition_level[weaponId2]+0.0002
+				end
+				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId2, saveTableFilter2, condition_level[weaponId2])
+			else
+				for k,v in pairs(weapon_table) do
+					if v.used == 1 then
+						if string.match(v.name, "pistol") or string.match(v.name, "PISTOL") then
+							if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
+								weaponId = v.id
+							end
+						end
+					end
+				end
+				Citizen.Wait(0)
+				if condition_level[weaponId]+0.0002 <= 1.0 then
+					condition_level[weaponId] = condition_level[weaponId]+0.0002
+				end
+				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter2, condition_level[weaponId])
+			end
+		end
+		if saveWhat[1] =="repeater" then
+			local weaponId = 0
+			local saveTableFilter = {}
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "repeater") or string.match(a, "REPEATER") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			for k,v in pairs(weapon_table) do
+				if v.used == 1 then
+					if rightHand == GetHashKey(v.name) then
+						weaponId = v.id
+					end
+				end
+			end
+			Citizen.Wait(0)
+			if condition_level[weaponId]+0.0002 <= 1.0 then
+				condition_level[weaponId] = condition_level[weaponId]+0.0002
+			end
+			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+		end
+		if saveWhat[1] =="shotgun" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "shotgun") or string.match(a, "SHOTGUN") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			for k,v in pairs(weapon_table) do
+				if v.used == 1 then
+					if rightHand == GetHashKey(v.name) then
+						weaponId = v.id
+					end
+				end
+			end
+			Citizen.Wait(0)
+			if condition_level[weaponId]+0.0002 <= 1.0 then
+				condition_level[weaponId] = condition_level[weaponId]+0.0002
+			end
+			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+		end
+		if saveWhat[1] =="rifle" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "rifle") or string.match(a, "RIFLE") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			for k,v in pairs(weapon_table) do
+				if v.used == 1 then
+					if rightHand == GetHashKey(v.name) then
+						weaponId = v.id
+					end
+				end
+			end
+			Citizen.Wait(0)
+			if condition_level[weaponId]+0.0002 <= 1.0 then
+				condition_level[weaponId] = condition_level[weaponId]+0.0002
+			end
+			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+		end
+		if saveWhat[1] =="arrow" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "arrow") or string.match(a, "ARROW") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			for k,v in pairs(weapon_table) do
+				if v.used == 1 then
+					if rightHand == GetHashKey(v.name) then
+						weaponId = v.id
+					end
+				end
+			end
+			Citizen.Wait(0)
+			if condition_level[weaponId]+0.0002 <= 1.0 then
+				condition_level[weaponId] = condition_level[weaponId]+0.0002
+			end
+			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+		end
+	end
+	ignorMeForLoadNormal = true
+end
+
+function saveThrowAmmo()
+	local saveWhatThrow = nil
+	local saveItNowThrow = false
+	for a,b in pairs(ammo_list) do
+		if string.match(b[2], "throw") or string.match(b[2], "THROW") then
+			ammoThrow[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoThrow[b[2]] ~= backupAmmoThrow[b[2]] then
+				backupAmmoThrow[b[2]] = ammoThrow[b[2]]
+				if ignorMeForLoadThrow == true then
+					saveItNowThrow = true
+					saveWhatThrow = "knive"
+				end
+			end
+		 end
+		 if string.match(b[2], "bola") or string.match(b[2], "BOLA") then
+			ammoThrow[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoThrow[b[2]] ~= backupAmmoThrow[b[2]] then
+				backupAmmoThrow[b[2]] = ammoThrow[b[2]]
+				if ignorMeForLoadThrow == true then
+					saveItNowThrow = true
+					saveWhatThrow = "bola"
+				end
+			end
+		end
+		if string.match(b[2], "dynamite") or string.match(b[2], "DYNAMITE") then
+			ammoThrow[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoThrow[b[2]] ~= backupAmmoThrow[b[2]] then
+				backupAmmoThrow[b[2]] = ammoThrow[b[2]]
+				if ignorMeForLoadThrow == true then
+					saveItNowThrow = true
+					saveWhatThrow = "dynamite"
+				end
+			end
+		end
+		if string.match(b[2], "hatchet_cleaver") or string.match(b[2], "HATCHET_CLEAVER") then
+			ammoThrow[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoThrow[b[2]] ~= backupAmmoThrow[b[2]] then
+				backupAmmoThrow[b[2]] = ammoThrow[b[2]]
+				if ignorMeForLoadThrow == true then
+					saveItNowThrow = true
+					saveWhatThrow = "hatchet_cleaver"
+				end
+			end
+		end
+		if string.match(b[2], "hatchet_hunter") or string.match(b[2], "HATCHET_HUNTER") then
+			ammoThrow[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoThrow[b[2]] ~= backupAmmoThrow[b[2]] then
+				backupAmmoThrow[b[2]] = ammoThrow[b[2]]
+				if ignorMeForLoadThrow == true then
+					saveItNowThrow = true
+					saveWhatThrow = "hatchet_hunter"
+				end
+			end
+		end
+		if string.match(b[2], "HATCHET") and not string.match(b[2], "HATCHET_HUNTER") and not string.match(b[2], "HATCHET_CLEAVER") then
+			ammoThrow[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoThrow[b[2]] ~= backupAmmoThrow[b[2]] then
+				backupAmmoThrow[b[2]] = ammoThrow[b[2]]
+				if ignorMeForLoadThrow == true then
+					saveItNowThrow = true
+					saveWhatThrow = "hatchet"
+				end
+			end
+		end
+		if string.match(b[2], "molotov") or string.match(b[2], "MOLOTOV") then
+			ammoThrow[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoThrow[b[2]] ~= backupAmmoThrow[b[2]] then
+				backupAmmoThrow[b[2]] = ammoThrow[b[2]]
+				if ignorMeForLoadThrow == true then
+					saveItNowThrow = true
+					saveWhatThrow = "molotov"
+				end
+			end
+		end
+	end
+	if saveItNowThrow == true and saveWhatThrow ~= nil then
+		if saveWhatThrow =="knive" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoThrow) do
+				if string.match(a, "knive") or string.match(a, "KNIVE") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoThrow", "WEAPON_THROWN_THROWING_KNIVES", saveTableFilter, 0.0)
+		elseif saveWhatThrow =="bola" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoThrow) do
+				if string.match(a, "bola") or string.match(a, "BOLA") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoThrow", "weapon_thrown_bolas", saveTableFilter, 0.0)
+		elseif saveWhatThrow =="dynamite" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoThrow) do
+				if string.match(a, "dynamite") or string.match(a, "DYNAMITE") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoThrow", "weapon_thrown_dynamite", saveTableFilter, 0.0)
+		elseif saveWhatThrow =="hatchet" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoThrow) do
+				if string.match(a, "HATCHET") and not string.match(a, "HATCHET_CLEAVER") and not string.match(a, "HATCHET_HUNTER")  then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoThrow", "WEAPON_MELEE_HATCHET", saveTableFilter, 0.0)
+		elseif saveWhatThrow =="hatchet_hunter" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoThrow) do
+				if string.match(a, "hatchet_hunter") or string.match(a, "HATCHET_HUNTER") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoThrow", "WEAPON_MELEE_HATCHET_HUNTER", saveTableFilter, 0.0)
+		elseif saveWhatThrow =="hatchet_cleaver" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoThrow) do
+				if string.match(a, "hatchet_cleaver") or string.match(a, "HATCHET_CLEAVER") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoThrow", "WEAPON_MELEE_CLEAVER", saveTableFilter, 0.0)
+		elseif saveWhatThrow =="molotov" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoThrow) do
+				if string.match(a, "molotov") or string.match(a, "MOLOTOV") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoThrow", "weapon_thrown_molotov", saveTableFilter, 0.0)
+		end
+	end
+	ignorMeForLoadThrow = true
+end
 
 RegisterNetEvent('gum_inventory:cleaning_weapons')
 AddEventHandler('gum_inventory:cleaning_weapons', function()
@@ -662,45 +1083,66 @@ function RemoveAllWeapons()
 end
 
 RegisterNUICallback('use_UseWeapon', function(data, cb)
-	can_save = false
 	if equip_spam == false then
+		can_save = false
 		equip_spam = true
 		for k,v in pairs(weapon_table) do
 			if v.used == 1 and tonumber(data.id) == v.id then
 				if v.name == weapon_first_used and data.model == weapon_first_used then
-					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
-					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
-					weapon_first_used = false
-					equip_spam = false
-					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[20].text.."", 'bag', 1000)
-					return false
+					if weapon_second_used == false then
+						for a,b in pairs(ammo_list) do
+							if string.match(b[2], "revolver") or string.match(b[2], "REVOLVER") then
+								Citizen.InvokeNative(0xB6CFEC32E3742779, PlayerPedId(),GetHashKey(b[2]), 999, 0x2188E0A3);
+							end
+							if string.match(b[2], "pistol") or string.match(b[2], "pistol") then
+								Citizen.InvokeNative(0xB6CFEC32E3742779, PlayerPedId(),GetHashKey(b[2]), 999, 0x2188E0A3);
+							end
+						end
+						Citizen.Wait(0)
+						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
+						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
+						weapon_first_used = false
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[20].text.."", 'bag', 1000)
+						equip_spam = false
+						can_save = true
+						return false
+					else
+						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[45].text.."", 'bag', 1000)
+						equip_spam = false
+						can_save = true
+						return false
+					end
 				elseif v.name == weapon_second_used and data.model == weapon_second_used then
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					weapon_second_used = false
-					equip_spam = false
 					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[19].text.."", 'bag', 1000)
+					can_save = true
+					equip_spam = false
 					return false
 				elseif v.name == rifle_first_used and data.model == rifle_first_used then
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 					rifle_first_used = false
-					equip_spam = false
 					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[22].text.."", 'bag', 1000)
+					can_save = true
+					equip_spam = false
 					return false
 				elseif v.name == rifle_second_used and data.model == rifle_second_used then
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					rifle_second_used = false
-					equip_spam = false
 					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[23].text.."", 'bag', 1000)
+					can_save = true
+					equip_spam = false
 					return false
 				else
 					if data.model == v.name and tonumber(data.id) == v.id then
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
-						equip_spam = false
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[21].text.."", 'bag', 1000)
+						equip_spam = false
+						can_save = true
 						return false
 					end
 				end
@@ -765,8 +1207,9 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 			end
 		end
 		equip_spam = false
+		can_save = true
 	end
-	can_save = true
+	Citizen.Wait(0)
 end)
 
 
@@ -1054,134 +1497,10 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		if Citizen.InvokeNative(0x50F940259D3841E6, 0, 0x07CE1E61) then
-			local _, wepHash = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)		
-			if wepHash ~= -1569615261 then
-				local arg2 = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), wepHash)
-				if arg2 ~= false then
-					Citizen.Wait(500)
-					saveAmmo()
-				end
-			end
-		end
 		Citizen.Wait(10)
 	end
 end)
 
-function saveAmmo()
-	local _1, wepHash1 = GetCurrentPedWeapon(PlayerPedId(), true, 0, true)		
-	local _2, wepHash2 = GetCurrentPedWeapon(PlayerPedId(), true, 1, true)
-	Citizen.Wait(200)
-	local bothWeapon = false
-	local weaponTableAmmo1 = {}
-	local weaponTableAmmo2 = {}
-	local conditionLevelByWep1 = 0
-	local conditionLevelByWep2 = 0
-	if wepHash1 ~= -1569615261 then
-		bothWeapon = true
-	end
-	if wepHash2 == -1569615261 then
-		bothWeapon = false
-	end
-	if wepHash1 ~= -1569615261 then
-		local ammoTypeFirst = nil
-		local ammoTableFirst = {}
-		for a,b in pairs(ammo_list) do
-			if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash1) then						ammoTypeFirst = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash1) then						ammoTypeFirst = "RIFLE"
-			elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "RIFLE"				
-			elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash1) then					ammoTypeFirst = "THROWING"				end
-			if ammoTypeFirst ~= nil then
-				if wepHash1 == 1151374672 then
-					ammoTypeFirst = "BOLA"
-				end
-				if wepHash1 == -570967010 then
-					ammoTypeFirst = "22"
-				end
-				if string.match(b[2], ammoTypeFirst)  then
-					for c,d in pairs(weapon_table) do
-						if wepHash1 == GetHashKey(d.name) then
-							conditionLevelByWep1 = d.id
-							for e,f in pairs(json.decode(d.ammo)) do
-								if GetPedAmmoByType(PlayerPedId(), GetHashKey(e)) == 0 then
-									ammoTableFirst[e] = nil
-								else
-									ammoTableFirst[e] = GetPedAmmoByType(PlayerPedId(), GetHashKey(e))
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-		weaponTableAmmo1 = ammoTableFirst
-	end
-	Citizen.Wait(200)
-	if wepHash2 ~= -1569615261 then
-		local ammoTypeSecond = nil
-		local ammoTableSecond = {}
-		for a,b in pairs(ammo_list) do
-			if GetHashKey('GROUP_REPEATER') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "REPEATER"					elseif GetHashKey('GROUP_SHOTGUN') == GetWeapontypeGroup(wepHash2) then						ammoTypeSecond = "SHOTGUN"					elseif GetHashKey('GROUP_SNIPER') == GetWeapontypeGroup(wepHash2) then						ammoTypeSecond = "RIFLE"
-			elseif GetHashKey('GROUP_RIFLE') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "RIFLE"				
-			elseif GetHashKey('GROUP_REVOLVER') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "REVOLVER"		elseif GetHashKey('GROUP_PISTOL') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "PISTOL"elseif GetHashKey('GROUP_BOW') == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "ARROW"				elseif 1548507267 == GetWeapontypeGroup(wepHash2) then					ammoTypeSecond = "THROWING"				end
-			if ammoTypeSecond ~= nil then
-				if string.match(b[2], ammoTypeSecond) then
-					for c,d in pairs(weapon_table) do
-						if wepHash2 == GetHashKey(d.name) then
-							conditionLevelByWep2 = d.id
-							for e,f in pairs(json.decode(d.ammo)) do
-								if GetPedAmmoByType(PlayerPedId(), GetHashKey(e)) == 0 then
-									ammoTableSecond[e] = nil
-								else
-									ammoTableSecond[e] = GetPedAmmoByType(PlayerPedId(), GetHashKey(e))
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-		weaponTableAmmo2 = ammoTableSecond
-	end
-	if wepHash1 ~= -1569615261 then
-		if bothWeapon == true then
-			if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_second_used)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_second_used)) then
-				if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
-					condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
-				end
-				TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
-			else
-				if condition_level[conditionLevelByWep2]+0.0002 <= 1.0 then
-					condition_level[conditionLevelByWep2] = condition_level[conditionLevelByWep2]+0.0002
-				end
-				if condition_level[conditionLevelByWep2]+0.0002 <= 1.0 then
-					condition_level[conditionLevelByWep2] = condition_level[conditionLevelByWep2]+0.0002
-				end
-				TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1], conditionLevelByWep2, weaponTableAmmo2, condition_level[conditionLevelByWep2])
-			end
-		else
-			if wepHash1 ~= -1569615261 and not Citizen.InvokeNative(0x792E3EF76C911959, wepHash1) then
-				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(weapon_second_used)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_first_used)) and Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(weapon_second_used)) then
-					if Citizen.InvokeNative(0xD955FEE4B87AFA07, wepHash1) then
-						if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
-							condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
-						end
-						TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
-					else
-						if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
-							condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
-						end
-						TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
-					end
-				else
-					if condition_level[conditionLevelByWep1]+0.0002 <= 1.0 then
-						condition_level[conditionLevelByWep1] = condition_level[conditionLevelByWep1]+0.0002
-					end
-					TriggerServerEvent("gum_inventory:save_ammo", conditionLevelByWep1, weaponTableAmmo1, condition_level[conditionLevelByWep1])
-				end
-			end
-		end
-	end
-end
 Citizen.CreateThread(function()
 	local player_prompt
 	local player_prompt2
