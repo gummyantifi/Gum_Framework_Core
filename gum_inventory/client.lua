@@ -30,7 +30,6 @@ local slot2 = ""
 local slot3 = ""
 local slot4 = ""
 local slot5 = ""
-local canSaveAmmo = false
 
 function Button_Prompt()
 	Citizen.CreateThread(function()
@@ -319,8 +318,8 @@ local ignorMeForLoadThrow = false
 local ignorMeForLoadNormal = false
 local ammoNormal = {}
 local backupAmmoNormal = {}
--- RegisterNetEvent("gum:SelectedCharacter")
--- AddEventHandler("gum:SelectedCharacter", function(charid)
+RegisterNetEvent("gum:SelectedCharacter")
+AddEventHandler("gum:SelectedCharacter", function(charid)
 	Citizen.CreateThread(function()
 		Citizen.Wait(100)
 		TriggerServerEvent("gum_inventory:get_items")
@@ -339,7 +338,7 @@ local backupAmmoNormal = {}
 			Citizen.Wait(5000)
 		end
 	end)
---end)
+end)
 
 
 function saveWeaponAmmo()
@@ -412,7 +411,7 @@ function saveWeaponAmmo()
 					saveWhat[1] = "shotgun"
 				end
 			end
-		elseif string.match(b[2], "rifle") or string.match(b[2], "RIFLE") then
+		elseif string.match(b[2], "rifle") or string.match(b[2], "RIFLE") and not string.match(b[2], "22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -428,6 +427,15 @@ function saveWeaponAmmo()
 				if ignorMeForLoadNormal == true then
 					saveItNow = true
 					saveWhat[1] = "arrow"
+				end
+			end
+		elseif not string.match(b[2], "rifle") or not string.match(b[2], "RIFLE") and string.match(b[2], "22") then
+			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
+			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
+				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
+				if ignorMeForLoadNormal == true then
+					saveItNow = true
+					saveWhat[1] = "varmint"
 				end
 			end
 		end
@@ -562,6 +570,28 @@ function saveWeaponAmmo()
 			local saveTableFilter = {}
 			for a,b in pairs(ammoNormal) do
 				if string.match(a, "rifle") or string.match(a, "RIFLE") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			for k,v in pairs(weapon_table) do
+				if v.used == 1 then
+					if rightHand == GetHashKey(v.name) then
+						weaponId = v.id
+					end
+				end
+			end
+			Citizen.Wait(0)
+			if condition_level[weaponId]+0.0002 <= 1.0 then
+				condition_level[weaponId] = condition_level[weaponId]+0.0002
+			end
+			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+		end
+		if saveWhat[1] =="varmint" then
+			print("VARMINT")
+			local saveTableFilter = {}
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "22") then
 					saveTableFilter[a] = b
 				end
 			end
