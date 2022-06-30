@@ -63,65 +63,6 @@ for a,b in pairs(Config.ammo) do
     end
 end
 
-RegisterServerEvent("gum_weapons:addammo")
-AddEventHandler("gum_weapons:addammo", function(wephash,boxCount,ammoType,weaponItem,item)
-    local _source = source
-    local User = gumCore.getUser(source)
-    local Character = User.getUsedCharacter
-    local identifier = Character.identifier
-    local charidentifier = Character.charIdentifier
-    exports.ghmattimysql:execute('SELECT name,id,ammo FROM loadout WHERE identifier=@identifier AND charidentifier = @charidentifier ' , {['identifier'] = identifier, ['charidentifier'] = charidentifier}, function(result)
-        local used = 1
-        local idLoadout
-        local max
-        if result[1] ~= nil then 
-            for i=1, #result, 1 do
-                if weaponItem == 0 then
-                    if GetHashKey(result[i].name) == wephash then
-                        idLoadout = result[i].id
-                    end
-                elseif  weaponItem ~= 0 then
-                    for k,v in pairs(weaponItem) do 
-                        if v == result[i].name then
-                            idLoadout = result[i].id
-                        end
-                    end
-                end
-            end
-            for k,v in pairs(Config.ammo) do
-                for l,m in pairs(v) do
-                    if m.ammoNameHash == ammoType then 
-                        max = m.maxAmmo
-                    end
-                end
-            end
-            if idLoadout ~= nil then
-                exports.ghmattimysql:execute('SELECT ammo FROM loadout WHERE id = @id ' , {['id'] = idLoadout}, function(result)
-                    if result[1] ~= nil then 
-                        local ammoTable = json.decode(result[1].ammo)
-                        if contains(ammoTable, ammoType) then
-                            if (ammoTable[ammoType] + boxCount) > max then
-                                boxCount = max - ammoTable[ammoType]
-                                ammoTable[ammoType] = max 
-                            else
-                                ammoTable[ammoType] = ammoTable[ammoType] + boxCount
-                            end
-                        else
-                            ammoTable[ammoType] = tonumber(boxCount)
-                        end
-                        if boxCount > 0 then
-                            exports.ghmattimysql:execute("UPDATE loadout Set ammo=@ammo WHERE id=@id", { ['id'] = idLoadout, ['ammo'] = json.encode(ammoTable) })
-                            else
-                            TriggerEvent("gum_weapons:givebackbox",_source,item)
-                        end
-                    end
-                end)
-            else
-                TriggerEvent("gum_weapons:givebackbox",_source,item)
-            end
-        end
-    end)
-end)
 
 RegisterServerEvent("gum_weapons:givebackbox")
 AddEventHandler("gum_weapons:givebackbox", function(source, item)

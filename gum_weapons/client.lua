@@ -1238,7 +1238,6 @@ AddEventHandler("gum_weapons:getGun", function(ammoHash,boxCount,itemId)
       local currentAmmo = GetPedAmmoByType(PlayerPedId(), ammoNameHash)
       if currentAmmo+boxCount <= maxAmmo then
         SetPedAmmoByType(PlayerPedId(), ammoNameHash, boxCount);
-        TriggerServerEvent("gum_weapons:addAmmo", wepHash, ammoHash, boxCount)
       else
         if currentAmmo+(boxCount/2) <= maxAmmo then
           SetPedAmmoByType(PlayerPedId(), ammoNameHash, boxCount);
