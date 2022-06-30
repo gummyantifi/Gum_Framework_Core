@@ -1226,6 +1226,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 							weapon_first_used = v.name
 							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[12].text.."", 'bag', 1000)
+							can_save = true
+							equip_spam = false
 						elseif weapon_second_used == false then
 							LoadWeaponChar(v.name, true)
 							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
@@ -1234,6 +1236,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 							weapon_second_used = v.name
 							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[13].text.."", 'bag', 1000)
+							can_save = true
+							equip_spam = false
 						end
 					end
 				else
@@ -1249,6 +1253,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[18].text.."", 'bag', 1000)
+						can_save = true
+						equip_spam = false
 					end
 				end
 				if Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
@@ -1260,6 +1266,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 						rifle_first_used = v.name
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[15].text.."", 'bag', 1000)
+						can_save = true
+						equip_spam = false
 					elseif rifle_second_used == false then
 						LoadWeaponChar(v.name)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
@@ -1268,12 +1276,12 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 						rifle_second_used = v.name
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[16].text.."", 'bag', 1000)
+						can_save = true
+						equip_spam = false
 					end
 				end
 			end
 		end
-		equip_spam = false
-		can_save = true
 	end
 	Citizen.Wait(0)
 end)
