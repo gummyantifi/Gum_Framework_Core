@@ -1220,6 +1220,41 @@ AddEventHandler('gum_inventory:save_ammo', function(wepId1, wepAmmo1, wepCond1, 
 	end
 end)
 
+RegisterServerEvent('gum_inventory:saveAmmoThrow')
+AddEventHandler('gum_inventory:saveAmmoThrow', function(wepName, ammoTable, wepCond)
+	local User = gumCore.getUser(tonumber(source))
+	local Character = User.getUsedCharacter
+	if User ~= nil then
+		local identifier = Character.identifier
+	 	local charid = Character.charIdentifier
+		local newTableForSave = {}
+		for k,v in pairs(ammoTable) do
+			if v ~= false then
+				newTableForSave[k] = v
+			end
+		end
+		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name']=wepName, ['dirtlevel'] = tonumber(wepCond), ['conditionlevel'] = tonumber(wepCond), ['ammo'] = json.encode(newTableForSave)}
+		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
+	end
+end)
+RegisterServerEvent('gum_inventory:saveAmmoNormal')
+AddEventHandler('gum_inventory:saveAmmoNormal', function(wepName, ammoTable, wepCond)
+	local User = gumCore.getUser(tonumber(source))
+	local Character = User.getUsedCharacter
+	if User ~= nil then
+		local identifier = Character.identifier
+	 	local charid = Character.charIdentifier
+		local newTableForSave = {}
+		for k,v in pairs(ammoTable) do
+			if v ~= false then
+				newTableForSave[k] = v
+			end
+		end
+		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['id']=wepName, ['dirtlevel'] = tonumber(wepCond), ['conditionlevel'] = tonumber(wepCond), ['ammo'] = json.encode(newTableForSave)}
+		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND id = @id AND used = 1", Parameters)
+	end
+end)
+
 RegisterServerEvent('gum_inventory:save_cleaning')
 AddEventHandler('gum_inventory:save_cleaning', function(name, cleaning)
 	local User = gumCore.getUser(tonumber(source))

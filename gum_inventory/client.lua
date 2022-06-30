@@ -456,14 +456,18 @@ function saveWeaponAmmo()
 						if string.match(v.name, "revolver") or string.match(v.name, "REVOLVER") then
 							if GetHashKey(weapon_first_used) == GetHashKey(v.name)  then
 								weaponId = v.id
+								if v.conditionlevel+0.0002 <= 1.0 then
+									v.conditionlevel = v.conditionlevel+0.0002
+									condition_level[v.id] = v.conditionlevel
+								else
+									v.conditionlevel = 1.0
+									condition_level[v.id] = 1.0
+								end
 							end
 						end
 					end
 				end
 				Citizen.Wait(0)
-				if condition_level[weaponId]+0.0002 <= 1.0 then
-					condition_level[weaponId] = condition_level[weaponId]+0.0002
-				end
 				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 			else
 				for k,v in pairs(weapon_table) do
@@ -471,14 +475,18 @@ function saveWeaponAmmo()
 						if string.match(v.name, "revolver") or string.match(v.name, "REVOLVER") then
 							if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
 								weaponId = v.id
+								if v.conditionlevel+0.0002 <= 1.0 then
+									v.conditionlevel = v.conditionlevel+0.0002
+									condition_level[v.id] = v.conditionlevel
+								else
+									v.conditionlevel = 1.0
+									condition_level[v.id] = 1.0
+								end
 							end
 						end
 					end
 				end
 				Citizen.Wait(0)
-				if condition_level[weaponId]+0.0002 <= 1.0 then
-					condition_level[weaponId] = condition_level[weaponId]+0.0002
-				end
 				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 			end
 		end
@@ -497,14 +505,18 @@ function saveWeaponAmmo()
 						if string.match(v.name, "pistol") or string.match(v.name, "PISTOL") then
 							if GetHashKey(weapon_first_used) == GetHashKey(v.name) then
 								weaponId2 = v.id
+								if v.conditionlevel+0.0002 <= 1.0 then
+									v.conditionlevel = v.conditionlevel+0.0002
+									condition_level[v.id] = v.conditionlevel
+								else
+									v.conditionlevel = 1.0
+									condition_level[v.id] = 1.0
+								end
 							end
 						end
 					end
 				end
 				Citizen.Wait(0)
-				if condition_level[weaponId2]+0.0002 <= 1.0 then
-					condition_level[weaponId2] = condition_level[weaponId2]+0.0002
-				end
 				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId2, saveTableFilter2, condition_level[weaponId2])
 			else
 				for k,v in pairs(weapon_table) do
@@ -512,14 +524,18 @@ function saveWeaponAmmo()
 						if string.match(v.name, "pistol") or string.match(v.name, "PISTOL") then
 							if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
 								weaponId = v.id
+								if v.conditionlevel+0.0002 <= 1.0 then
+									v.conditionlevel = v.conditionlevel+0.0002
+									condition_level[v.id] = v.conditionlevel
+								else
+									v.conditionlevel = 1.0
+									condition_level[v.id] = 1.0
+								end
 							end
 						end
 					end
 				end
 				Citizen.Wait(0)
-				if condition_level[weaponId]+0.0002 <= 1.0 then
-					condition_level[weaponId] = condition_level[weaponId]+0.0002
-				end
 				TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter2, condition_level[weaponId])
 			end
 		end
@@ -536,13 +552,17 @@ function saveWeaponAmmo()
 				if v.used == 1 then
 					if rightHand == GetHashKey(v.name) then
 						weaponId = v.id
+						if v.conditionlevel+0.0002 <= 1.0 then
+							v.conditionlevel = v.conditionlevel+0.0002
+							condition_level[v.id] = v.conditionlevel
+						else
+							v.conditionlevel = 1.0
+							condition_level[v.id] = 1.0
+						end
 					end
 				end
 			end
 			Citizen.Wait(0)
-			if condition_level[weaponId]+0.0002 <= 1.0 then
-				condition_level[weaponId] = condition_level[weaponId]+0.0002
-			end
 			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 		end
 		if saveWhat[1] =="shotgun" then
@@ -557,13 +577,17 @@ function saveWeaponAmmo()
 				if v.used == 1 then
 					if rightHand == GetHashKey(v.name) then
 						weaponId = v.id
+						if v.conditionlevel+0.0002 <= 1.0 then
+							v.conditionlevel = v.conditionlevel+0.0002
+							condition_level[v.id] = v.conditionlevel
+						else
+							v.conditionlevel = 1.0
+							condition_level[v.id] = 1.0
+						end
 					end
 				end
 			end
 			Citizen.Wait(0)
-			if condition_level[weaponId]+0.0002 <= 1.0 then
-				condition_level[weaponId] = condition_level[weaponId]+0.0002
-			end
 			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 		end
 		if saveWhat[1] =="rifle" then
@@ -578,13 +602,17 @@ function saveWeaponAmmo()
 				if v.used == 1 then
 					if rightHand == GetHashKey(v.name) then
 						weaponId = v.id
+						if v.conditionlevel+0.0002 <= 1.0 then
+							v.conditionlevel = v.conditionlevel+0.0002
+							condition_level[v.id] = v.conditionlevel
+						else
+							v.conditionlevel = 1.0
+							condition_level[v.id] = 1.0
+						end
 					end
 				end
 			end
 			Citizen.Wait(0)
-			if condition_level[weaponId]+0.0002 <= 1.0 then
-				condition_level[weaponId] = condition_level[weaponId]+0.0002
-			end
 			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 		end
 		if saveWhat[1] =="varmint" then
@@ -600,13 +628,17 @@ function saveWeaponAmmo()
 				if v.used == 1 then
 					if rightHand == GetHashKey(v.name) then
 						weaponId = v.id
+						if v.conditionlevel+0.0002 <= 1.0 then
+							v.conditionlevel = v.conditionlevel+0.0002
+							condition_level[v.id] = v.conditionlevel
+						else
+							v.conditionlevel = 1.0
+							condition_level[v.id] = 1.0
+						end
 					end
 				end
 			end
 			Citizen.Wait(0)
-			if condition_level[weaponId]+0.0002 <= 1.0 then
-				condition_level[weaponId] = condition_level[weaponId]+0.0002
-			end
 			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 		end
 		if saveWhat[1] =="arrow" then
@@ -621,14 +653,18 @@ function saveWeaponAmmo()
 				if v.used == 1 then
 					if rightHand == GetHashKey(v.name) then
 						weaponId = v.id
+						if v.conditionlevel+0.0002 <= 1.0 then
+							v.conditionlevel = v.conditionlevel+0.0002
+							condition_level[v.id] = v.conditionlevel
+						else
+							v.conditionlevel = 1.0
+							condition_level[v.id] = 1.0
+						end
 					end
 				end
 			end
 			Citizen.Wait(0)
-			if condition_level[weaponId]+0.0002 <= 1.0 then
-				condition_level[weaponId] = condition_level[weaponId]+0.0002
-			end
-			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
+			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[v.id])
 		end
 	end
 	ignorMeForLoadNormal = true
