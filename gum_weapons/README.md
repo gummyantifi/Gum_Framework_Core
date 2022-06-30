@@ -1,0 +1,14 @@
+<b>Natives infromation from Framework</b> : http://gum-framework.eu/natives/
+</br></br></br></br>
+
+
+
+# Gum_Framework Status Weapon + Customization</br></br>
+- Customization - You can search every components in Customization, and make your weapon like to you
+- Weapon store - All weapons you can add / remove etid
+- Dual wield - Inventory is edited for dual wield and fixed for use it
+
+<img src="https://cdn.discordapp.com/attachments/944656734134370344/992036335848280094/unknown.png"></img></br></br>
+<img src="https://cdn.discordapp.com/attachments/944656734134370344/992036641222963311/unknown.png"></img></br></br>
+<img src="https://cdn.discordapp.com/attachments/944656734134370344/992036763507896401/unknown.png"></img></br></br>
+<img src="https://cdn.discordapp.com/attachments/944656734134370344/992036854058717214/unknown.png"></img></br></br>
