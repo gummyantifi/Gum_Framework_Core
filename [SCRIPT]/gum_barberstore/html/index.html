@@ -1,0 +1,103 @@
+<html>
+	<head>
+        <link rel="stylesheet" href="./assets/css/index.css" type="text/css">
+        <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+        </head>
+	<body>
+        <div id="container"> 
+                <div id=header>Barber</div>
+                <div id="button_container">
+                        <div id="button"><center>Vlasy</center>
+                                <input type="range" min="0" max="0" value="0" class="slider" id="HAIRS">
+                        </div></br>
+                        <div id="buttoncolor"><center>Strniště<input type="checkbox" id="BEARDSSTABLE_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="0" max="10" value="0" class="slider" id="BEARDSSTABLE_OPACITY">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="BEARDSSTABLE_COLOR">
+                        </div></br>
+                        <div id="button"><center>Vousy</center>
+                                <input type="range" min="0" max="0" value="0" class="slider" id="BEARDS">
+                        </div></br>
+                        <div id="button"><center>Zuby</center>
+                                <input type="range" min="0" max="14" value="1" class="slider" id="TEETHS">
+                        </div></br>
+                       
+                        <div id="buttoncolor"><center>Jizvy<input type="checkbox" id="SCARS_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="16" value="1" class="slider" id="SCARS_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="SCARS_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Skvrny<input type="checkbox" id="SPOTS_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="16" value="1" class="slider" id="SPOTS_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="SPOTS_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Špína<input type="checkbox" id="DISC_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="16" value="1" class="slider" id="DISC_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="DISC_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Popálení<input type="checkbox" id="COMPLEX_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="13" value="1" class="slider" id="COMPLEX_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="COMPLEX_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Akne<input type="checkbox" id="ACNE_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="1" value="1" class="slider" id="ACNE_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="ACNE_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Věk<input type="checkbox" id="AGEING_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="25" value="1" class="slider" id="AGEING_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="AGEING_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Pihy<input type="checkbox" id="FRECKLES_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="15" value="1" class="slider" id="FRECKLES_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="FRECKLES_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Pigmentové skvrny<input type="checkbox" id="MOLES_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="16" value="1" class="slider" id="MOLES_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="MOLES_OPACITY">
+                         </div></br>
+
+                         <div id="buttoncolor"><center>Oční stíny<input type="checkbox" id="SHADOWS_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="5" value="1" class="slider" id="SHADOWS_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="SHADOWS_OPACITY">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="SHADOWS_COLOR1">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="SHADOWS_COLOR2">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="SHADOWS_COLOR3">
+                        </div></br>
+
+                        <div id="buttoncolor"><center>Obočí<input type="checkbox" id="EYEBROWS_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="24" value="1" class="slider" id="EYEBROWS_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="EYEBROWS_OPACITY">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="EYEBROWS_COLOR1">
+                        </div></br>
+
+                        <div id="buttoncolor"><center>Oční linky<input type="checkbox" id="EYELINNERS_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="7" value="1" class="slider" id="EYELINNERS_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="EYELINNERS_OPACITY">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="EYELINNERS_COLOR1">
+                          </div></br>
+
+                        <div id="buttoncolor"><center>Tvářenka<input type="checkbox" id="BRUSH_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="4" value="1" class="slider" id="BRUSH_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="BRUSH_OPACITY">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="BRUSH_COLOR1">
+                        </div></br>
+
+                        <div id="buttoncolor"><center>Rtěnka<input type="checkbox" id="LIPSTICKS_CHECK" onclick="validate(this.id)"></center>
+                                <input type="range" min="1" max="7" value="1" class="slider" id="LIPSTICKS_TYPE">
+                                <input type="range" min="0" max="10" value="0" class="slider" id="LIPSTICKS_OPACITY">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="LIPSTICKS_COLOR1">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="LIPSTICKS_COLOR2">
+                                <input type="range" min="0" max="255" value="0" class="slider" id="LIPSTICKS_COLOR3">
+                        </div></br></br></br>
+                        <div id="save" onclick="save_character()"><center>Koupit úpravy</center></div></br>
+                </div>
+        </div>
+        <script src="./assets/js/index.js" type="text/javascript"></script>
+
+	</body>
+</html>
