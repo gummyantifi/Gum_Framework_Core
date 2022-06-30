@@ -3,5 +3,5 @@
 
 
 
-# Gum_Framework Barber store</br></br><img src="https://cdn.discordapp.com/attachments/944656734134370344/992019061422694440/barber.png">
+# Gum_Framework Barber store</br></br><img src="https://cdn.discordapp.com/attachments/944656734134370344/992045015574532106/barber.png">
 
