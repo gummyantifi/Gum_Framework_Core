@@ -5,8 +5,8 @@
 
 # Gum_Framework Creator</br></br>
 <h2>Character selection</h2>
-<img src="https://cdn.discordapp.com/attachments/944656734134370344/992022404526252092/img.png">
+<img src="https://media.discordapp.net/attachments/944656734134370344/992045870725992518/creator.png">
 </br></br></br></br></br>
 <h2>Character craetor</h2>
 You can edit everything what oyu like
-<img src="https://cdn.discordapp.com/attachments/944656734134370344/992024284929212436/img.png">
+<img src="https://media.discordapp.net/attachments/944656734134370344/992045871137038469/creator2.png">

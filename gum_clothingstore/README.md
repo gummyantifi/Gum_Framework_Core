@@ -3,5 +3,5 @@
 
 
 
-# Gum_Framework Clothing store</br></br><img src="https://cdn.discordapp.com/attachments/944656734134370344/992019756506959872/clothing.png">
+# Gum_Framework Clothing store</br></br><img src="https://media.discordapp.net/attachments/944656734134370344/992045870226874498/clothing.png">
 
