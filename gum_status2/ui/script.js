@@ -12,7 +12,46 @@ function health_bar(){
         health_active.css('background-image','linear-gradient(' + (deg-90) + 'deg, transparent 50%, #ffffff 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
     }
 }
+function alcohol_bar(){
+    var alcohol_active = $("#alcohol_active");
+    var prec = alcohol_active.children().children().text();
+    if (prec > 100)
+        prec = 100;
+    var deg = prec*3.6;
+    if (deg <= 180){
+        alcohol_active.css('background-image','linear-gradient(' + (90+deg) + 'deg, transparent 50%, #000000 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
+    }
+    else{
+        alcohol_active.css('background-image','linear-gradient(' + (deg-90) + 'deg, transparent 50%, #ffffff 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
+    }
+}
+function temperature_bar(){
+    var temperature_active = $("#temperature_active");
+    var prec = temperature_active.children().children().text();
+    if (prec > 100)
+        prec = 100;
+    var deg = prec*3.6;
+    if (deg <= 180){
+        temperature_active.css('background-image','linear-gradient(' + (90+deg) + 'deg, transparent 50%, #000000 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
+    }
+    else{
+        temperature_active.css('background-image','linear-gradient(' + (deg-90) + 'deg, transparent 50%, #ffffff 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
+    }
+}
 
+function voice_bar(){
+    var voice_active = $("#voice_active");
+    var prec = voice_active.children().children().text();
+    if (prec > 100)
+        prec = 100;
+    var deg = prec*3.6;
+    if (deg <= 180){
+        voice_active.css('background-image','linear-gradient(' + (90+deg) + 'deg, transparent 50%, #000000 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
+    }
+    else{
+        voice_active.css('background-image','linear-gradient(' + (deg-90) + 'deg, transparent 50%, #ffffff 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
+    }
+}
 function stamina_bar(){
     var stamina_active = $("#stamina_active");
     var prec = stamina_active.children().children().text();
@@ -83,7 +122,7 @@ function horse_stamina_bar(){
         horse_stamina_active.css('background-image','linear-gradient(' + (deg-90) + 'deg, transparent 50%, #ffffff 50%),linear-gradient(90deg, #000000 50%, transparent 50%)');
     }
 }
-
+var minimap = false
 function progress_bar(){
     var progress_active = $("#progress_active");
     var prec = progress_active.children().children().text();
@@ -100,21 +139,40 @@ function progress_bar(){
 $(document).ready(function () {
     $("#progress_active").hide(); 
     window.addEventListener("message", function (event) {
-            if (event.data.progress===true) {
-                $("#progress_active").show();
-                set_progress(event.data.time)
-            } else if (event.data.progress===false){
-                $("#progress_active").hide(); 
+        if (event.data.progress===true) {
+            $("#progress_active").show();
+            set_progress(event.data.time) 
+        }
+        if (event.data.progress===false) {
+            $("#progress_active").hide();
+        }
+        if (event.data.show===true) {
+            if (event.data.alcohol > 0) {
+                $("#alcohol_active").show();
+            } else {
+                $("#alcohol_active").hide();
             }
-            if (event.data.show===true) {
-                show_hud(event.data.show);
+            show_hud(event.data.show);
+            if (event.data.minimap === false) {
+                minimap = false
                 set_health(event.data.health);
-                set_hunger(event.data.hunger);
-                set_thirst(event.data.thirst);
-                set_stamina(event.data.stamina);
                 set_horse_health(event.data.horse_health);
+                set_stamina(event.data.stamina);
                 set_horse_stamina(event.data.horse_stamina);
                 show_horse_stats(event.data.on_horse)
+            } else {
+                minimap = true
+            }
+            set_hunger(event.data.hunger);
+            set_thirst(event.data.thirst);
+            set_alcohol(event.data.alcohol);
+            set_temperature(event.data.temp);
+            if ( event.data.voice == true ) {
+                $("#voice").attr("src","microphone_active.png");
+              }else{
+                $("#voice").attr("src","microphone_inactive.png");
+            }
+            set_voice(event.data.volume);
             } else{
                 show_hud(event.data.show);
             }
@@ -137,17 +195,29 @@ $(function() {
 
 function show_hud(show_hud) {
     if (show_hud) {
+        if (minimap == false) {
+            $("#health_active").show();
+            $("#stamina_active").show();
+        } else {
+            $("#health_active").hide();
+            $("#stamina_active").hide();
+        }
         $("#hunger_active").show();
         $("#thirst_active").show();
-        $("#health_active").show();
-        $("#stamina_active").show();
+        $("#temperature_active").show();
+        $("#voice_active").show();
     } else {
         $("#hunger_active").hide();
         $("#thirst_active").hide();
-        $("#health_active").hide();
-        $("#stamina_active").hide();
-        $("#horse_health_active").hide();
-        $("#horse_stamina_active").hide();
+        $("#alcohol_active").hide();
+        $("#temperature_active").hide();
+        $("#voice_active").hide();
+        if (minimap == false) {
+            $("#stamina_active").hide();
+            $("#health_active").hide();
+            $("#horse_stamina_active").hide();
+            $("#horse_health_active").hide();
+        }
     }
 }
 
@@ -165,6 +235,21 @@ function set_horse_health(value) {
     var horseh = document.getElementsByClassName('horse_health_perc')[0];
     horseh.innerHTML = value;
     horse_health_bar()
+}
+function set_temperature(value) {
+    var temph = document.getElementsByClassName('temperature_perc')[0];
+    temph.innerHTML = value;
+    temperature_bar()
+}
+function set_voice(value) {
+    var voih = document.getElementsByClassName('voice_perc')[0];
+    voih.innerHTML = value;
+    voice_bar()
+}
+function set_alcohol(value) {
+    var alcohol = document.getElementsByClassName('alcohol_perc')[0];
+    alcohol.innerHTML = value;
+    alcohol_bar()
 }
 function set_horse_stamina(value) {
     var horses = document.getElementsByClassName('horse_stamina_perc')[0];

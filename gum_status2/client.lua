@@ -43,7 +43,7 @@ RegisterNetEvent("gum:SelectedCharacter")
 AddEventHandler("gum:SelectedCharacter", function(charid)
     Citizen.CreateThread(function()
         hud = true
-    end)
+     end)
 end)
 
 RegisterNetEvent('gum_status:voiceOn')

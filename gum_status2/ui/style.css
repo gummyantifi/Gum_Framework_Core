@@ -46,6 +46,106 @@
 }
 
 
+.temperature_perc{
+    top: 30px;
+    position: relative;
+    color: rgba(0, 0, 0, 0.0);
+}
+#temperature {
+	position:absolute;
+	left:8px;
+	top:7px;
+}
+.temperature_circle {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    background-color: #000000;
+}
+.temperature_active {
+    display:block;
+	position:absolute;
+	bottom:30px;
+	left:250px;
+    width: 41px;
+    height: 41px;
+	border-radius: 100%;
+    background-color:#ffffff;
+    background-image:
+        linear-gradient(91deg, transparent 50%, #000000 50%),
+        linear-gradient(90deg, #000000 50%, transparent 50%);
+}
+
+.voice_perc{
+    top: 30px;
+    position: relative;
+    color: rgba(0, 0, 0, 0.0);
+}
+#voice {
+	position:absolute;
+	left:8px;
+	top:7px;
+}
+.voice_circle {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    background-color: #000000;
+}
+.voice_active {
+    display:block;
+	position:absolute;
+	bottom:30px;
+	left:300px;
+    width: 41px;
+    height: 41px;
+	border-radius: 100%;
+    background-color:#ffffff;
+    background-image:
+        linear-gradient(91deg, transparent 50%, #000000 50%),
+        linear-gradient(90deg, #000000 50%, transparent 50%);
+}
+.alcohol_perc{
+    top: 30px;
+    position: relative;
+    color: rgba(0, 0, 0, 0.0);
+}
+
+#alcohol {
+    position:absolute;
+	left:11px;
+	top:9px;
+}
+
+.alcohol_circle{
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    background-color: #000000;
+}
+
+.alcohol_active{
+    display:block;
+	position:absolute;
+	bottom:30px;
+	left:6px;
+    width: 41px;
+    height: 41px;
+    border-radius: 100%;
+    background-color:#ffffff;
+    background-image:
+        linear-gradient(91deg, transparent 50%, #000000 50%),
+        linear-gradient(90deg, #000000 50%, transparent 50%);
+}
 
 .health_perc{
     top: 30px;
@@ -215,7 +315,7 @@
     display:block;
 	position:absolute;
 	bottom:30px;
-	left:250px;
+	left:350px;
     width: 41px;
     height: 41px;
 	border-radius: 100%;
@@ -251,7 +351,7 @@
     display:block;
 	position:absolute;
 	bottom:30px;
-	left:300px;
+	left:400px;
     width: 41px;
     height: 41px;
 	border-radius: 100%;
