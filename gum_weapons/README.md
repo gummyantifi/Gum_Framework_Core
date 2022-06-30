@@ -11,4 +11,3 @@
 <img src="https://cdn.discordapp.com/attachments/944656734134370344/992036335848280094/unknown.png"></img></br></br>
 <img src="https://cdn.discordapp.com/attachments/944656734134370344/992036641222963311/unknown.png"></img></br></br>
 <img src="https://cdn.discordapp.com/attachments/944656734134370344/992036763507896401/unknown.png"></img></br></br>
-<img src="https://cdn.discordapp.com/attachments/944656734134370344/992036854058717214/unknown.png"></img></br></br>
