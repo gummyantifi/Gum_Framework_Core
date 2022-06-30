@@ -17,3 +17,5 @@
 - You can Manage your clothes in inventory.
 - You can give / drop items.
 - Drop items is saved in database and maximal optimize for running server.
+- Item you can add via write it to Database.Items
+- How use inventory functions is on Natives website
