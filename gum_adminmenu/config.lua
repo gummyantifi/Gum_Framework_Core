@@ -57,10 +57,10 @@ Config.Language = {
     [32] = {text = "Count items"},
     [33] = {text = "Count"},
     [34] = {text = "Message"},
-    [35] = {text = "W/S - Pohyb, Spacebar/Shift - Nahoru/Dolů, Page Up/Page Down/Mouse Wheel - Změna rychlosti, Q - Absolutní mod, H - Vypnout směr kamery, , R - Ukázat/Skrýt se"},
-    [36] = {text = "W/S - Pohyb, Spacebar/Shift - Nahoru/Dolů, Page Up/Page Down/Mouse Wheel - Změna rychlosti, Q - Absolutní mód, H - Zapnout směr kamery, , R - Ukázat/Skrýt se"},
+    [35] = {text = "W/S - Forward/Backward, Spacebar/Shift - Go Up/Down, Page Up/Page Down/Mouse Wheel - Speed, Q - Absolut mod, H - Disable camera movement, , R - Show/Hide"},
+    [36] = {text = "W/S - Forward/Backward, Spacebar/Shift - Go Up/Down, Page Up/Page Down/Mouse Wheel - Speed, Q - Absolut mod, H - Disable camera movement, , R - Show/Hide"},
     [37] = {text = "Coords"},
-    [38] = {text = "W/S - Pohyb, Spacebar/Shift - Nahoru/Dolů, Page Up/Page Down/Mouse Wheel - Změna rychlosti, Q - Relativní mód, R - Ukázat/Skrýt se"}
+    [38] = {text = "W/S - Forward/Backward, Spacebar/Shift - Go Up/Down, Page Up/Page Down/Mouse Wheel - Speed, Q - Absolut mod, R - Show/Hide"}
     
 }
 
