@@ -25,6 +25,7 @@ local global_buy_ammo = ""
 local global_buy_weapon = ""
 local last_category = ""
 local table_comp_wep = {}
+local ammoTableConfig = {}
 
 TriggerEvent("gum_menu:getData",function(call)
     MenuData = call
@@ -414,6 +415,11 @@ end
 
 
 Citizen.CreateThread(function()
+  for a,b in pairs(Config.ammo) do
+    for c,d in pairs(b) do
+      table.insert(ammoTableConfig, d.ammoNameHash)
+    end
+  end
   for k,v in pairs(Config.weaponShops) do 
     if v.showBlip then
       blip = N_0x554d9d53f696d002(1664425300, v.Pos.x, v.Pos.y, v.Pos.z)
@@ -1207,37 +1213,44 @@ RegisterNUICallback('set_camera', function(data, cb)
   end
 end)
 
-RegisterNetEvent("gum_weapons:getgun")
-AddEventHandler("gum_weapons:getgun", function(key,guncheck,qt,item,guncheck2,playeritem)
-  local max_count_check = false
-  local wephash = Citizen.InvokeNative(0x8425C5F057012DAB,PlayerPedId())
-	local weaponName = tostring(Citizen.InvokeNative(0x89CF5FF3D363311E,wephash))
-	local currentammo = GetPedAmmoByType(PlayerPedId(), GetHashKey(key))
-  local ammo_type = ""
-  local ammo_set = 0
-	if (guncheck2 ~= 0 and Citizen.InvokeNative(guncheck2, wephash)) or Citizen.InvokeNative(guncheck, wephash) or guncheck == 0 then
-      for k,v in pairs(Config.ammo) do
-        for l,m in pairs(v) do
-            if m.weaponNameHash == key then
-              ammo_type = m.weaponNameHash
-              ammo_set = m.maxAmmo
-              if currentammo+qt <= m.maxAmmo then
-                max_count_check = true
-              end
+RegisterNetEvent("gum_weapons:getGun")
+AddEventHandler("gum_weapons:getGun", function(ammoHash,boxCount,itemId)
+  print(ammoHash,boxCount,itemId)
+  local ammoNameHash = GetHashKey(ammoHash)
+  local weaponSearched = false
+    for i=0, 30 do
+      local _, wepHash = GetCurrentPedWeapon(PlayerPedId(), true, i, true)
+      if wepHash ~= -1569615261 and wepHash ~= 0 then
+        if Citizen.InvokeNative(0x7AA043F6C41D151E, ammoNameHash) == wepHash then
+          weaponSearched = true
+        end
+      end
+    end
+    if weaponSearched == true then
+      local maxAmmo = 0
+      for a,b in pairs(Config.ammo) do
+        for c,d in pairs(b) do
+          if ammoHash == d.ammoNameHash then
+            maxAmmo = d.maxAmmo
           end
         end
-    end
-    if max_count_check == false then
-      exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, ""..Config.Language[7].text.."", 'rifle', 2000)
-      TriggerServerEvent("gum_weapons:addammo",wephash,ammo_set,ammo_type,playeritem,item)
-      SetPedAmmoByType(PlayerPedId(), GetHashKey(ammo_type), ammo_set);
+      end
+      local currentAmmo = GetPedAmmoByType(PlayerPedId(), ammoNameHash)
+      if currentAmmo+boxCount <= maxAmmo then
+        SetPedAmmoByType(PlayerPedId(), ammoNameHash, boxCount);
+        TriggerServerEvent("gum_weapons:addAmmo", wepHash, ammoHash, boxCount)
+      else
+        if currentAmmo+(boxCount/2) <= maxAmmo then
+          SetPedAmmoByType(PlayerPedId(), ammoNameHash, boxCount);
+          exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, ""..Config.Language[17].text.."", 'rifle', 2000)
+        else
+          TriggerServerEvent("gum_weapons:givebackbox",GetPlayerServerId(PlayerId()),item)
+          exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, ""..Config.Language[6].text.."", 'rifle', 2000)
+        end
+      end
     else
-      TriggerServerEvent("gum_weapons:addammo",wephash,qt,key,playeritem,item)
-      SetPedAmmoByType(PlayerPedId(), GetHashKey(key), qt+currentammo);
-    end
-    else
+      TriggerServerEvent("gum_weapons:givebackbox",GetPlayerServerId(PlayerId()),item)
       exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, ""..Config.Language[8].text.."", 'rifle', 2000)
-      TriggerServerEvent("gum_weapons:givebackbox",item)
     end
 end)
 

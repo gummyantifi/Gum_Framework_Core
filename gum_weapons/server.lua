@@ -58,9 +58,7 @@ for a,b in pairs(Config.ammo) do
     for c,d in pairs(b) do 
         gumInv.RegisterUsableItem(d.itemId, function(data)
             gumInv.subItem(data.source, d.itemId, 1)
-            local secondGun,weaponItem = 0,0
-            if d.secondGun ~= nil then secondGun = d.secondGun end if d.weaponItem ~= nil then weaponItem = d.weaponItem end
-            TriggerClientEvent('gum_weapons:getgun', data.source, d.ammoNameHash, d.firstGun, d.boxCount, d.itemId, secondGun, weaponItem)
+            TriggerClientEvent('gum_weapons:getGun', data.source, d.ammoNameHash, d.boxCount, d.itemId)
         end)
     end
 end
@@ -143,7 +141,6 @@ AddEventHandler("gum_weapons:buy_weapon", function(weaponId,priceWeapon,modelNam
             if tonumber(money-priceWeapon) >= 0 then
                 if itThrowable then
                     Character.removeCurrency(tonumber(_source),0, priceWeapon)
-                    print(itThrowable, idThrowable, countThrowable)
                     gumInv.createWeapon(tonumber(_source), weaponId,  {[idThrowable] = countThrowable}, {})
                     TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[4].text.." "..modelName.."", 'rifle', 2000)
                 else
@@ -167,8 +164,8 @@ AddEventHandler("gum_weapons:buyammo", function(ammoId,ammoPrice,count)
     local Character = User.getUsedCharacter
     local user_money = Character.money
     if user_money >= tonumber(ammoPrice)*tonumber(count) then
-            TriggerEvent("gumCore:canCarryItem", tonumber(_source), ammoId, tonumber(count), function(canCarry2)
-                if canCarry2 then
+            TriggerEvent("gumCore:canCarryItem", tonumber(_source), ammoId, tonumber(count), function(canCarry)
+                if canCarry then
                     Character.removeCurrency(tonumber(_source),0, tonumber(count)*ammoPrice)
                     gumInv.addItem(tonumber(_source), ammoId, tonumber(count))
                     TriggerClientEvent("gum_notify:notify", tonumber(_source), Config.Language[1].text, ""..Config.Language[15].text..(tonumber(count)*ammoPrice).."$", 'money', 1000)
