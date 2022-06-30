@@ -8,7 +8,7 @@ Config.Language = {
   [5] = {text="You cant hold more weapons."},
   [6] = {text="You cant hold more ammo."},
   [7] = {text="You refill your weapon."},
-  [8] = {text="You have wrong weapon in hand."},
+  [8] = {text="You have wrong weapon in equipment."},
   [9] = {text="Accept"},
   [10] = {text="How much you need buy?"},
   [11] = {text="Open store"},
@@ -16,7 +16,8 @@ Config.Language = {
   [13] = {text="Someone is much close."},
   [14] = {text="scope"},--Command for put down scope (only for buyed scopes)
   [15] = {text="You buy ammo for : "},
-  [16] = {text="Your weapon is full, you get back box : "}
+  [16] = {text="Your weapon is full, you get back box : "},
+  [17] = {text="You have under 50% ammo, you refill your weapon."}
 }
 
 Config.priceTable = {
