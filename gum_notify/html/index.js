@@ -16,7 +16,7 @@ $(function() {
                 setTimeout(function(){ 
                     document.getElementById("title_text").innerHTML = item.title;
                     document.getElementById("text_system").innerHTML = item.text;
-                    document.getElementById("iconimage").style.backgroundImage = "url('images/"+item.id+".png')";
+                    document.getElementById("iconimage").style.backgroundImage = "url('nui://gum_inventory/html/images/items/"+item.id+".png')";
                     display2(true)
                 }, 400);
             } else {
