@@ -3,7 +3,7 @@
 
 
 
-# Gum_Framework Status Weapon + Customization</br></br>
+# Gum_Framework  Weapon + Customization</br></br>
 - Customization - You can search every components in Customization, and make your weapon like to you
 - Weapon store - All weapons you can add / remove etid
 - Dual wield - Inventory is edited for dual wield and fixed for use it
