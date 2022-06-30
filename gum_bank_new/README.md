@@ -3,5 +3,10 @@
 
 
 
-# Gum_Framework Barber store</br></br><img src="https://cdn.discordapp.com/attachments/944656734134370344/992019061422694440/barber.png">
-
+# Gum_Framework Bank</br></br><img src="https://cdn.discordapp.com/attachments/944656734134370344/992016871480115300/bank.png">
+<b>Included</b> : </br>
+- Add money</br>
+- Add gold</br>
+- Remove money</br>
+- Remove gold</br>
+- Take a borrow</br>
