@@ -48,4 +48,5 @@ Config.Language = {
     [42] = {text = "You cant hold much items",},
     [43] = {text = "He cant hold more weapons.",},
     [44] = {text = "You cant hold more weapons.",},
+    [45] = {text = "You must unequip first second weapon.",},
 }
