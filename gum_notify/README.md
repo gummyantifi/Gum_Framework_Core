@@ -15,7 +15,7 @@
 Client-Side
 <code>
 
-    exports['gum_notify']:DisplayLeftNotification("Title", "Text like</br>new Line, 'iconName', 2000)
+    exports['gum_notify']:DisplayLeftNotification("Title", "Text like</br>new Line", "iconName", 2000)
 
 </code>
 </br></br></br>
