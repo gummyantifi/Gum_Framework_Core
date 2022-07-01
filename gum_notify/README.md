@@ -12,14 +12,14 @@
 <img src="https://cdn.discordapp.com/attachments/944656734134370344/992037843453095966/Untitled.png"></img></br></br>
 </br>
 
-Server-side
+Client-Side
 <code>
 
     exports['gum_notify']:DisplayLeftNotification("Title", "Text like</br>new Line, 'iconName', 2000)
 
 </code>
 </br></br></br>
-Client-Side
+Server-side
 <code>
 
     TriggerClientEvent("gum_notify:notify", source, "Title", "Text like</br>new Line", "iconName", 2000)
