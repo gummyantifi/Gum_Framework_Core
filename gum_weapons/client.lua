@@ -420,6 +420,7 @@ end
 
 
 Citizen.CreateThread(function()
+  TriggerServerEvent("gum_weapons:getAllHash")
   for a,b in pairs(Config.ammo) do
     for c,d in pairs(b) do
       table.insert(ammoTableConfig, d.ammoNameHash)
