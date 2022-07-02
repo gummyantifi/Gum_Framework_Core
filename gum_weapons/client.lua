@@ -1221,7 +1221,6 @@ end)
 
 RegisterNetEvent("gum_weapons:getGun")
 AddEventHandler("gum_weapons:getGun", function(ammoHash,boxCount,itemId)
-  print(ammoHash,boxCount,itemId)
   local ammoNameHash = GetHashKey(ammoHash)
   local weaponSearched = false
     for i=0, 30 do
@@ -1229,6 +1228,12 @@ AddEventHandler("gum_weapons:getGun", function(ammoHash,boxCount,itemId)
       if wepHash ~= -1569615261 and wepHash ~= 0 then
         if Citizen.InvokeNative(0x7AA043F6C41D151E, ammoNameHash) == wepHash then
           weaponSearched = true
+        else 
+          for k,v in pairs(allWeapons) do
+            if GetHashKey(v.item) == wepHash then
+              weaponSearched = true
+            end
+          end
         end
       end
     end
@@ -1249,12 +1254,12 @@ AddEventHandler("gum_weapons:getGun", function(ammoHash,boxCount,itemId)
           SetPedAmmoByType(PlayerPedId(), ammoNameHash, boxCount);
           exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, ""..Config.Language[17].text.."", 'rifle', 2000)
         else
-          TriggerServerEvent("gum_weapons:givebackbox",GetPlayerServerId(PlayerId()),item)
+          TriggerServerEvent("gum_weapons:givebackbox", itemId)
           exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, ""..Config.Language[6].text.."", 'rifle', 2000)
         end
       end
     else
-      TriggerServerEvent("gum_weapons:givebackbox",GetPlayerServerId(PlayerId()),item)
+      TriggerServerEvent("gum_weapons:givebackbox", itemId)
       exports['gum_notify']:DisplayLeftNotification(Config.Language[1].text, ""..Config.Language[8].text.."", 'rifle', 2000)
     end
 end)
