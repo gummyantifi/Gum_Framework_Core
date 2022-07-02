@@ -881,14 +881,16 @@ AddEventHandler('gum_inventory:reload_weap', function()
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 					if weapon_first_used == false and weapon_second_used == false then
 						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 				end
 			else
@@ -904,8 +906,9 @@ AddEventHandler('gum_inventory:reload_weap', function()
 					if "weapon_melee_davy_lantern" == v.name then
 						Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
 					else
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
 					end
+					Citizen.Wait(400)
 				end
 			end
 			if Citizen.InvokeNative(0x0556E9D2ECF39D01, GetHashKey(v.name)) then
@@ -914,14 +917,16 @@ AddEventHandler('gum_inventory:reload_weap', function()
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_second_used = v.name
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+					Citizen.Wait(400)
 				end
 				if rifle_first_used == false and rifle_second_used == false then
 					LoadWeaponChar(v.name)
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_first_used = v.name
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+					Citizen.Wait(400)
 				end
 			end
 		end
@@ -943,14 +948,16 @@ function equip_weapon_login()
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 					if weapon_first_used == false and weapon_second_used == false then
 						LoadWeaponChar(v.name, false)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 				end
 			else
@@ -966,7 +973,8 @@ function equip_weapon_login()
 					if "weapon_melee_davy_lantern" == v.name then
 						Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
 					else
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 				end
 			end
@@ -976,14 +984,16 @@ function equip_weapon_login()
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_second_used = v.name
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+					Citizen.Wait(400)
 				end
 				if rifle_first_used == false and rifle_second_used == false then
 					LoadWeaponChar(v.name)
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_first_used = v.name
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+					Citizen.Wait(400)
 				end
 			end
 		end
@@ -999,14 +1009,16 @@ function equip_weapon_login()
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 					if weapon_first_used == false and weapon_second_used == false then
 						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 				end
 			else
@@ -1022,7 +1034,8 @@ function equip_weapon_login()
 					if "weapon_melee_davy_lantern" == v.name then
 						Citizen.InvokeNative(0xADF692B254977C0C, PlayerPedId(), GetHashKey('weapon_melee_davy_lantern'), 0, 12, 0, 0);
 					else
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 					end
 				end
 			end
@@ -1032,14 +1045,16 @@ function equip_weapon_login()
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_second_used = v.name
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+					Citizen.Wait(400)
 				end
 				if rifle_first_used == false and rifle_second_used == false then
 					LoadWeaponChar(v.name)
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_first_used = v.name
-					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+					Citizen.Wait(400)
 				end
 			end
 		end
@@ -1058,7 +1073,6 @@ function equip_weapon_login()
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_second_used), 0, true,true, 3, false, 0.5, 1.0, 752097756, false,0, false);
 		GiveWeaponToPed_2(PlayerPedId(), GetHashKey(weapon_first_used), 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false);
 	end
-	Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 	Citizen.Wait(500)
 	TriggerEvent("gum_character:selected_char")
 	logged_true = true
@@ -1251,7 +1265,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 							LoadWeaponChar(v.name, false)
 							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 							SetDirtToWeapon(v.id, v.conditionlevel)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+							Citizen.Wait(400)
 							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 							weapon_first_used = v.name
 							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[12].text.."", 'bag', 1000)
@@ -1261,7 +1276,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 							LoadWeaponChar(v.name, true)
 							LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 							SetDirtToWeapon(v.id, v.conditionlevel)
-							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+							Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+							Citizen.Wait(400)
 							TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 							weapon_second_used = v.name
 							exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[13].text.."", 'bag', 1000)
@@ -1279,7 +1295,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						end
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[18].text.."", 'bag', 1000)
 						can_save = true
@@ -1291,7 +1308,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						LoadWeaponChar(v.name)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 						rifle_first_used = v.name
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[15].text.."", 'bag', 1000)
@@ -1301,7 +1319,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						LoadWeaponChar(v.name)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
-						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, false, false)
+						Citizen.Wait(400)
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 1)
 						rifle_second_used = v.name
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[16].text.."", 'bag', 1000)
