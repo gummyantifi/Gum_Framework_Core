@@ -60,6 +60,11 @@ RegisterNetEvent("gum_weapons:wep_components")
 AddEventHandler("gum_weapons:wep_components", function(component)
   wep_comps = component
 end)
+local allWeapons = {}
+RegisterNetEvent("gum_weapons:sendAllHash") 
+AddEventHandler("gum_weapons:sendAllHash", function(tblwpn)
+  allWeapons = tblwpn
+end)
 
 RegisterNetEvent("gum_weapons:load_components") 
 AddEventHandler("gum_weapons:load_components", function(component)

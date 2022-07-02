@@ -881,12 +881,14 @@ AddEventHandler('gum_inventory:reload_weap', function()
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					end
 					if weapon_first_used == false and weapon_second_used == false then
 						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					end
 				end
 			else
@@ -912,12 +914,14 @@ AddEventHandler('gum_inventory:reload_weap', function()
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_second_used = v.name
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 				end
 				if rifle_first_used == false and rifle_second_used == false then
 					LoadWeaponChar(v.name)
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_first_used = v.name
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 				end
 			end
 		end
@@ -939,12 +943,14 @@ function equip_weapon_login()
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					end
 					if weapon_first_used == false and weapon_second_used == false then
 						LoadWeaponChar(v.name, false)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					end
 				end
 			else
@@ -970,12 +976,14 @@ function equip_weapon_login()
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_second_used = v.name
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 				end
 				if rifle_first_used == false and rifle_second_used == false then
 					LoadWeaponChar(v.name)
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_first_used = v.name
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 				end
 			end
 		end
@@ -991,12 +999,14 @@ function equip_weapon_login()
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_second_used = v.name
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					end
 					if weapon_first_used == false and weapon_second_used == false then
 						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 						SetDirtToWeapon(v.id, v.conditionlevel)
 						weapon_first_used = v.name
+						Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 					end
 				end
 			else
@@ -1022,12 +1032,14 @@ function equip_weapon_login()
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_second_used = v.name
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 				end
 				if rifle_first_used == false and rifle_second_used == false then
 					LoadWeaponChar(v.name)
 					LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
 					SetDirtToWeapon(v.id, v.conditionlevel)
 					rifle_first_used = v.name
+					Citizen.InvokeNative(0xFCCC886EDE3C63EC, PlayerPedId(), false, true, true)
 				end
 			end
 		end

@@ -53,6 +53,13 @@ AddEventHandler("gum_weapons:check_comps", function(weapon_id)
          end
      end)
 end)
+RegisterServerEvent("gum_weapons:getAllHash")
+AddEventHandler("gum_weapons:getAllHash", function()
+    local _source = source
+    local printData = gumInv.check_weapontable(_source)
+    TriggerClientEvent("gum_weapons:sendAllHash", _source, printData)
+
+end)
 
 for a,b in pairs(Config.ammo) do
     for c,d in pairs(b) do 
@@ -65,7 +72,7 @@ end
 
 
 RegisterServerEvent("gum_weapons:givebackbox")
-AddEventHandler("gum_weapons:givebackbox", function(source, item)
+AddEventHandler("gum_weapons:givebackbox", function(item)
     local _source = source
     gumInv.addItem(_source, item, 1)
     TriggerClientEvent("gum_notify:notify", _source, Config.Language[1].text, ""..Config.Language[16].text.."", 'rifle', 2000)

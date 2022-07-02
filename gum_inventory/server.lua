@@ -1247,13 +1247,15 @@ AddEventHandler('gum_inventory:saveAmmoNormal', function(wepName, ammoTable, wep
 		local identifier = Character.identifier
 	 	local charid = Character.charIdentifier
 		local newTableForSave = {}
-		for k,v in pairs(ammoTable) do
-			if v ~= false then
-				newTableForSave[k] = v
+		if ammoTable ~= nil then
+			for k,v in pairs(ammoTable) do
+				if v ~= false then
+					newTableForSave[k] = v
+				end
 			end
+			local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['id']=wepName, ['dirtlevel'] = tonumber(wepCond), ['conditionlevel'] = tonumber(wepCond), ['ammo'] = json.encode(newTableForSave)}
+			exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND id = @id AND used = 1", Parameters)
 		end
-		local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['id']=wepName, ['dirtlevel'] = tonumber(wepCond), ['conditionlevel'] = tonumber(wepCond), ['ammo'] = json.encode(newTableForSave)}
-		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND id = @id AND used = 1", Parameters)
 	end
 end)
 
