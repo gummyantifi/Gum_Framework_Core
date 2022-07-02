@@ -1222,7 +1222,8 @@ end)
 
 RegisterServerEvent('gum_inventory:saveAmmoThrow')
 AddEventHandler('gum_inventory:saveAmmoThrow', function(wepName, ammoTable, wepCond)
-	local User = gumCore.getUser(tonumber(source))
+	local _source = source
+	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
 	if User ~= nil then
 		local identifier = Character.identifier
@@ -1239,7 +1240,8 @@ AddEventHandler('gum_inventory:saveAmmoThrow', function(wepName, ammoTable, wepC
 end)
 RegisterServerEvent('gum_inventory:saveAmmoNormal')
 AddEventHandler('gum_inventory:saveAmmoNormal', function(wepName, ammoTable, wepCond)
-	local User = gumCore.getUser(tonumber(source))
+	local _source = source
+	local User = gumCore.getUser(tonumber(_source))
 	local Character = User.getUsedCharacter
 	if User ~= nil then
 		local identifier = Character.identifier

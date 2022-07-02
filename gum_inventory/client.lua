@@ -375,7 +375,7 @@ function saveWeaponAmmo()
 		haveDualSame = true
 	end
 	for a,b in pairs(ammo_list) do
-		if string.match(b[2], "revolver") or string.match(b[2], "REVOLVER") then
+		if string.match(b[2], "revolver") or string.match(b[2], "REVOLVER") and not string.match(b[2], "AMMO_22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -384,7 +384,7 @@ function saveWeaponAmmo()
 					saveWhat[1] = "revolver"
 				end
 			end
-		elseif string.match(b[2], "pistol") or string.match(b[2], "PISTOL") then
+		elseif string.match(b[2], "pistol") or string.match(b[2], "PISTOL") and not string.match(b[2], "AMMO_22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -393,7 +393,7 @@ function saveWeaponAmmo()
 					saveWhat[2] = "pistol"
 				end
 			end
-		elseif string.match(b[2], "repeater") or string.match(b[2], "REPEATER") then
+		elseif string.match(b[2], "repeater") or string.match(b[2], "REPEATER") and not string.match(b[2], "AMMO_22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -402,7 +402,7 @@ function saveWeaponAmmo()
 					saveWhat[1] = "repeater"
 				end
 			end
-		elseif string.match(b[2], "shotgun") or string.match(b[2], "SHOTGUN") then
+		elseif string.match(b[2], "shotgun") or string.match(b[2], "SHOTGUN") and not string.match(b[2], "AMMO_22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -411,7 +411,7 @@ function saveWeaponAmmo()
 					saveWhat[1] = "shotgun"
 				end
 			end
-		elseif string.match(b[2], "rifle") or string.match(b[2], "RIFLE") and not string.match(b[2], "22") then
+		elseif string.match(b[2], "rifle") or string.match(b[2], "RIFLE") and not string.match(b[2], "AMMO_22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -420,7 +420,7 @@ function saveWeaponAmmo()
 					saveWhat[1] = "rifle"
 				end
 			end
-		elseif string.match(b[2], "arrow") or string.match(b[2], "ARROW") then
+		elseif string.match(b[2], "arrow") or string.match(b[2], "ARROW") and not string.match(b[2], "AMMO_22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -429,7 +429,7 @@ function saveWeaponAmmo()
 					saveWhat[1] = "arrow"
 				end
 			end
-		elseif not string.match(b[2], "rifle") or not string.match(b[2], "RIFLE") and string.match(b[2], "22") then
+		elseif (not string.match(b[2], "rifle") or not string.match(b[2], "RIFLE")) and string.match(b[2], "AMMO_22") then
 			ammoNormal[b[2]] = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(b[2]))
 			if ammoNormal[b[2]] ~= backupAmmoNormal[b[2]] then
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
@@ -438,6 +438,7 @@ function saveWeaponAmmo()
 					saveWhat[1] = "varmint"
 				end
 			end
+		else
 		end
 	end
 	if saveItNow == true and saveWhat ~= nil then
@@ -615,11 +616,28 @@ function saveWeaponAmmo()
 			Citizen.Wait(0)
 			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 		end
-		if saveWhat[1] =="varmint" then
-			print("VARMINT")
+		if saveWhat[1] =="arrow" then
 			local saveTableFilter = {}
 			for a,b in pairs(ammoNormal) do
-				if string.match(a, "22") then
+				if string.match(a, "arrow") or string.match(a, "ARROW") then
+					saveTableFilter[a] = b
+				end
+			end
+			Citizen.Wait(0)
+			for k,v in pairs(weapon_table) do
+				if v.used == 1 then
+					if "WEAPON_BOW" == v.name or "WEAPON_BOW_IMPROVED" == v.name then
+						weaponId = v.id
+					end
+				end
+			end
+			Citizen.Wait(0)
+			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, 0.0)
+		end
+		if saveWhat[1] =="varmint" then
+			local saveTableFilter = {}
+			for a,b in pairs(ammoNormal) do
+				if string.match(a, "AMMO_22") then
 					saveTableFilter[a] = b
 				end
 			end
@@ -640,31 +658,6 @@ function saveWeaponAmmo()
 			end
 			Citizen.Wait(0)
 			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
-		end
-		if saveWhat[1] =="arrow" then
-			local saveTableFilter = {}
-			for a,b in pairs(ammoNormal) do
-				if string.match(a, "arrow") or string.match(a, "ARROW") then
-					saveTableFilter[a] = b
-				end
-			end
-			Citizen.Wait(0)
-			for k,v in pairs(weapon_table) do
-				if v.used == 1 then
-					if rightHand == GetHashKey(v.name) then
-						weaponId = v.id
-						if v.conditionlevel+0.0002 <= 1.0 then
-							v.conditionlevel = v.conditionlevel+0.0002
-							condition_level[v.id] = v.conditionlevel
-						else
-							v.conditionlevel = 1.0
-							condition_level[v.id] = 1.0
-						end
-					end
-				end
-			end
-			Citizen.Wait(0)
-			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[v.id])
 		end
 	end
 	ignorMeForLoadNormal = true
@@ -1179,6 +1172,11 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 						return false
 					end
 				elseif v.name == weapon_second_used and data.model == weapon_second_used then
+					for x,z in pairs(json.decode(v.ammo)) do
+						if z ~= false then
+							Citizen.InvokeNative(0xB6CFEC32E3742779, PlayerPedId(),GetHashKey(x), z, 0x2188E0A3);
+						end
+					end
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					weapon_second_used = false
@@ -1187,14 +1185,28 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 					equip_spam = false
 					return false
 				elseif v.name == rifle_first_used and data.model == rifle_first_used then
-					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
+					saveWeaponAmmo()
+					Citizen.Wait(0)
+					for x,z in pairs(json.decode(v.ammo)) do
+						if z ~= false then
+							Citizen.InvokeNative(0xB6CFEC32E3742779, PlayerPedId(),GetHashKey(x), z, 0x2188E0A3);
+						end
+					end
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
+					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					rifle_first_used = false
 					exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[22].text.."", 'bag', 1000)
 					can_save = true
 					equip_spam = false
 					return false
 				elseif v.name == rifle_second_used and data.model == rifle_second_used then
+					saveWeaponAmmo()
+					Citizen.Wait(0)
+					for x,z in pairs(json.decode(v.ammo)) do
+						if z ~= false then
+							Citizen.InvokeNative(0xB6CFEC32E3742779, PlayerPedId(),GetHashKey(x), z, 0x2188E0A3);
+						end
+					end
 					TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 					rifle_second_used = false
@@ -1204,6 +1216,11 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 					return false
 				else
 					if data.model == v.name and tonumber(data.id) == v.id then
+						for x,z in pairs(json.decode(v.ammo)) do
+							if z ~= false then
+								Citizen.InvokeNative(0xB6CFEC32E3742779, PlayerPedId(),GetHashKey(x), z, 0x2188E0A3);
+							end
+						end
 						TriggerServerEvent("gum_inventory:send_state_weapon", data.id, 0)
 						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(data.model))
 						exports['gum_notify']:DisplayLeftNotification(Config.Language[10].text, ""..Config.Language[21].text.."", 'bag', 1000)
@@ -1284,6 +1301,8 @@ RegisterNUICallback('use_UseWeapon', function(data, cb)
 		end
 	end
 	Citizen.Wait(0)
+	can_save = true
+	equip_spam = false
 end)
 
 
