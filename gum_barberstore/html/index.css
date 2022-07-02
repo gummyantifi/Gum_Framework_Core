@@ -178,11 +178,12 @@ body {
     font-family: 'crock';
     position:relative;
     width: 330px;
-    height: 65px;
+    height: fit-content;
     background-image: url('button.png');
     background-size: 100% 100%;
     left:20px;
-    padding-top:5px;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 #button2 {
     font-family: 'crock2';
@@ -196,34 +197,83 @@ body {
     padding-top:5px;
 }
   
-  .slider {
-      position:relative;
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    width: 99%; /* Full-width */
-    height: 5px; /* Specified height */
-    background: #9c9c9c; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.6; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-    border-radius:10px;
-    padding-top:1px;
-  }
-  
-    .slider::-webkit-slider-thumb {
+.slider {
+    position:relative;
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 99%; /* Full-width */
+  height: 5px; /* Specified height */
+  background: #9c9c9c; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.6; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  border-radius:10px;
+  padding-top:1px;
+}
+
+.slider {
+    position:relative;
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 90%; /* Full-width */
+  height: 7px; /* Specified height */
+  background: #9c9c9c; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.6; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  border-radius:10px;
+  padding-top:1px;
+  left: 2%;
+}
+.slider2 {
+    position:relative;
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 80%; /* Full-width */
+  height: 7px; /* Specified height */
+  background: #9c9c9c; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.6; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  border-radius:10px;
+  padding-top:1px;
+  left: 2%;
+}
+
+
+.slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
-    width: 10px; /* Set a specific slider handle width */
-    height: 10px; /* Slider handle height */
+    width: 13px; /* Set a specific slider handle width */
+    height: 13px; /* Slider handle height */
     background: #9c0101; /* Green background */
     cursor: pointer; /* Cursor on hover */
     border-radius: 100%;
   }
   
   .slider::-moz-range-thumb {
-    width: 11px; /* Set a specific slider handle width */
-    height: 11px; /* Slider handle height */
+    width: 13px; /* Set a specific slider handle width */
+    height: 13px; /* Slider handle height */
+    background: #b8b8b8; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 100%;
+}
+.slider2::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 13px; /* Set a specific slider handle width */
+    height: 13px; /* Slider handle height */
+    background: #9c0101; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 100%;
+  }
+  
+  .slider2::-moz-range-thumb {
+    width: 13px; /* Set a specific slider handle width */
+    height: 13px; /* Slider handle height */
     background: #b8b8b8; /* Green background */
     cursor: pointer; /* Cursor on hover */
     border-radius: 100%;
