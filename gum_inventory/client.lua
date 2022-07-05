@@ -1906,6 +1906,9 @@ RegisterNUICallback('give_checked_item', function(data, cb)
 				if v.used == 0 then
 					TriggerServerEvent("gum_inventory:turn_ped", data.id)
 					TriggerServerEvent("gumCore:giveWeapon", GetPlayerServerId(PlayerId()), data.item, data.id)
+					for c,d in pairs(json.decode(v.ammo)) do
+						Citizen.InvokeNative(0xB6CFEC32E3742779, PlayerPedId(),GetHashKey(c), 999, 0x2188E0A3);
+					end
 					Show_Items(false, false)
 					SetNuiFocus(false, false)
 					guiEnabled = false
