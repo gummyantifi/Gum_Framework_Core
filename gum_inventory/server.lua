@@ -1197,29 +1197,6 @@ AddEventHandler('gumCore:subWeapon', function(source, weaponid)
 	end)
 end)
 
-RegisterServerEvent('gum_inventory:save_ammo')
-AddEventHandler('gum_inventory:save_ammo', function(wepId1, wepAmmo1, wepCond1, wepId2, wepAmmo2, wpCond2)
-	local User = gumCore.getUser(tonumber(source))
-	local Character = User.getUsedCharacter
-	if User ~= nil then
-		local identifier = Character.identifier
-	 	local charid = Character.charIdentifier
-		if wepId1 ~= nil then
-			if wepId2 == nil then
-				local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['id']=wepId1, ['dirtlevel'] = tonumber(wepCond1), ['conditionlevel'] = tonumber(wepCond1), ['ammo'] = json.encode(wepAmmo1)}
-				exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND id = @id", Parameters)
-			else
-				local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['id']=wepId1, ['dirtlevel'] = tonumber(wepCond1), ['conditionlevel'] = tonumber(wepCond1), ['ammo'] = json.encode(wepAmmo1)}
-				exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND id = @id", Parameters)
-				Citizen.Wait(500)
-				local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['id']=wepId2, ['dirtlevel'] = tonumber(wepCond2), ['conditionlevel'] = tonumber(wepCond2), ['ammo'] = json.encode(wepAmmo2)}
-				exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND id = @id", Parameters)
-
-			end
-		end
-	end
-end)
-
 RegisterServerEvent('gum_inventory:saveAmmoThrow')
 AddEventHandler('gum_inventory:saveAmmoThrow', function(wepName, ammoTable, wepCond)
 	local _source = source
@@ -1268,15 +1245,4 @@ AddEventHandler('gum_inventory:save_cleaning', function(name, cleaning)
 	local charid = Character.charIdentifier
 	local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['dirtlevel'] = tonumber(cleaning), ['conditionlevel'] = tonumber(cleaning) }
 	exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
-end)
-
-RegisterServerEvent('gum_inventory:only_ammo')
-AddEventHandler('gum_inventory:only_ammo', function(name, new_ammo_table)
-	local User = gumCore.getUser(tonumber(source))
-	local Character = User.getUsedCharacter
-	local identifier = Character.identifier
-	local charid = Character.charIdentifier
-
-	local Parameters = {['identifier'] = identifier, ['charidentifier'] = charid, ['name'] = name, ['ammo'] = json.encode(new_ammo_table) }
-	exports.ghmattimysql:execute("UPDATE loadout SET ammo=@ammo WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 end)
