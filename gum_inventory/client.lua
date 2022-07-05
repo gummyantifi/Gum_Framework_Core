@@ -408,7 +408,11 @@ function saveWeaponAmmo()
 				backupAmmoNormal[b[2]] = ammoNormal[b[2]]
 				if ignorMeForLoadNormal == true then
 					saveItNow = true
-					saveWhat[1] = "shotgun"
+					if weaponCounter >= 2 then
+						saveWhat[2] = "shotgun"
+					else
+						saveWhat[1] = "shotgun"
+					end
 				end
 			end
 		elseif string.match(b[2], "rifle") or string.match(b[2], "RIFLE") and not string.match(b[2], "AMMO_22") then
@@ -566,7 +570,7 @@ function saveWeaponAmmo()
 			Citizen.Wait(0)
 			TriggerServerEvent("gum_inventory:saveAmmoNormal", weaponId, saveTableFilter, condition_level[weaponId])
 		end
-		if saveWhat[1] =="shotgun" then
+		if saveWhat[1] =="shotgun" or saveWhat[2] == "shotgun" then
 			local saveTableFilter = {}
 			for a,b in pairs(ammoNormal) do
 				if string.match(a, "shotgun") or string.match(a, "SHOTGUN") then
