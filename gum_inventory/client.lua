@@ -459,7 +459,7 @@ function saveWeaponAmmo()
 				for k,v in pairs(weapon_table) do
 					if v.used == 1 then
 						if string.match(v.name, "revolver") or string.match(v.name, "REVOLVER") then
-							if GetHashKey(weapon_first_used) == GetHashKey(v.name)  then
+							-- if GetHashKey(weapon_first_used) == GetHashKey(v.name)  then
 								weaponId = v.id
 								if v.conditionlevel+0.0002 <= 1.0 then
 									v.conditionlevel = v.conditionlevel+0.0002
@@ -468,7 +468,7 @@ function saveWeaponAmmo()
 									v.conditionlevel = 1.0
 									condition_level[v.id] = 1.0
 								end
-							end
+							-- end
 						end
 					end
 				end
@@ -478,7 +478,7 @@ function saveWeaponAmmo()
 				for k,v in pairs(weapon_table) do
 					if v.used == 1 then
 						if string.match(v.name, "revolver") or string.match(v.name, "REVOLVER") then
-							if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
+							-- if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
 								weaponId = v.id
 								if v.conditionlevel+0.0002 <= 1.0 then
 									v.conditionlevel = v.conditionlevel+0.0002
@@ -487,7 +487,7 @@ function saveWeaponAmmo()
 									v.conditionlevel = 1.0
 									condition_level[v.id] = 1.0
 								end
-							end
+							-- end
 						end
 					end
 				end
@@ -508,7 +508,7 @@ function saveWeaponAmmo()
 				for k,v in pairs(weapon_table) do
 					if v.used == 1 then
 						if string.match(v.name, "pistol") or string.match(v.name, "PISTOL") then
-							if GetHashKey(weapon_first_used) == GetHashKey(v.name) then
+							-- if GetHashKey(weapon_first_used) == GetHashKey(v.name) then
 								weaponId2 = v.id
 								if v.conditionlevel+0.0002 <= 1.0 then
 									v.conditionlevel = v.conditionlevel+0.0002
@@ -517,7 +517,7 @@ function saveWeaponAmmo()
 									v.conditionlevel = 1.0
 									condition_level[v.id] = 1.0
 								end
-							end
+							-- end
 						end
 					end
 				end
@@ -527,7 +527,7 @@ function saveWeaponAmmo()
 				for k,v in pairs(weapon_table) do
 					if v.used == 1 then
 						if string.match(v.name, "pistol") or string.match(v.name, "PISTOL") then
-							if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
+							-- if GetHashKey(weapon_first_used) == GetHashKey(v.name) or GetHashKey(weapon_second_used) == GetHashKey(v.name)  then
 								weaponId = v.id
 								if v.conditionlevel+0.0002 <= 1.0 then
 									v.conditionlevel = v.conditionlevel+0.0002
@@ -536,7 +536,7 @@ function saveWeaponAmmo()
 									v.conditionlevel = 1.0
 									condition_level[v.id] = 1.0
 								end
-							end
+							-- end
 						end
 					end
 				end
@@ -555,7 +555,7 @@ function saveWeaponAmmo()
 			Citizen.Wait(0)
 			for k,v in pairs(weapon_table) do
 				if v.used == 1 then
-					if rightHand == GetHashKey(v.name) then
+					if string.match(v.name, "REPEATER") or string.match(v.name, "repeater") then
 						weaponId = v.id
 						if v.conditionlevel+0.0002 <= 1.0 then
 							v.conditionlevel = v.conditionlevel+0.0002
@@ -580,7 +580,7 @@ function saveWeaponAmmo()
 			Citizen.Wait(0)
 			for k,v in pairs(weapon_table) do
 				if v.used == 1 then
-					if rightHand == GetHashKey(v.name) then
+					if string.match(v.name, "shotgun") or string.match(v.name, "SHOTGUN") then
 						weaponId = v.id
 						if v.conditionlevel+0.0002 <= 1.0 then
 							v.conditionlevel = v.conditionlevel+0.0002
@@ -605,7 +605,7 @@ function saveWeaponAmmo()
 			Citizen.Wait(0)
 			for k,v in pairs(weapon_table) do
 				if v.used == 1 then
-					if rightHand == GetHashKey(v.name) then
+					if string.match(v.name, "rifle") or string.match(v.name, "RIFLE") then
 						weaponId = v.id
 						if v.conditionlevel+0.0002 <= 1.0 then
 							v.conditionlevel = v.conditionlevel+0.0002
