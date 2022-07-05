@@ -1238,6 +1238,7 @@ AddEventHandler('gum_inventory:saveAmmoThrow', function(wepName, ammoTable, wepC
 		exports.ghmattimysql:execute("UPDATE loadout SET dirtlevel=@dirtlevel, ammo=@ammo, conditionlevel=@conditionlevel WHERE identifier = @identifier AND charidentifier = @charidentifier AND name = @name AND used = 1", Parameters)
 	end
 end)
+
 RegisterServerEvent('gum_inventory:saveAmmoNormal')
 AddEventHandler('gum_inventory:saveAmmoNormal', function(wepName, ammoTable, wepCond)
 	local _source = source

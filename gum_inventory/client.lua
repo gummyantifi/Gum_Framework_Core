@@ -875,7 +875,7 @@ AddEventHandler('gum_inventory:reload_weap', function()
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
 			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
-				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) or v.name == "WEAPON_SHOTGUN_SAWEDOFF" then
 					if weapon_first_used ~= false and weapon_second_used == false then
 						LoadWeaponChar(v.name, false)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
@@ -942,7 +942,7 @@ function equip_weapon_login()
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
 			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
-				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) or v.name == "WEAPON_SHOTGUN_SAWEDOFF" then
 					if weapon_first_used ~= false and weapon_second_used == false then
 						LoadWeaponChar(v.name, true)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
@@ -1003,7 +1003,7 @@ function equip_weapon_login()
 	for k,v in pairs(weapon_table) do
 		if v.used == 1 then
 			if Citizen.InvokeNative(0xD955FEE4B87AFA07, GetHashKey(v.name)) then
-				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) then
+				if Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(v.name)) or Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(v.name)) or v.name == "WEAPON_SHOTGUN_SAWEDOFF" then
 					if weapon_first_used ~= false and weapon_second_used == false then
 						LoadWeaponChar(v.name, false)
 						LoadCompAndAmmo(json.decode(v.ammo), json.decode(v.comps))
