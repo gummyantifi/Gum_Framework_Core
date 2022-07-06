@@ -46,10 +46,10 @@ RegisterCommand("giveitem", function(source, args)
 					local Character2 = User2.getUsedCharacter
 					local charid = Character2.charIdentifier
 					if canCarry2 then
-						gumCore.Debug("CharIdentifier : "..charid.." \nGet item "..itemid..", count "..counti..".")
+						gumCore.Debug("CharIdentifier : "..charid.." Get item "..itemid..", count "..counti..".")
 						Inventory.addItem(tonumber(target), itemid, tonumber(counti))
 					else
-						gumCore.Debug("CharIdentifier : "..charid.." \nCant carry becouse have much items")
+						gumCore.Debug("CharIdentifier : "..charid.." Cant carry becouse have much items")
 					end
 				end)
 			else

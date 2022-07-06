@@ -149,6 +149,9 @@ RegisterCommand("setjob", function(source, args)
 			if User2 ~= nil then
 				local Character2 = User2.getUsedCharacter
 				Character2.setJob(player_id, job_name, job_grade)
+				if Config.Info_print then
+					gumCore.Debug("Player with ID get "..player_id.." : "..job_name.." : "..job_grade.."")
+				end
 			end
 		else
 			gumCore.Error("Bad syntax : use example : /setjob ID Police 1")
@@ -166,6 +169,9 @@ RegisterCommand("setjob", function(source, args)
 				local Character2 = User2.getUsedCharacter
 				if group == "admin" then
 					Character2.setJob(player_id, job_name, job_grade)
+					if Config.Info_print then
+						gumCore.Debug("Player with ID get "..player_id.." : "..job_name.." : "..job_grade.."")
+					end
 				else return false
 				end
 			else
@@ -188,6 +194,9 @@ RegisterCommand("setchar", function(source, args)
 			exports.ghmattimysql:execute("UPDATE users SET `chars`=@chars WHERE identifier = @identifier", {['identifier'] = steam_hex,['chars'] = char_count},
 			function (result)
 			end)
+			if Config.Info_print then
+				gumCore.Debug("Player "..steam_hex.." get  "..char_count.." Count")
+			end
 		else
 			gumCore.Error("Bad syntax : use example : /setchar 1100010fffd026 2")
 		end
@@ -202,6 +211,9 @@ RegisterCommand("setchar", function(source, args)
 				exports.ghmattimysql:execute("UPDATE users SET `chars`=@chars WHERE identifier = @identifier", {['identifier'] = steam_hex,['chars'] = char_count},
 				function (result)
 				end)
+				if Config.Info_print then
+					gumCore.Debug("Player "..steam_hex.." get  "..char_count.." Count")
+				end
 			else
 				gumCore.Error("Bad syntax : use example : /setchar 1100010fffd026 2")
 			end
@@ -225,6 +237,9 @@ RegisterCommand("delchar", function(source, args)
 			table.remove(AllCharacters, char_for_del)
 			exports.ghmattimysql:execute("DELETE FROM characters WHERE charidentifier = @charidentifier", {["@charidentifier"] = charid}, function(result)
 				LoadedUsers[hex_for_del].setUsedCharacter = User.setUsedCharacter
+				if Config.Info_print then
+					gumCore.Debug("Character "..char_for_del.." deleted on steam  "..hex_for_del.."")
+				end
 			end)
 		else
 			gumCore.Error("Bad syntax : use example : /delchar 727")
@@ -247,6 +262,9 @@ RegisterCommand("delchar", function(source, args)
 				exports.ghmattimysql:execute("DELETE FROM characters WHERE charidentifier = @charidentifier", {["@charidentifier"] = charid}, function(result)
 					LoadedUsers[hex_for_del].setUsedCharacter = User.setUsedCharacter
 				end)
+				if Config.Info_print then
+					gumCore.Debug("Character "..char_for_del.." deleted on steam  "..hex_for_del.."")
+				end
 			else
 				gumCore.Error("Bad syntax : use example : /delchar 727")
 			end
@@ -266,6 +284,9 @@ RegisterCommand("addcurrency", function(source, args)
 			if User2 ~= nil then
 				local Character2 = User2.getUsedCharacter
 				Character2.addCurrency(player_id, currency, howmuch)
+				if Config.Info_print then
+					gumCore.Debug("Player with ID : "..player_id.." get "..currency.." and count "..howmuch.."")
+				end
 			end
 		else
 			gumCore.Error("Bad syntax : use example : /addcurrency ID type howmuch")
@@ -283,6 +304,9 @@ RegisterCommand("addcurrency", function(source, args)
 				local Character2 = User2.getUsedCharacter
 				if group == "admin" then
 					Character2.addCurrency(player_id, currency, howmuch)
+					if Config.Info_print then
+						gumCore.Debug("Player with ID : "..player_id.." get "..currency.." and count "..howmuch.."")
+					end
 				else return false
 				end
 			else
@@ -303,6 +327,9 @@ RegisterCommand("setgroup", function(source, args)
 			local User = gumCore.getUser(player_id)
 			if User ~= nil then
 				User.setGroup(source, player_id, group_name)
+				if Config.Info_print then
+					gumCore.Debug("Player with ID : "..player_id.." get group "..group_name.."")
+				end
 			else
 				gumCore.Error("This user not found.")
 			end
@@ -321,6 +348,9 @@ RegisterCommand("setgroup", function(source, args)
 				local Character2 = User2.getUsedCharacter
 				if group == "admin" then
 					User2.setGroup(source, player_id, group_name)
+					if Config.Info_print then
+						gumCore.Debug("Player with ID : "..player_id.." get group "..group_name.."")
+					end
 				else return false
 				end
 			else
