@@ -21,74 +21,94 @@ function getTemp()
 end
 RegisterNetEvent("gum:SelectedCharacter")
 AddEventHandler("gum:SelectedCharacter", function(charid)
-Citizen.CreateThread(function()
-    TriggerEvent('gum:ExecuteServerCallBack','gum_metabolism:getStatus', function(hunger, thirst) 
-        if hunger ~= nil and thirst ~= nil then
-            food = hunger
-            water = thirst
+    Citizen.CreateThread(function()
+        TriggerEvent('gum:ExecuteServerCallBack','gum_metabolism:getStatus', function(hunger, thirst) 
+            if hunger ~= nil and thirst ~= nil then
+                food = hunger
+                water = thirst
+            end
+        end)
+        while true do
+            local tempCd = GetEntityCoords(PlayerPedId())
+            Citizen.InvokeNative(0xB98B78C3768AF6E0, true)
+            temperature = GetTemperatureAtCoords(tempCd)
+            water = water-Config.CountDownStandart
+            food = food-Config.CountDownStandart
+
+            if tonumber(temperature) < 30 then
+                water = water-Config.TempBiggerDown
+            end
+            if tonumber(temperature) < -2 then
+                food = food-Config.TempLowwerDown
+            end
+            if Citizen.InvokeNative(0xDE4C184B2B9B071A, PlayerPedId()) then--Walk
+                water = water-Config.CountDownIfWalk
+            end
+            if Citizen.InvokeNative(0xC5286FFC176F28A2, PlayerPedId()) then--Run
+                water = water-Config.CountDownIfRun
+            end
+            if Citizen.InvokeNative(0x57E457CD2C0FC168, PlayerPedId()) then--Sprint
+                water = water-Config.CountDownIfSprint
+            end
+
+
+            if drunkPercent >= 0 then
+                drunkPercent = drunkPercent-Config.AlcoholCountDown
+            end
+            if drunkPercent <= 0 then
+                drunkPercent = 0
+            end
+            if drunkPercent >= Config.PercentDrunkForVomit then
+                local random = math.random(0,100)
+                if random < Config.PercentForVomit then
+                    drunkPercent = drunkPercent-Config.HowMuchDownAfterVomit
+                    playCustomAnim("amb_misc@world_human_vomit@male_a@base", "base", 10000, -1)
+                end
+            end
+            if (food < 0) then
+                food = 0
+            end
+            if (food > 100) then
+                food = 100
+            end
+            if water < 0 then
+                water = 0
+            end
+            if water > 100 then
+                water = 100	
+            end
+            -- print("-----")
+            -- print("Food : ", food)
+            -- print("Water : ", water)
+            -- print("Drunk : ", drunkPercent)
+            -- print("Temp : ", temperature)
+            -- print("Health : ", GetEntityHealth(PlayerPedId()))
+            drunkSet(drunkPercent)
+
+            Citizen.Wait(Config.CheckMetaTime*1000)
         end
     end)
-    while true do
-        local tempCd = GetEntityCoords(PlayerPedId())
-        Citizen.InvokeNative(0xB98B78C3768AF6E0, true)
-        temperature = GetTemperatureAtCoords(tempCd)
-        water = water-Config.CountDownStandart
-        food = food-Config.CountDownStandart
-
-        if tonumber(temperature) < 30 then
-            water = water-Config.TempBiggerDown
-        end
-        if tonumber(temperature) < -2 then
-            food = food-Config.TempLowwerDown
-        end
-        if Citizen.InvokeNative(0xDE4C184B2B9B071A, PlayerPedId()) then--Walk
-            water = water-Config.CountDownIfWalk
-        end
-        if Citizen.InvokeNative(0xC5286FFC176F28A2, PlayerPedId()) then--Run
-            water = water-Config.CountDownIfRun
-        end
-        if Citizen.InvokeNative(0x57E457CD2C0FC168, PlayerPedId()) then--Sprint
-            water = water-Config.CountDownIfSprint
-        end
-
-
-        if drunkPercent >= 0 then
-            drunkPercent = drunkPercent-Config.AlcoholCountDown
-        end
-        if drunkPercent <= 0 then
-            drunkPercent = 0
-        end
-        if drunkPercent >= Config.PercentDrunkForVomit then
-            local random = math.random(0,100)
-            if random < Config.PercentForVomit then
-                drunkPercent = drunkPercent-Config.HowMuchDownAfterVomit
-                playCustomAnim("amb_misc@world_human_vomit@male_a@base", "base", 10000, -1)
+    Citizen.CreateThread(function()
+        while true do
+            local tempCd = GetEntityCoords(PlayerPedId())
+            Citizen.InvokeNative(0xB98B78C3768AF6E0, true)
+            temperature = GetTemperatureAtCoords(tempCd)
+            if temperature < 0 then
+                exports['gum_notify']:DisplayLeftNotification("Temperature", "Are you cold", 'temp', 2000)
+            elseif temperature > 35 then
+                exports['gum_notify']:DisplayLeftNotification("Temperature", "Are you warn", 'temp', 2000)
             end
+            Citizen.Wait(10000)
         end
-        if (food < 0) then
-            food = 0
+    end)
+    Citizen.CreateThread(function()
+        while true do
+            TriggerServerEvent("gum_metabolism:updateMeta", food, water)
+            Citizen.Wait(30000)
         end
-        if (food > 100) then
-            food = 100
-        end
-        if water < 0 then
-            water = 0
-        end
-        if water > 100 then
-            water = 100	
-        end
-        -- print("-----")
-        -- print("Food : ", food)
-        -- print("Water : ", water)
-        -- print("Drunk : ", drunkPercent)
-        -- print("Temp : ", temperature)
-        -- print("Health : ", GetEntityHealth(PlayerPedId()))
-        drunkSet(drunkPercent)
+    end)
+end)
 
-        Citizen.Wait(Config.CheckMetaTime*1000)
-    end
-end)
-end)
 
 RegisterNetEvent("gum_metabolism:eatIt")
 AddEventHandler("gum_metabolism:eatIt", function(itemData)
