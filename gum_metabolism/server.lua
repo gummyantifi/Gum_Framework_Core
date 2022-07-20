@@ -37,7 +37,7 @@ AddEventHandler('playerDropped', function (reason)
     local _source = source
     local User = gumCore.getUser(_source)
     local Character = User.getUsedCharacter
-	local meta_table = {Thirst=metaDataCache[tonumber(_source)].hunger, Hunger=metaDataCache[tonumber(_source)].thirst}
+	local meta_table = {Thirst=metaDataCache[tonumber(_source)].thirst, Hunger=metaDataCache[tonumber(_source)].hunger}
     Character.setMeta(tonumber(_source), meta_table)
 end)
 
