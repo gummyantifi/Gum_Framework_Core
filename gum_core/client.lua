@@ -49,14 +49,6 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
     end)
 end)
 
-CreateThread(function()
-    TriggerEvent('chat:addSuggestion', '/addwl', 'Add player on whitelist | Example usage : /addwl 110000100b0182c', {})
-    TriggerEvent('chat:addSuggestion', '/setjob', 'Set player job | Example usage : /setjob [TARGET] [JOB] [GRADE]', {})
-    TriggerEvent('chat:addSuggestion', '/setgroup', 'Set user group | Example usage : /setgroup [TARGET] [GROUP]', {})
-    TriggerEvent('chat:addSuggestion', '/addcurrency', 'Set player currency | Example usage : /addcurrency [TARGET] [TYPE] [COUNT]', {})
-    TriggerEvent('chat:addSuggestion', '/giveitem', 'Give item to player | Example usage : /giveitem [TARGET] [ID ITEM] [COUNT]', {})
-end)
-
 RegisterNetEvent("gum:endcallback", function(callbackName, ticket, ...)
 	local fn = getCallbackResolution(callbackName, ticket)
 	if fn then

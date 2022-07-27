@@ -220,7 +220,7 @@ body {
     position:relative;
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
-  width: 80%; /* Full-width */
+  width: 70%; /* Full-width */
   height: 7px; /* Specified height */
   background: #9c9c9c; /* Grey background */
   outline: none; /* Remove outline */
