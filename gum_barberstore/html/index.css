@@ -47,7 +47,7 @@ body {
     color: rgb(255, 255, 255);
     position: absolute;
     top: 50%;
-    left: 13%;
+    right: 10%;
     transform: translate(-50%, -50%);
     width: 380px;
     max-width: 381px;
@@ -231,7 +231,7 @@ body {
     position:relative;
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
-  width: 80%; /* Full-width */
+  width: 70%; /* Full-width */
   height: 7px; /* Specified height */
   background: #9c9c9c; /* Grey background */
   outline: none; /* Remove outline */
