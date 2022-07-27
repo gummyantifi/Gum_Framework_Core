@@ -286,6 +286,7 @@ RegisterNUICallback('send_change', function(data, cb)
     if data.id == "HAIRS" then
         if tonumber(data.value) == 0 then
             pricing_table["Hair"] = 0.0
+            Skin_Table["Hair"] = -1
             Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x864B03AE, 0)
             Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0);
         else
@@ -321,7 +322,8 @@ RegisterNUICallback('send_change', function(data, cb)
         end
     elseif data.id == "BEARDS" then
         if tonumber(data.value) == 0 then
-            pricing_table["Teeth"] = 0.0
+            Skin_Table["Beard"] = -1
+            pricing_table["Beard"] = 0.0
             Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xF8016BCA, 0)
             Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0);
         else
