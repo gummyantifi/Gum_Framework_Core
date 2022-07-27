@@ -84,7 +84,12 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
             -- print("Temp : ", temperature)
             -- print("Health : ", GetEntityHealth(PlayerPedId()))
             drunkSet(drunkPercent)
-
+            if water == 0 then
+                SetEntityHealth(PlayerPedId(), GetEntityHealth(PlayerPedId())-5)
+            end
+            if food == 0 then
+                SetEntityHealth(PlayerPedId(), GetEntityHealth(PlayerPedId())-5)
+            end
             Citizen.Wait(Config.CheckMetaTime*1000)
         end
     end)
