@@ -52,7 +52,7 @@ RegisterCommand('admin', function(source, args, rawCommand)
     Citizen.Wait(0)
     for a, b in pairs(GetPlayers()) do
         local user2 = gumCore.getUser(b)
-        if b ~= nil then
+        if user2 ~= nil then
             local char2 = user2.getUsedCharacter
             local charIdentifier = char2.charIdentifier
             table.insert(cleanTable, {source=b,playerName=GetPlayerName(b),playerHex=GetPlayerIdentifier(b), charId=charIdentifier})
