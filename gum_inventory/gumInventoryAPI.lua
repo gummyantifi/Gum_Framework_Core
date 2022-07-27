@@ -12,6 +12,10 @@ exports('gum_inventoryApi',function()
         Citizen.Wait(200)
         return global_variable
     end
+    self.check_weapontable = function(source)
+        global_wep_variable = RECORDSW
+        return global_wep_variable
+    end
     self.preload_itemtable = function()
         local global_variable = {}
         exports.ghmattimysql:execute('SELECT * FROM items' , {}, function(result)
@@ -23,10 +27,6 @@ exports('gum_inventoryApi',function()
         return global_variable
     end
     self.preload_weapontable = function()
-        global_wep_variable = RECORDSW
-        return global_wep_variable
-    end
-    self.check_weapontable = function(source)
         global_wep_variable = RECORDSW
         return global_wep_variable
     end
@@ -55,12 +55,19 @@ exports('gum_inventoryApi',function()
         TriggerEvent("gumCore:giveWeapon",source,weaponid,target)
     end
 
-    self.addItem = function(source,itemName,cuantity)
-        TriggerEvent("gumCore:addItem",source,tostring(itemName),tonumber(cuantity))
+    self.addItem = function(source,itemName,count,metaData)
+        TriggerEvent("gumCore:addItem",source,tostring(itemName),tonumber(count),metaData)
     end
 
-    self.subItem = function(source,itemName,cuantity)
-        TriggerEvent("gumCore:subItem",source,tostring(itemName),tonumber(cuantity))
+    self.subItem = function(source,itemName,count)
+        TriggerEvent("gumCore:subItem",source,tostring(itemName),tonumber(count))
+    end
+
+    self.destroyItem = function(source,itemId,count)
+        TriggerEvent("gumCore:subItem",source,tostring(itemId))
+    end
+    self.getItemMeta = function(source,itemId)
+        TriggerEvent("gumCore:getItemMeta",source,tostring(itemId))
     end
 
     self.getItemCount = function(source,item)
@@ -73,6 +80,18 @@ exports('gum_inventoryApi',function()
 
     self.addBullets = function(source,weaponId,type,cuantity)
         TriggerEvent("gumCoreClient:addBullets",source,weaponId,type,cuantity)
+    end
+
+    self.addMetadata = function(source,itemId,metaDataName,value,visibility)
+        TriggerEvent("gumCoreClient:addMeta",source,itemId,metaDataName,value,visibility)
+    end
+
+    self.removeMetadata = function(source,itemId,metaDataName,value,visibility)
+        TriggerEvent("gumCoreClient:removeMeta",source,itemId,metaDataName,value,visibility)
+    end
+
+    self.editMetadata = function(source,itemId,metaDataName,value,visibility)
+        TriggerEvent("gumCoreClient:editMeta",source,itemId,metaDataName,value,visibility)
     end
 
     self.getWeaponBullets = function(source,weaponId)
