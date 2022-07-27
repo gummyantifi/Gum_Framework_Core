@@ -26,11 +26,14 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
 			SetDiscordRichPresenceAssetSmall('smalllogo')
 			SetDiscordRichPresenceAssetSmallText(Config.DiscordSText)
 			SetDiscordRichPresenceAction(0, "Discord", Config.DiscordButton) -- (OPTIONAL)
-
-			--local playerCount = #GetActivePlayers()
-			local playerName = GetPlayerName(PlayerId())
-			local maxPlayerSlots = 32
-			SetRichPresence(string.format("%s - %s/%s", playerName, playerCount, maxPlayerSlots))
+            local playerCount = 0
+            local playerName = GetPlayerName(PlayerId())
+            TriggerEvent('gum:ExecuteServerCallBack','getPlayersServer', function(count) 
+                if count ~= 0 then
+                    count = playerCount
+                end
+            end)
+            SetRichPresence(string.format("%s - %s/%s", playerName, playerCount, 128))
 
             Citizen.Wait(timer)
             local GetCoords = GetEntityCoords(PlayerPedId())

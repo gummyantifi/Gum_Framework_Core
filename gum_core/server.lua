@@ -272,52 +272,6 @@ RegisterCommand("delchar", function(source, args)
 	end
 end)
 
-
-RegisterCommand("addcurrency", function(source, args)
-	local _source = source
-	if _source == 0 then
-		local player_id = args[1]
-		local currency = args[2]
-		local howmuch = args[3]
-		if args[1] ~= nil and args[2] ~= nil and args[3] ~= nil then
-			local User2 = gumCore.getUser(player_id)
-			if User2 ~= nil then
-				local Character2 = User2.getUsedCharacter
-				Character2.addCurrency(player_id, currency, howmuch)
-				if Config.Info_print then
-					gumCore.Debug("Player with ID : "..player_id.." get "..currency.." and count "..howmuch.."")
-				end
-			end
-		else
-			gumCore.Error("Bad syntax : use example : /addcurrency ID type howmuch")
-		end
-	else
-		local player_id = args[1]
-		local currency = args[2]
-		local howmuch = args[3]
-		if player_id ~= nil and currency ~= nil and howmuch ~= nil then
-			local User = gumCore.getUser(source)
-			local group = User.group
-
-			local User2 = gumCore.getUser(player_id)
-			if User2 ~= nil then
-				local Character2 = User2.getUsedCharacter
-				if group == "admin" then
-					Character2.addCurrency(player_id, currency, howmuch)
-					if Config.Info_print then
-						gumCore.Debug("Player with ID : "..player_id.." get "..currency.." and count "..howmuch.."")
-					end
-				else return false
-				end
-			else
-				gumCore.Error("This user not found.")
-			end
-		else
-			gumCore.Error("Bad syntax : use example : /addcurrency ID type howmuch")
-		end
-	end
-end)
-
 RegisterCommand("setgroup", function(source, args)
 	local _source = source
 	if _source == 0 then
@@ -369,6 +323,14 @@ RegisterCommand("getplayers", function(source, args)
 			print("ID : "..v.."       Player hex : "..GetPlayerIdentifier(v).."       Player name : "..GetPlayerName(v).."")
 		end
 	end
+end)
+
+gum.addNewCallBack("getPlayersServer", function(source)
+	local count = 0
+	for k,v in pairs(GetPlayers()) do
+		count = count+1
+	end
+	return count
 end)
 
 function User.setGroup(source, id, group)
