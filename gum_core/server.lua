@@ -1010,6 +1010,12 @@ function gumCore.Debug(text)
 	print("^2GUM Core - ^5"..text.."^0")
 end
 
+function gumCore.Report(id, title, text)
+	print('^8!!REPORT ID : '..id..' !!^0')
+	print("^2Title - ^5"..title.."^0")
+	print("^2Text - ^5"..text.."^0")
+end
+
 AddEventHandler("playerConnecting", OnPlayerConnecting)
 
 
