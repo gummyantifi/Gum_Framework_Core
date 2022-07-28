@@ -68,14 +68,14 @@ local Scale = 100
 local current_texture_settings = Config.texture_types["male"]
 local textureId = -1
 local is_overlay_change_active = false
-local scars_enable = 0
+local scars_enable = 1
 local scars_texture = 1
 local scars_opacity = 10
-local blush_enable = 0
+local blush_enable = 1
 local blush_texture = 1
 local blush_opacity = 10
 local blush_color_1 = 0.0
-local shadow_enable = 0
+local shadow_enable = 1
 local shadow_color_1 = 0
 local shadow_color_2 = 0
 local shadow_color_3 = 0
@@ -352,70 +352,70 @@ function Make_Data(gender)
     Skin_Table["Eyes"] = 0
     Skin_Table["Scale"] = 1.0
 
-    Skin_Table["scars_visibility"] = 0
+    Skin_Table["scars_visibility"] = 1
     Skin_Table["scars_tx_id"] = 1
     Skin_Table["scars_opacity"] = 0
 
-    Skin_Table["spots_visibility"] = 0
+    Skin_Table["spots_visibility"] = 1
     Skin_Table["spots_tx_id"] = 1
     Skin_Table["spots_opacity"] = 0
 
-    Skin_Table["disc_visibility"] = 0
+    Skin_Table["disc_visibility"] = 1
     Skin_Table["disc_tx_id"] = 1
     Skin_Table["disc_opacity"] = 0
 
-    Skin_Table["complex_visibility"] = 0
+    Skin_Table["complex_visibility"] = 1
     Skin_Table["complex_tx_id"] = 1
     Skin_Table["complex_opacity"] = 0
 
-    Skin_Table["acne_visibility"] = 0
+    Skin_Table["acne_visibility"] = 1
     Skin_Table["acne_tx_id"] = 1
     Skin_Table["acne_opacity"] = 0
 
-    Skin_Table["ageing_visibility"] = 0
+    Skin_Table["ageing_visibility"] = 1
     Skin_Table["ageing_tx_id"] = 1
     Skin_Table["ageing_opacity"] = 0
 
-    Skin_Table["freckles_visibility"] = 0
+    Skin_Table["freckles_visibility"] = 1
     Skin_Table["freckles_tx_id"] = 1
     Skin_Table["freckles_opacity"] = 0
 
-    Skin_Table["moles_visibility"] = 0
+    Skin_Table["moles_visibility"] = 1
     Skin_Table["moles_tx_id"] = 1
     Skin_Table["moles_opacity"] = 0
 
-    Skin_Table["eyebrows_visibility"] = 0
+    Skin_Table["eyebrows_visibility"] = 1
     Skin_Table["eyebrows_tx_id"] = 1
     Skin_Table["eyebrows_opacity"] = 0.0
     Skin_Table["eyebrows_color"] = 0
 
-    Skin_Table["lipsticks_visibility"] = 0
+    Skin_Table["lipsticks_visibility"] = 1
     Skin_Table["lipsticks_tx_id"] = 1
     Skin_Table["lipsticks_opacity"] = 0.0
     Skin_Table["lipsticks_color_1"] = 0
     Skin_Table["lipsticks_color_2"] = 0
     Skin_Table["lipsticks_color_3"] = 0
 
-    Skin_Table["shadows_visibility"] = 0
+    Skin_Table["shadows_visibility"] = 1
     Skin_Table["shadows_opacity"] = 0.0
     Skin_Table["shadows_tx_id"] = 1
     Skin_Table["shadows_color_1"] = 0
     Skin_Table["shadows_color_2"] = 0
     Skin_Table["shadows_color_3"] = 0
 
-    Skin_Table["beardstabble_visibility"] = 0
+    Skin_Table["beardstabble_visibility"] = 1
     Skin_Table["beardstabble_opacity"] = 0.0
     Skin_Table["beardstabble_tx_id"] = 1
     Skin_Table["beardstabble_color_1"] = 0
 
-    Skin_Table["eyeliners_visibility"] = 0
+    Skin_Table["eyeliners_visibility"] = 1
     Skin_Table["eyeliners_opacity"] = 0.0
     Skin_Table["eyeliners_tx_id"] = 1
     Skin_Table["eyeliners_color_1"] = 0
     Skin_Table["eyeliners_color_2"] = 0
     Skin_Table["eyeliners_color_3"] = 0
 
-    Skin_Table["blush_visibility"] = 0
+    Skin_Table["blush_visibility"] = 1
     Skin_Table["blush_opacity"] = 0.0
     Skin_Table["blush_tx_id"] = 1
     Skin_Table["blush_color_1"] = 0

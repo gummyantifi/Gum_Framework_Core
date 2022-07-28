@@ -325,13 +325,6 @@ RegisterCommand("getplayers", function(source, args)
 	end
 end)
 
-gum.addNewCallBack("getPlayersServer", function(source)
-	local count = 0
-	for k,v in pairs(GetPlayers()) do
-		count = count+1
-	end
-	return count
-end)
 
 function User.setGroup(source, id, group)
 	local _source = source
@@ -753,6 +746,14 @@ function Character.buySkinPlayer(source, skinplayer)
 	end
 end
 
+RegisterServerEvent('gumCore:checkPlayersOnline')
+AddEventHandler('gumCore:checkPlayersOnline', function(source, charid, firstname, lastname)
+	local count = 0
+	for k,v in pairs(GetPlayers()) do
+		count = count+1
+	end
+	TriggerClientEvent("gum_core:sendBack", source, count)
+end)
 
 RegisterServerEvent('gumCore:GetPlayerIds')
 AddEventHandler('gumCore:GetPlayerIds', function(source, charid, firstname, lastname, cb)

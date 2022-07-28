@@ -35,7 +35,7 @@ local disc_opacity = 10
 local complex_enable = 1
 local complex_texture = 1
 local complex_opacity = 10
-local acne_visibility = 0
+local acne_visibility = 1
 local acne_texture = 1
 local acne_opacity = 10
 local ageing_enable = 1
@@ -178,67 +178,53 @@ Citizen.CreateThread(function()
                                         beard = beard,
                                         teeth = teeth,
         
-                                        SCARS_CHECK=Skin_Table["scars_visibility"],
                                         SCARS_TYPE=Skin_Table["scars_tx_id"],
                                         SCARS_OPACITY=Skin_Table["scars_opacity"],
         
-                                        SPOTS_CHECK=Skin_Table["spots_visibility"],
                                         SPOTS_TYPE=Skin_Table["spots_tx_id"],
                                         SPOTS_OPACITY=Skin_Table["spots_opacity"],
         
-                                        DISC_CHECK=Skin_Table["disc_visibility"],
                                         DISC_TYPE=Skin_Table["disc_tx_id"],
                                         DISC_OPACITY=Skin_Table["disc_opacity"],
         
-                                        COMPLEX_CHECK=Skin_Table["complex_visibility"],
                                         COMPLEX_TYPE=Skin_Table["complex_tx_id"],
                                         COMPLEX_OPACITY=Skin_Table["complex_opacity"],
         
-                                        ACNE_CHECK=Skin_Table["acne_visibility"],
                                         ACNE_TYPE=Skin_Table["acne_tx_id"],
                                         ACNE_OPACITY=Skin_Table["acne_opacity"],
         
-                                        AGEING_CHECK=Skin_Table["ageing_visibility"],
                                         AGEING_TYPE=Skin_Table["ageing_tx_id"],
                                         AGEING_OPACITY=Skin_Table["ageing_opacity"],
         
-                                        FRECKLES_CHECK=Skin_Table["freckles_visibility"],
                                         FRECKLES_TYPE=Skin_Table["freckles_tx_id"],
                                         FRECKLES_OPACITY=Skin_Table["freckles_opacity"],
         
-                                        MOLES_CHECK=Skin_Table["moles_visibility"],
                                         MOLES_TYPE=Skin_Table["moles_tx_id"],
                                         MOLES_OPACITY=Skin_Table["moles_opacity"],
         
-                                        EYEBROWS_CHECK=Skin_Table["eyebrows_visibility"],
                                         EYEBROWS_TYPE=Skin_Table["eyebrows_tx_id"],
                                         EYEBROWS_OPACITY=Skin_Table["eyebrows_opacity"],
                                         EYEBROWS_COLOR1=Skin_Table["eyebrows_color"],
         
-                                        LIPSTICKS_CHECK=Skin_Table["lipsticks_visibility"],
                                         LIPSTICKS_TYPE=Skin_Table["lipsticks_tx_id"],
                                         LIPSTICKS_OPACITY=Skin_Table["lipsticks_opacity"],
                                         LIPSTICKS_COLOR1=Skin_Table["lipsticks_color_1"],
                                         LIPSTICKS_COLOR2=Skin_Table["lipsticks_color_2"],
                                         LIPSTICKS_COLOR3=Skin_Table["lipsticks_color_3"],
         
-                                        SHADOWS_CHECK=Skin_Table["shadows_visibility"],
                                         SHADOWS_OPACITY=Skin_Table["shadows_opacity"],
                                         SHADOWS_TYPE=Skin_Table["shadows_tx_id"],
                                         SHADOWS_COLOR1=Skin_Table["shadows_color_1"],
                                         SHADOWS_COLOR2=Skin_Table["shadows_color_2"],
                                         SHADOWS_COLOR3=Skin_Table["shadows_color_3"],
         
-                                        BEARDSSTABLE_CHECK=Skin_Table["beardstabble_visibility"],
                                         BEARDSSTABLE_OPACITY=Skin_Table["beardstabble_opacity"],
                                         BEARDSSTABLE_COLOR= Skin_Table["beardstabble_color_1"],
         
-                                        EYELINNERS_CHECK=Skin_Table["eyeliners_visibility"],
                                         EYELINNERS_OPACITY=Skin_Table["eyeliners_opacity"],
                                         EYELINNERS_TYPE=Skin_Table["eyeliners_tx_id"],
                                         EYELINNERS_COLOR1=Skin_Table["eyeliners_color_1"],
         
-                                        BRUSH_CHECK=Skin_Table["blush_visibility"],
                                         BRUSH_OPACITY=Skin_Table["blush_opacity"],
                                         BRUSH_TYPE=Skin_Table["blush_tx_id"],
                                         BRUSH_COLOR1=Skin_Table["blush_color_1"],

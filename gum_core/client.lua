@@ -20,21 +20,7 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
             else
                 timer = 2*60000
             end 
-            SetDiscordAppId(Config.DiscordID)
-			SetDiscordRichPresenceAsset('biglogo')
-			SetDiscordRichPresenceAssetText(Config.DiscordP)
-			SetDiscordRichPresenceAssetSmall('smalllogo')
-			SetDiscordRichPresenceAssetSmallText(Config.DiscordSText)
-			SetDiscordRichPresenceAction(0, "Discord", Config.DiscordButton) -- (OPTIONAL)
-            local playerCount = 0
-            local playerName = GetPlayerName(PlayerId())
-            TriggerEvent('gum:ExecuteServerCallBack','getPlayersServer', function(count) 
-                if count ~= 0 then
-                    count = playerCount
-                end
-            end)
-            SetRichPresence(string.format("%s - %s/%s", playerName, playerCount, 128))
-
+	TriggerServerEvent("gum_core:checkPlayersOnline")
             Citizen.Wait(timer)
             local GetCoords = GetEntityCoords(PlayerPedId())
             local GetHeading = GetEntityHeading(PlayerPedId())
@@ -50,6 +36,19 @@ AddEventHandler("gum:SelectedCharacter", function(charid)
             end
         end
     end)
+end)
+RegisterNetEvent("gum_core:sendBack")
+AddEventHandler("gum_core:sendBack", function(countchar)
+	   SetDiscordAppId(880082083295420478)
+	   SetDiscordRichPresenceAsset('biglogo')
+	  SetDiscordRichPresenceAssetText('RedWest Roleplay')
+  	SetDiscordRichPresenceAssetSmall('smalllogo')
+	 SetDiscordRichPresenceAssetSmallText('Eesko-Slovenský Roleplay')
+	SetDiscordRichPresenceAction(0, "Discord", "https://discord.com/invite/4ZZFgqtF8J") -- (OPTIONAL)
+
+            local playerCount = 0
+            local playerName = GetPlayerName(PlayerId())
+            SetRichPresence(string.format("%s - %s/%s", playerName, countchar, 128))
 end)
 
 RegisterNetEvent("gum:endcallback", function(callbackName, ticket, ...)
